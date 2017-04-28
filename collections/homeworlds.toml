@@ -1,0 +1,170 @@
+[[homeworlds]]
+name = "Feral"
+aptitude = "Toughness"
+charPlus = ["Toughness", "Strength"]
+charMinus = ["Influence"]
+fate = 2
+blessing = 3
+blwounds = "9+1d5"
+bonus = "The Old Ways"
+roll = [1, 15]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Forge"
+aptitude = "Intelligence"
+charPlus = ["Intelligence", "Toughness"]
+charMinus = ["Fellowship"]
+fate = 3
+blessing = 8
+wounds = "8+1d5"
+bonus = "Omnissiah’s Chosen"
+roll = [16, 33]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Highborn"
+aptitude = "Fellowship"
+charPlus = ["Fellowship", "Influence"]
+charMinus = ["Toughness"]
+fate = 4
+blessing = 10
+wounds = "9+1d5"
+bonus = "Breeding Counts"
+roll = [34, 44]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Hive"
+aptitude = "Perception"
+charPlus = ["Perception", "Agility"]
+charMinus = ["Willpower"]
+fate = 2
+blessing = 6
+wounds = "8+1d5"
+bonus = "Teeming Masses in Metal Mountains"
+roll = [45, 69]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Shrine"
+aptitude = "Willpower"
+charPlus = ["Willpower", "Fellowship"]
+charMinus = ["Perception"]
+fate = 3
+blessing = 6
+wounds = "7+1d5"
+bonus = "Faith in the Creed"
+roll = [70, 85]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Voidborn"
+aptitude = "Intelligence"
+charPlus = ["Intelligence", "Willpower"]
+charMinus = ["Strength"]
+fate = 3
+blessing = 5
+wounds = "7+1d5"
+bonus = "Child of the Dark"
+roll = [86, 100]
+bookRef = "core"
+
+[[homeworlds]]
+name = "Agri"
+aptitude = "Strength"
+charPlus = ["Fellowship", "Strength"]
+charMinus = ["Agility"]
+fate = 2
+blessing = 7
+wounds = "8+1d5"
+bonus = "Strength from the Land"
+bookRef = "within"
+
+[[homeworlds]]
+name = "Feudal"
+aptitude = "Weapon Skill"
+charPlus = ["Perception", "Weapon Skill"]
+charMinus = ["Intelligence"]
+fate = 3
+blessing = 6
+wounds = "9+1d5"
+bonus = "At Home in Armor"
+bookRef = "within"
+
+[[homeworlds]]
+name = "Frontier"
+aptitude = "Ballistic Skill"
+charPlus = ["Ballistic Skill", "Perception"]
+charMinus = ["Fellowship"]
+fate = 3
+blessing = 7
+wounds = "7+1d5"
+bonus = "Rely on None but Yourself"
+bookRef = "within"
+
+[[homeworlds]]
+name = "Death"
+aptitude = "Fieldcraft"
+charPlus = ["Agility", "Perception"]
+charMinus = ["Fellowship"]
+fate = 2
+blessing = 5
+wounds = "9+1d5"
+bonus = "Survivor Paranoia"
+bookRef = "without"
+
+[[homeworlds]]
+name = "Garden"
+aptitude = "Social"
+charPlus = ["Fellowship", "Agility"]
+charMinus = ["Toughness"]
+fate = 2
+blessing = 4
+wounds = "7+1d5"
+bonus = "Serenity of the Green"
+bookRef = "without"
+
+[[homeworlds]]
+name = "Research Station"
+aptitude = "Knowledge"
+charPlus = ["Intelligence", "Perception"]
+charMinus = ["Fellowship"]
+fate = 3
+blessing = 8
+wounds = "8+1d5"
+bonus = "Pursuit of Data"
+bookRef = "without"
+
+[[homeworlds]]
+name = "Daemon"
+aptitude = "Willpower"
+charPlus = ["Willpower", "Perception"]
+charMinus = ["Fellowship"]
+fate = 3
+blessing = 4
+wounds = "7+1d5"
+bonus = "Touched by the Warp"
+bookRef = "beyond"
+
+[[homeworlds]]
+name = "Penal Colony"
+aptitude = "Toughness"
+charPlus = ["Toughness", "Perception"]
+charMinus = ["Influence"]
+fate = 3
+blessing = 8
+wounds = "10+1d5"
+bonus = "Finger on the Pulse"
+bookRef = "beyond"
+
+[[homeworlds]]
+name = "Quarantine"
+aptitude = "Fieldcraft"
+charPlus = ["Ballistic Skill", "Intelligence"]
+charMinus = ["Strength"]
+fate = 3
+blessing = 9
+wounds = "8+1d5"
+bonus = "Secretive by Nature"
+bookRef = "beyond"
