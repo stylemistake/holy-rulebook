@@ -1,0 +1,18 @@
+#!/bin/bash
+set -e
+cd "$(dirname "${0}")/.."
+
+PATH="${PATH}:node_modules/.bin"
+
+## Development server
+if [[ ${1} == '--dev' ]]; then
+  export APP_ENV='local'
+  hash node_modules 2>/dev/null || yarn install
+  exec webpack-dev-server --progress --inline --hot
+
+## Normal server
+else
+  export APP_ENV='production'
+  hash node_modules 2>/dev/null || yarn install --production
+  exec node src/http/index.js "${@}"
+fi

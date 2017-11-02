@@ -8,6 +8,8 @@
 /.tmp
 /npm-debug.log
 /npm-shrinkwrap.json
+/package-lock.json
+/yarn-error.log
 
 
 ## ------------------------------------

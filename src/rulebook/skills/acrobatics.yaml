@@ -1,0 +1,78 @@
+type: skill
+name: acrobatics
+aptitudes:
+  - agility
+  - general
+
+description: |
+  Acrobatics covers feats of agile movement, graceful motion, and mastery
+  of balance and form. With this skill, characters can leap nimbly across
+  gaping chasms, maintain their balance on a pitching ship deck, or fall
+  gracefully to the ground without snapping their limbs. In combat, an
+  accomplished acrobat can somersault, flip, or cartwheel away from foes,
+  twisting his body out of reach of his enemy or slipping past foes in a
+  blur of motion. Often, characters develop a knack for Acrobatics as part
+  of their training in another field. A courier or thief might learn these
+  knacks as part of travel through densely populated areas. Gladiators,
+  survivalists, and dancers need to be able to perform acrobatic motions
+  as part of their daily routines. Even a Tech- Adept accustomed to
+  working in particularly confined quarters devotes his daily flesh-
+  exhortations to improving flexibility, so that he might more effectively
+  work within narrow ductwork.
+
+  The GM can call on a player to use the Acrobatics skill when:
+
+  - He must keep his balance or avoid falling in unstable ground.
+  - He wishes to jump down from a height and land well.
+  - He wants to move over or around a foe or obstacle in his path without
+  breaking his stride.
+
+exampleModifiers: |
+  +30: Moving in an open environment with Earth-like gravity or completely unarmoured.
+  +20: Moving through an open forest or tall grass field, or with hands free of weapons or other objects.
+  +10: Moving in a low gravity environment, wearing armour only on torso.
+  +0: Moving across rubble or debris, or in loose and shifting sand.
+  –10: Moving in obstructed terrain or in heavy armour.
+  –20: Moving in zero gravity or with both hands tied behind one’s back.
+  –30: Moving in an environment with gravity three times Terran standard.
+
+usages:
+  - name: contortionist
+    description: |
+      A character can use his Acrobatics skill to escape from bonds or the
+      grip of a foe by twisting and turning his body. As a Full Action, a
+      character may make an Acrobatics skill test to free himself from bonds,
+      such as rope, manacles, or the like. This test can only be attempted
+      once to escape restraints; if the character fails to free himself the
+      first time, then he is simply too tightly bound and unable to contort
+      his way free. The GM can modify this test depending on the quality of
+      the bonds in this situation. Characters may also use Acrobatics to
+      escape from a grapple (see page 221) by using their Acrobatics skill
+      instead of their Agility or Strength when grappling.
+
+  - name: maneuvering
+    description: |
+      In combat, a character capable of acrobatics can more easily avoid foes
+      or retreat from combat without harm. The character may make a Disengage
+      action (see page 220) as a Half Action (rather than a Full Action) if he
+      passes a Challenging (+0) Acrobatics skill test.
+
+  - name: jumping
+    description: |
+      A well-trained acrobat excels at jumping, leaping, and lessening the
+      effect of falls by folding his body as he hits the ground. When jumping
+      or leaping (see page 222), a character may use the Acrobatics skill in
+      the place of Agility and Strength tests. When determining Falling
+      damage, a character can make an Acrobatics skill test to reduce the
+      effective distance fallen by a number of metres equal to his Agility
+      bonus.
+
+  - name: pursuit parkour
+    description: |
+      An agile acrobat can parkour over most obstacles much faster than other
+      people. If you are have the Trained, Experienced or Veteran advances on
+      the Acrobatics skill, you take less penalties on Pursuit tests due to
+      hard terrain. In this case, you may reduce the hard terrain penalty by
+      the amount of the bonus that you gain for these advances. This cannot
+      reduce the hard terrain penalty below 0, and will not give you
+      additional bonuses.
