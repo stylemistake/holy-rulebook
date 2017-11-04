@@ -14,14 +14,17 @@ import React from 'react';
 // );
 
 import SkillCard from './components/SkillCard.jsx';
-import { queryEntity } from './lib/entityStore.js';
+import Section from './components/Section.jsx';
+import Store from './lib/Store.js';
 
-const acrobatics = queryEntity('/skills/acrobatics');
+const acrobatics = Store.query('/skills/acrobatics');
+const sections = Store.queryAll('/sections/skills');
 
 const Aux = (props) => props.children;
 const kitchenSink = (
   <Aux>
-    <SkillCard skill={acrobatics} />
+    {sections.map((section, i) => <Section key={i} item={section} />)}
+    <SkillCard item={acrobatics} />
   </Aux>
 );
 
@@ -31,7 +34,12 @@ export default class Layout extends React.Component {
     return (
       <div className='react-container'>
         <div className='header'>
-          Header
+          <div className='header-item header-title'>
+            Holy Rulebook
+          </div>
+          <div className='header-item header-search'>
+            <input placeholder='Search...' />
+          </div>
         </div>
         <div className='content'>
           {kitchenSink}

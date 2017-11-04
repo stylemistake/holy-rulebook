@@ -2,6 +2,8 @@
 @import './reset.scss';
 @import './typography.scss';
 
+// Main styles
+// TODO: Move them into separate files
 .header {
   display: flex;
   align-items: center;
@@ -13,17 +15,76 @@
 }
 
 .header-item {
-  // flex: 1;
-  margin-left: 20px;
+  margin-top: 0.15rem;
+  margin-right: 2rem;
 }
 
-.skill-card {
+.header-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.header-search {
+  flex: 1;
+  margin-top: 0rem;
+
+  input {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.75);
+    border: 0;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    transition: background-color 100ms, color 100ms;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:focus {
+      background: rgba(255, 255, 255, 1);
+      color: rgba(0, 0, 0, 0.9);
+      outline-width: 0;
+    }
+  }
+}
+
+.capitalized {
+  text-transform: capitalize;
+}
+
+.card {
   margin: 1rem;
   padding: 0.5rem 1.5rem;
   border: 1px solid rgba(0, 0, 0, 0.25);
 }
 
-.skill-card-name {
-  font-size: 1.5rem;
-  line-height: 1.5em;
+.card-title {
+  font-size: 1.75rem;
+  line-height: 1.1em;
+  margin: 0.5em 0 0.5em 0;
+}
+
+.card-content {
+  text-align: justify;
+}
+
+.section {
+  margin: 1rem;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.section-title {
+  font-size: 1.75rem;
+  line-height: 1.1em;
+  margin: 0.5em 0 0.5em 0;
+}
+
+.section-content {
+  text-align: justify;
 }

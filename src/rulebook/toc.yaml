@@ -1,0 +1,5 @@
+type: section
+title: Table of Contents
+subsections:
+  - title: Skills
+    ref: /sections/skills

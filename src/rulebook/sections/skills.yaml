@@ -1,0 +1,74 @@
+type: section
+title: Using skills
+text: |
+  Throughout the course of a game session, the Game Master frequently calls upon players to make skill tests for their characters. These should be conducted in any circumstance where success or failure might have a meaningful impact upon the scenario. Routine tasks attempted under normal conditions should never require a test. However, if there is a reasonable chance of failure due to environmental conditions or circumstance, even a routine test might be relevant.
+
+  When a character uses a skill to perform a task, he must succeed at a skill test. The procedure is: the player rolls, compares the result to the characteristic best suited to the task and, if the result is equal to or less than the skill rating, the check succeeds. Modifiers are applied to take into account any environmental factors, as well as the character’s rank with the applicable skill.
+
+---
+type: section
+title: Untrained skill use
+text: |
+  It is unlikely that a character will be trained in the use of every skill, instead focusing on the mastery of a few and a general knowledge of a handful of others. A character can, however, still use skills in which he has no training when needs must, such as attempting to hide from a slavering group of mutants or frantically deciphering the coded messages in an ancient tome. In these instances, the character makes a skill test as normal but suffers a –20 penalty in addition to any other modifiers.
+
+  The only exceptions to this rule are Specialist skills (see below) which require a level of ability that simply cannot be attempted by the untrained. Specialist skills are indicated as such in the individual skill descriptions.
+
+---
+type: section
+title: Specialist skills
+text: |
+  Some skills are not just one skill but many, representing a specialisation within the skill itself. These are known as Specialist skills, and whenever a character learns a Specialist skill, he must choose a particular specialisation within it. Specialisations represent such things as specific knowledge of places, people, and events; the ability to control, drive, or pilot particular types of vehicles and equipment; the ability to read and understand maps, as well as the ability to plot a course across a world or the stars themselves; and the ability to speak, read, or understand one of the countless languages, codes, or glyphs used by the races of the 41 st Millennium.
+
+  A character can take a Specialist skill more than once, taking a new speciality each time he takes the skill. If he takes a Specialist skill more than once (each with its own speciality), then these are treated as separate skills and must be advanced in rank individually.
+
+  A list of the individual specialities within each Specialist skill can be found within the individual skill descriptions.
+
+---
+type: section
+title: Assistance
+text: |
+  During a complicated or delicate test (and with the Game Master’s permission), the character performing the test can request the assistance of other characters in the group. When the percentile roll is made, only the character who is actually making the test rolls the dice, but he gains a +10 bonus for each character giving assistance to him. There are some restrictions and conditions that must be met:
+
+  - To give assistance on a skill test, a character must have training in that skill.
+  - The assisting character must usually be adjacent to the character performing the test, though certain tests could gain assistance from over a vox channel at the GM’s discretion.
+  - Assistance cannot be given for tests made as part of Reactions or Free Actions.
+  - Assistance cannot be given on tests made to resist disease, poison, Fear, or anything else the GM deems inappropriate.
+  - No more than two characters can attempt to assist another on a single test, unless the GM decides otherwise (such as if the warband is attempting to right an overturned vehicle).
+
+---
+type: section
+title: Time and skill tests
+text: |
+  The amount of time required for a skill test may vary substantially based both upon the skill used and the particular instance of its use. The same skill can be used on small tasks and on grand project, and while in some cases it would take just a moment, in other cases could take weeks. Game Masters must alter the time required for a skill use based upon the overall complexity of the task involved.
+
+---
+type: section
+title: Trying again
+text: |
+  If failing a task does not provide negative results, they can be attempted repeatedly with few consequences until a character finally succeeds.
+
+  In narrative situations, GM may wish to exchange repeated rolls with a cost in time and effort. An Inquiry task with multiple degrees of success, for example, would give results much faster than expected. In case of failure, the same information gathering task would drag on way too long, possibly demand extra actions to reach a result, might attract unwanted attention, or may even lead into ambushes. When using this system, a character cannot decide not to do the task after rolling a failure - he must pay the time price. Be aware that any narrative test could be interrupted if the situation changes.
+
+  In detailed time situations, all tasks should be separated into very specific actions that take a few turns to complete at most. Extended tasks, such as research, cannot be productively used at all in detailed time.
+
+  Where appropriate, a skill entry lists whether it can be attempted more than once, and gives suggestions for the consequences of failure. GMs must be familiar with these options, but can temper them given the particular circumstance of the attempt. A character who failed a test that normally only has a single opportunity might have an additional chance if there are mitigating circumstances. Similarly, a test that could normally be repeated indefinitely might have situational constraints that prevent further opportunities.
+
+---
+type: section
+title: Skill rank
+text: |
+  All of a character’s skills are ranked from 0–4, representing his level of ability. Higher ranks can be bought during play by spending experience points.
+
+  - 0 (Unknown): -20 penalty to all tests with this skill; can only use non-specialist skills.
+  - 1 (Known): Use the skill without the –20 penalty for being untrained
+  - 2 (Trained): +10 on all tests with this skill
+  - 3 (Experienced): +20 on all tests with this skill
+  - 4 (Veteran): +30 on all tests with this skill
+
+---
+type: section
+title: Gaining skills
+text: |
+  A Player Character learns new skills and improves existing ones, getting steadily better and gaining access to new options during play and new ways of overcoming challenges. Skills, like other kinds of advances, are gained during character creation or bought during play by spending experience points.
+
+  TODO: XP cost table

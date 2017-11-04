@@ -1,12 +1,18 @@
+'use strict';
+
 import React from 'react';
+import Markdown from 'react-markdown';
 
 export default class SkillCard extends React.Component {
 
   render() {
+    const item = this.props.item;
     return (
-      <div className='skill-card'>
-        <div className='skill-card-name'>{this.props.skill.name}</div>
-        <pre>{this.props.skill.description}</pre>
+      <div className='card'>
+        <div className='card-title capitalized'>{item.name}</div>
+        <div className='card-content'>
+          <Markdown source={item.description} />
+        </div>
       </div>
     );
   }
