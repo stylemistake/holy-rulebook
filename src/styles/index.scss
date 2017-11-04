@@ -1,0 +1,29 @@
+// Base
+@import './reset.scss';
+@import './typography.scss';
+
+.header {
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  background: #222;
+  padding: 0 2rem;
+  margin-bottom: 0.5rem;
+  color: #fff
+}
+
+.header-item {
+  // flex: 1;
+  margin-left: 20px;
+}
+
+.skill-card {
+  margin: 1rem;
+  padding: 0.5rem 1.5rem;
+  border: 1px solid rgba(0, 0, 0, 0.25);
+}
+
+.skill-card-name {
+  font-size: 1.5rem;
+  line-height: 1.5em;
+}

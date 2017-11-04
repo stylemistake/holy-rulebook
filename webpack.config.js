@@ -33,6 +33,20 @@ const config = {
           },
         ],
       },
+      {
+        test: /\.scss$/,
+        use: [
+          'style-loader',
+          'css-loader',
+          'sass-loader',
+        ],
+      },
+      {
+        test: /\.ya?ml$/,
+        use: [
+          './src/lib/loaders/yaml-loader.js',
+        ],
+      },
     ],
   },
   plugins: [],
