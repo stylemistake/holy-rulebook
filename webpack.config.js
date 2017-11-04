@@ -3,7 +3,7 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const WEBPACK_ENV = process.env.WEBPACK_ENV || 'local';
+const APP_ENV = process.env.APP_ENV || 'local';
 
 const config = {
   entry: {
@@ -13,7 +13,7 @@ const config = {
     ],
   },
   output: {
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'public/bundles'),
     publicPath: '/bundles/',
     filename: '[name].bundle.js',
   },
@@ -26,7 +26,7 @@ const config = {
           {
             loader: 'babel-loader',
             options: {
-              presets: WEBPACK_ENV === 'local'
+              presets: APP_ENV === 'local'
                 ? ['env', 'react', 'react-hmre']
                 : ['env', 'react'],
             },
@@ -62,7 +62,7 @@ const config = {
 };
 
 // Add optimization plugins when generating the final bundle
-if (WEBPACK_ENV === 'production') {
+if (APP_ENV === 'production') {
   config.devtool = false,
   config.plugins = config.plugins.concat([
     new webpack.optimize.OccurrenceOrderPlugin(),

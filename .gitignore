@@ -5,6 +5,7 @@
 ## ------------------------------------
 
 /node_modules
+/public/bundles
 /.tmp
 /npm-debug.log
 /npm-shrinkwrap.json

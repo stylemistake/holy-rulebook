@@ -9,11 +9,18 @@ A collection of rules for the Dark Heresy inspired board game.
 
 ## Installation
 
-This will launch the server:
+This will launch the development server:
 
 ```
 yarn start
 ```
+
+Usage of the `holy-rulebook` executable:
+
+- `bin/holy-rulebook` - build and launch a production server
+- `bin/holy-rulebook --build` - just build
+- `bin/holy-rulebook --dev` - launch a development server
+- `bin/holy-rulebook --clean` - clean build artifacts
 
 ## Notes
 
