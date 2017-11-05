@@ -1,0 +1,26 @@
+type: skill
+name: athletics
+aptitudes:
+  - strength
+  - general
+characteristics:
+  - strength
+
+description: |
+  TODO
+
+exampleModifiers: |
+  TODO
+
+usages:
+  - name: TODO
+    description: |
+      TODO
+
+  - name: TODO
+    description: |
+      TODO
+
+  - name: TODO
+    description: |
+      TODO

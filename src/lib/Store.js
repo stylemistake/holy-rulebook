@@ -7,6 +7,7 @@ import Section from './Section.js';
 export default {
   query,
   queryAll,
+  findSkills,
 };
 
 // Webpack context for YAML files
@@ -17,6 +18,19 @@ const entityTypeMap = new Map([
   ['skill', Skill],
   ['section', Section],
 ]);
+
+// A very ugly and temporary Skill storage
+const uglySkillList = requireYaml.keys()
+  .map((path) => {
+    const obj = requireYaml(path);
+    return obj && obj[0];
+  })
+  // NOTE: Store only skill entities for now
+  .filter((x) => x && x.type === 'skill')
+  .map((x) => {
+    const TargetEntity = entityTypeMap.get(x.type) || Entity;
+    return new TargetEntity().fromData(x);
+  });
 
 /**
  * Query an entity.
@@ -50,4 +64,15 @@ export function queryAll(uri) {
     const TargetEntity = entityTypeMap.get(x.type) || Entity;
     return new TargetEntity().fromData(x);
   });
+}
+
+/**
+ * Get all skill entities
+ *
+ * @return {Skill}
+ */
+export function findSkills() {
+  // TODO: Implement a better storage
+  // TODO: Implement a query mechanism
+  return uglySkillList;
 }
