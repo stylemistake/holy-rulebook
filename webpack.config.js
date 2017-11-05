@@ -29,6 +29,9 @@ const config = {
               presets: APP_ENV === 'local'
                 ? ['env', 'react', 'react-hmre']
                 : ['env', 'react'],
+              plugins: [
+                'transform-decorators-legacy',
+              ],
             },
           },
         ],

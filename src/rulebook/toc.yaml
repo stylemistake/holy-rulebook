@@ -2,4 +2,9 @@ type: section
 title: Table of Contents
 subsections:
   - title: Skills
-    ref: /sections/skills
+    subsections: /sections/skills
+    text: |
+      Skills section text
+  - title: Talents
+    text: |
+      Talents section text

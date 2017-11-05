@@ -1,0 +1,51 @@
+.header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  display: flex;
+  align-items: center;
+  height: 4rem;
+  background: #222;
+  padding: 0 2rem;
+  color: #fff;
+}
+
+.header-item {
+  margin-top: 0.15rem;
+  margin-right: 2rem;
+}
+
+.header-title {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.header-search {
+  flex: 1;
+  margin-top: 0rem;
+
+  input {
+    background: rgba(255, 255, 255, 0.2);
+    color: rgba(255, 255, 255, 0.75);
+    border: 0;
+    padding: 0.5rem 1rem;
+    width: 100%;
+    transition: background-color 100ms, color 100ms;
+
+    &::placeholder {
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.25);
+      color: rgba(255, 255, 255, 0.8);
+    }
+
+    &:focus {
+      background: rgba(255, 255, 255, 1);
+      color: rgba(0, 0, 0, 0.9);
+      outline-width: 0;
+    }
+  }
+}

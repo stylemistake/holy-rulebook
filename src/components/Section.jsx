@@ -1,7 +1,7 @@
 'use strict';
 
 import React from 'react';
-import Markdown from 'react-markdown';
+import Markdown from 'react-remarkable';
 
 export default class Section extends React.Component {
 
@@ -11,7 +11,7 @@ export default class Section extends React.Component {
       <div className='section'>
         <div className='section-title capitalized'>{item.title}</div>
         <div className='section-content'>
-          <Markdown source={item.text} />
+          <Markdown source={item.text} options={{ html: true }} />
         </div>
       </div>
     );

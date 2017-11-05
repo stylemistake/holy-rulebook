@@ -2,6 +2,7 @@
 
 import Entity from './Entity.js';
 import Skill from './Skill.js';
+import Section from './Section.js';
 
 export default {
   query,
@@ -14,6 +15,7 @@ const requireYaml = require.context('../rulebook', true, /\.yaml$/);
 // Contains type -> constructor mappings
 const entityTypeMap = new Map([
   ['skill', Skill],
+  ['section', Section],
 ]);
 
 /**

@@ -1,0 +1,32 @@
+.sidebar {
+  position: fixed;
+  top: 4rem;
+  bottom: 0;
+  left: 0;
+  width: 18rem;
+  background-color: rgba(0, 0, 0, 0.8);
+  color: #fff;
+  padding-top: 0.5rem;
+}
+
+.sidebar-item {
+  background-color: transparent;
+  padding: 0.5rem 1rem;
+  transition: background-color 100ms;
+}
+
+.sidebar-item-title {
+  font-weight: bold;
+}
+
+.sidebar-item-link {
+  cursor: pointer;
+
+  &:before {
+    content: '→ ';
+  }
+
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+}

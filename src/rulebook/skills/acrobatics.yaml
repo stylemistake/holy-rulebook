@@ -3,6 +3,8 @@ name: acrobatics
 aptitudes:
   - agility
   - general
+characteristics:
+  - agility
 
 description: |
   Acrobatics covers feats of agile movement, graceful motion, and mastery of balance and form. With this skill, characters can leap nimbly across gaping chasms, maintain their balance on a pitching ship deck, or fall gracefully to the ground without snapping their limbs. In combat, an accomplished acrobat can somersault, flip, or cartwheel away from foes, twisting his body out of reach of his enemy or slipping past foes in a blur of motion. Often, characters develop a knack for Acrobatics as part of their training in another field. A courier or thief might learn these knacks as part of travel through densely populated areas. Gladiators, survivalists, and dancers need to be able to perform acrobatic motions as part of their daily routines. Even a Tech- Adept accustomed to working in particularly confined quarters devotes his daily flesh- exhortations to improving flexibility, so that he might more effectively work within narrow ductwork.
