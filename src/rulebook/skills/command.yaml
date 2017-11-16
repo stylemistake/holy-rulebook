@@ -1,0 +1,23 @@
+type: skill
+name: command
+aptitudes:
+  - fellowship
+  - leadership
+characteristics:
+  - perception
+time: |
+  Half action for simple commands, Full commands for more involved direction.
+
+description: |
+  TODO
+
+exampleModifiers: |
+  TODO
+
+usages:
+  - name: inspire
+    description: |
+      TODO
+  - name: team leader
+    description: |
+      TODO

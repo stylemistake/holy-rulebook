@@ -6,9 +6,11 @@ import SkillCard from './components/SkillCard.jsx';
 import Section from './components/Section.jsx';
 import Store from './lib/Store.js';
 import { bound, throttle } from './lib/decorators.js';
+import SkillTable from './components/SkillTable.jsx';
 
 const acrobatics = Store.query('/skills/acrobatics');
 const sections = Store.queryAll('/sections/skills');
+const skills = Store.findSkills();
 const toc = Store.query('/toc');
 
 // Container for nesting multiple react components
@@ -77,6 +79,7 @@ export default class Layout extends React.Component {
             })
             .map((section) => <Section key={section._id} item={section} />)}
           <SkillCard item={acrobatics} />
+          <SkillTable skills={skills} />
         </div>
       </div>
     );

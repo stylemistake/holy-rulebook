@@ -71,7 +71,7 @@ export function queryAll(uri) {
  *
  * @return {Skill}
  */
-export function findSkills() {
+  export function findSkills() {
   // TODO: Implement a better storage
   // TODO: Implement a query mechanism
   return uglySkillList;
