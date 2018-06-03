@@ -18,6 +18,9 @@ const config = {
     publicPath: '/bundles/',
     filename: '[name].bundle.js',
   },
+  resolve: {
+    extensions: ['.js', '.jsx'],
+  },
   module: {
     rules: [
       {
