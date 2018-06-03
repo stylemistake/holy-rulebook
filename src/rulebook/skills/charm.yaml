@@ -1,11 +1,13 @@
 type: skill
-name: fellowship
+name: Charm
 aptitudes:
-  - fellowship
-  - social
+  - Fellowship
+  - Social
 characteristics:
-  - fellowship
-time: |
+  - Fellowship
+  - Influence
+
+duration: |
   1 minute
 
 description: |

@@ -1,10 +1,10 @@
 type: skill
-name: athletics
+name: Athletics
 aptitudes:
-  - strength
-  - general
+  - Strength
+  - General
 characteristics:
-  - strength
+  - Strength
 
 description: |
   TODO

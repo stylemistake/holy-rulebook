@@ -11,7 +11,7 @@ export default {
 };
 
 // Webpack context for YAML files
-const requireYaml = require.context('../rulebook', true, /\.yaml$/);
+const requireYaml = require.context('../../rulebook', true, /\.yaml$/);
 
 // Contains type -> constructor mappings
 const entityTypeMap = new Map([

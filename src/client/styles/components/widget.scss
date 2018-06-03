@@ -1,0 +1,70 @@
+.charsheet {
+  background-color: #000;
+  color: #fff;
+  font-size: 1.25rem;
+  line-height: 2.5rem;
+}
+
+.widget {
+  background-color: darken($color-none, 0.6);
+  color: #fff;
+}
+
+@each $x in $color-map {
+  .widget-color-#{nth($x, 1)} {
+    background-color: darken(nth($x, 2), 0.4);
+  }
+}
+
+.widget-title {
+  background-color: black-alpha(0.3);
+  font-size: 1.25rem;
+  line-height: 2.5rem;
+  font-weight: bold;
+  padding: 0 1rem;
+}
+
+.widget-title-big {
+  font-weight: normal;
+  font-size: 2rem;
+  line-height: 4rem;
+}
+
+// .widget-content {
+//   padding-left: 1rem;
+// }
+
+.widget-content-value {
+  font-size: 2rem;
+  line-height: 3rem;
+  padding: 0 1rem;
+}
+
+.widget-content-text {
+  padding: 0 1rem 0.2rem;
+}
+
+// Table Widget
+.widget-content-table {
+  padding-bottom: 0.2rem;
+}
+
+.widget-content-table table {
+  width: 100%;
+}
+
+.widget-content-table table tr:nth-child(odd) {
+  background-color: white-alpha(0.05);
+}
+
+.widget-content-table td {
+  padding: 0 0.25rem;
+}
+
+.widget-content-table td:first-child {
+  padding-left: 1rem;
+}
+
+.widget-content-table td:last-child {
+  padding-right: 1rem;
+}

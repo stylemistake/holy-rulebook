@@ -6,10 +6,11 @@ const path = require('path');
 const APP_ENV = process.env.APP_ENV || 'local';
 
 const config = {
+  mode: 'none',
   entry: {
     client: [
       'babel-polyfill',
-      './src/index.js',
+      './src/client/index.js',
     ],
   },
   output: {
@@ -47,7 +48,7 @@ const config = {
       {
         test: /\.ya?ml$/,
         use: [
-          './src/lib/loaders/yaml-loader.js',
+          './src/loaders/yaml-loader.js',
         ],
       },
     ],
@@ -66,12 +67,29 @@ const config = {
 
 // Add optimization plugins when generating the final bundle
 if (APP_ENV === 'production') {
-  config.devtool = false,
+  const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
+  config.devtool = false;
   config.plugins = config.plugins.concat([
+    // Disable development features of React
+    new webpack.DefinePlugin({
+      'process.env': {
+        'NODE_ENV': JSON.stringify('production'),
+      },
+    }),
     new webpack.optimize.OccurrenceOrderPlugin(),
-    new webpack.optimize.UglifyJsPlugin({
-      compress: {
-        warnings: false,
+    new UglifyJsPlugin({
+      parallel: false,
+      uglifyOptions: {
+        ecma: 8,
+        parse: {},
+        compress: {
+          // unsafe: true,
+          // passes: 2,
+        },
+        output: {
+          beautify: false,
+          comments: false,
+        },
       },
     }),
   ]);

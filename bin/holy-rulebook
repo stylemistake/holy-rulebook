@@ -41,4 +41,4 @@ fi
 ## Launch the server
 export APP_ENV='production'
 yarn install --production
-exec node src/http/server.js "${@}"
+exec node --experimental-modules src/http/server.mjs "${@}"

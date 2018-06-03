@@ -1,0 +1,26 @@
+$color-none: #7f7f7f;
+$color-red: hsl(10deg, 90%, 50%);
+$color-orange: hsl(30deg, 90%, 50%);
+$color-yellow: hsl(55deg, 90%, 50%);
+$color-olive: hsl(70deg, 90%, 50%);
+$color-green: hsl(100deg, 90%, 50%);
+$color-oceanic: hsl(155deg, 90%, 50%);
+$color-teal: hsl(190deg, 90%, 50%);
+$color-blue: hsl(215deg, 90%, 60%);
+$color-violet: hsl(250deg, 90%, 50%);
+$color-purple: hsl(280deg, 90%, 50%);
+$color-pink: hsl(320deg, 90%, 50%);
+
+$color-map: (
+  ('red' $color-red)
+  ('orange' $color-orange)
+  ('yellow' $color-yellow)
+  ('olive' $color-olive)
+  ('green' $color-green)
+  ('oceanic' $color-oceanic)
+  ('teal' $color-teal)
+  ('blue' $color-blue)
+  ('violet' $color-violet)
+  ('purple' $color-purple)
+  ('pink' $color-pink)
+);

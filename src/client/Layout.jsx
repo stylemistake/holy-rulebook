@@ -7,6 +7,8 @@ import Section from './components/Section.jsx';
 import Store from './lib/Store.js';
 import { bound, throttle } from './lib/decorators.js';
 import SkillTable from './components/SkillTable.jsx';
+import CharacterSheet from './components/CharacterSheet.jsx';
+import Character from './lib/Character.js';
 
 const acrobatics = Store.query('/skills/acrobatics');
 const sections = Store.queryAll('/sections/skills');
@@ -42,6 +44,7 @@ export default class Layout extends React.Component {
     super();
     this.state = {
       searchText: '',
+      character: new Character(),
     };
   }
 
@@ -66,11 +69,18 @@ export default class Layout extends React.Component {
         </div>
         <div className='sidebar'>
           <div className='sidebar-item sidebar-item-title'>
+            Characters
+          </div>
+          <div className='sidebar-item sidebar-item-link'>
+            Rufus Kaynedor
+          </div>
+          <div className='sidebar-item sidebar-item-title'>
             Table of contents
           </div>
           {renderToc(toc)}
         </div>
         <div className='content'>
+          <CharacterSheet character={this.state.character} />
           {sections
             .filter((section) => {
               const title = section.title.toLowerCase();

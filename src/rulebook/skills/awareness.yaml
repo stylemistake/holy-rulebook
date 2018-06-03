@@ -1,10 +1,11 @@
 type: skill
-name: athletics
+name: Awareness
 aptitudes:
-  - strength
-  - general
+  - Perception
+  - Fieldcraft
 characteristics:
-  - strength
+  - Perception
+  - Fellowship
 
 description: |
   TODO

@@ -1,6 +1,9 @@
 // Base
 @import './reset.scss';
+@import './functions.scss';
+@import './variables.scss';
 @import './typography.scss';
+@import './atomic.scss';
 
 // Components
 @import './components/card.scss';
@@ -9,8 +12,4 @@
 @import './components/sidebar.scss';
 @import './components/content.scss';
 @import './components/skill-table.scss';
-
-// Other
-.capitalized {
-  text-transform: capitalize;
-}
+@import './components/widget.scss';
