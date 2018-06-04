@@ -1,10 +1,10 @@
-'use strict';
+import { uuid } from './utils.js';
 
 export default class Entity {
 
   constructor() {
     // Unique id
-    this._id = Math.random().toString(16).substr(2);
+    this.id = uuid();
     // Entity type
     this.type = 'default';
   }

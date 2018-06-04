@@ -2,11 +2,15 @@ import Entity from './Entity.js';
 
 export default class Character extends Entity {
 
-  constructor(data) {
+  constructor() {
     super();
     this.type = 'character';
-    this.name = 'Rufus Kaynedor';
-    this.characteristics = {
+
+    this.masterToken = 'c1_mt';
+    this.slaveTokens = ['c1_st'];
+
+    this.name = 'New character';
+    this.charcs = {
       ws: 28,
       bs: 38,
       s: 33,
@@ -29,7 +33,6 @@ export default class Character extends Entity {
       fate: 4,
       experience: 2600,
     };
-    this.inventory = [];
     this.skills = [
       {
         name: 'Awareness',
@@ -53,7 +56,6 @@ export default class Character extends Entity {
         name: 'Weapon Training [Las]',
       },
     ];
-    Object.assign(this, data)
   }
 
   getSkills() {

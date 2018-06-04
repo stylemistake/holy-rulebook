@@ -1,6 +1,7 @@
 import React from 'react';
 import Markdown from 'react-remarkable';
 import { classes } from '../lib/utils.js';
+import store from '../lib/store.js';
 import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
 } from './widgets';
@@ -15,14 +16,17 @@ export default class CharacterSheet extends React.Component {
   getStateUpdater(stateObj, key) {
     return (value) => {
       stateObj[key] = value;
-      this.forceUpdate();
+      store.getGameState().triggerUpdate();
     };
   }
 
   render() {
     const { character } = this.props;
     const cstate = character.state;
-    return <Widget title={character.name} macro={true}>
+    return <Widget macro={true}>
+      <ValueWidget title="Character name"
+        value={character.name}
+        onChange={this.getStateUpdater(character, 'name')} />
       <Flex spread={true}>
         <ValueWidget title="Damage" color="red"
           value={cstate.damage}

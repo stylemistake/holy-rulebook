@@ -16,9 +16,9 @@ export default class Widget extends Component {
       props.contentClass,
     ]);
     return <div className={rootClass}>
-      <div className={titleClass}>
+      {props.title && <div className={titleClass}>
         {props.title}
-      </div>
+      </div>}
       <div className={contentClass}>
         {props.children}
       </div>

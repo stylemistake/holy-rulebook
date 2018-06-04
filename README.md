@@ -1,6 +1,7 @@
 # Holy Rulebook
 
-A collection of rules for the Dark Heresy inspired board game.
+A collection of rules for the Dark Heresy inspired board game, with a
+complete solution for managing character sheets.
 
 ## Pre-requisites
 

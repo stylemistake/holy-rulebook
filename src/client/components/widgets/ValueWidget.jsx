@@ -30,10 +30,17 @@ export default class ValueWidget extends React.Component {
       </div>
     );
     const editElement = (
-      <input type="number"
+      <input type="text"
         className="widget-content-value"
         ref={this.inputRef}
-        style={{ width: '100%', height: '100%' }}
+        style={{
+          width: '100%',
+          border: '0',
+          outline: '0',
+          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          fontFamily: 'inherit',
+          color: 'inherit',
+        }}
         value={state.value}
         onChange={(e) => {
           this.setState({ value: e.target.value });
