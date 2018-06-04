@@ -12,6 +12,13 @@ export default class ValueWidget extends React.Component {
     this.inputRef = React.createRef();
   }
 
+  emitOnChange() {
+    this.setState({ editing: false });
+    if (this.props.onChange && this.props.value !== this.state.value) {
+      this.props.onChange(this.state.value);
+    }
+  }
+
   render() {
     const { props, state } = this;
     const viewElement = (
@@ -37,7 +44,7 @@ export default class ValueWidget extends React.Component {
           width: '100%',
           border: '0',
           outline: '0',
-          backgroundColor: 'rgba(255, 255, 255, 0.2)',
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
           fontFamily: 'inherit',
           color: 'inherit',
         }}
@@ -45,9 +52,11 @@ export default class ValueWidget extends React.Component {
         onChange={(e) => {
           this.setState({ value: e.target.value });
         }}
-        onBlur={(e) => {
-          this.setState({ editing: false });
-          props.onChange && props.onChange(state.value);
+        onBlur={() => this.emitOnChange()}
+        onKeyUp={(e) => {
+          if (e.key === 'Enter') {
+            this.emitOnChange();
+          }
         }} />
     );
     return <Widget {...props}>

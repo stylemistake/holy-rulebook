@@ -1,7 +1,6 @@
 'use strict';
 
 import React from 'react';
-
 import store from './lib/store.js';
 import { bound, throttle } from './lib/decorators.js';
 
@@ -15,11 +14,11 @@ import {
   SidebarItemButton,
 } from './components';
 
-// Query for rulebook data
-const acrobatics = store.query('/skills/acrobatics');
-const sections = store.queryAll('/sections/skills');
-const skills = store.findSkills();
-const toc = store.query('/toc');
+// // Query for rulebook data
+// const acrobatics = store.query('/skills/acrobatics');
+// const sections = store.queryAll('/sections/skills');
+// const skills = store.findSkills();
+// const toc = store.query('/toc');
 
 export default class Layout extends React.Component {
 
@@ -28,10 +27,11 @@ export default class Layout extends React.Component {
     // Local state
     this.state = {
       searchText: '',
+      gameState: null,
+      character: null,
     };
     // Game state
-    this.gameState = store.getGameState();
-    this.gameState.addObserver(() => this.forceUpdate());
+    store.addObserver(() => this.forceUpdate());
   }
 
   @throttle(200)
@@ -41,7 +41,7 @@ export default class Layout extends React.Component {
   }
 
   render() {
-    const character = this.gameState.getCharacter(this.state.characterId);
+    const { gameState, character } = this.state;
     return (
       <div className="react-container">
         <div className="header">
@@ -56,23 +56,38 @@ export default class Layout extends React.Component {
         </div>
 
         <Sidebar>
-          <SidebarItem group={true} title="Characters">
-            <SidebarItemButton icon="add" onClick={() => {
-              this.gameState.createCharacter();
-              this.forceUpdate();
-            }} />
+          <SidebarItem group={true} title="Gamestates">
+            <SidebarItemButton icon="add"
+              onClick={() => store.createGameState()} />
           </SidebarItem>
-          {this.gameState.getCharacters().map(x => {
+          {store.gameStates.map(gameState => {
             return <SidebarItem
-              key={x.id}
-              title={x.name}
+              key={gameState.id}
+              title={gameState.name}
+              active={this.state.gameState === gameState}
               onClick={() => {
-                this.setState({ characterId: x.id });
+                this.setState({
+                  gameState,
+                  character: null,
+                });
               }}>
+            </SidebarItem>
+          })}
+          {gameState && (
+            <SidebarItem group={true} title="Characters">
+              <SidebarItemButton icon="add"
+                onClick={() => gameState.createCharacter()} />
+            </SidebarItem>
+          )}
+          {gameState && gameState.getCharacters().map(character => {
+            return <SidebarItem
+              key={character.id}
+              title={character.name}
+              active={this.state.character === character}
+              onClick={() => this.setState({ character })}>
               <SidebarItemButton icon="remove" onClick={() => {
-                this.setState({ characterId: null });
-                this.gameState.removeCharacter(x.id);
-                this.forceUpdate();
+                this.setState({ character: null });
+                gameState.removeCharacter(character.id);
               }} />
             </SidebarItem>
           })}

@@ -2,7 +2,7 @@ import Entity from './Entity.js';
 
 export default class Character extends Entity {
 
-  constructor() {
+  constructor(obj) {
     super();
     this.type = 'character';
 
@@ -56,6 +56,7 @@ export default class Character extends Entity {
         name: 'Weapon Training [Las]',
       },
     ];
+    Object.assign(this, obj);
   }
 
   getSkills() {

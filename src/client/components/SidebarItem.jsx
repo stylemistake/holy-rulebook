@@ -19,6 +19,7 @@ export default class SidebarItem extends Component {
     return <Fragment>
       <div className={classes('sidebar-item', {
         'sidebar-item-title': props.group,
+        'sidebar-item-active': props.active,
         'sidebar-item-link': props.onClick,
       })} onClick={props.onClick}>
         {props.title}
