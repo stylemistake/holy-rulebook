@@ -16,7 +16,7 @@ export default class CharacterSheet extends React.Component {
   getStateUpdater(stateObj, key) {
     return (value) => {
       stateObj[key] = value;
-      store.triggerUpdate();
+      store.dispatch();
     };
   }
 

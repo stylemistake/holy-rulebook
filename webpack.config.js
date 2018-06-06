@@ -35,6 +35,7 @@ const config = {
                 : ['env', 'react'],
               plugins: [
                 'transform-decorators-legacy',
+                'transform-class-properties',
               ],
             },
           },

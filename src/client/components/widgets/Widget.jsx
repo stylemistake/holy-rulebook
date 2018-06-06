@@ -1,7 +1,18 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { classes } from '../../lib/utils.js';
 
 export default class Widget extends Component {
+
+  static propTypes = {
+    title: PropTypes.string,
+    color: PropTypes.string,
+    flex: PropTypes.bool,
+    macro: PropTypes.bool,
+    rootClass: PropTypes.string,
+    titleClass: PropTypes.string,
+    contentClass: PropTypes.string,
+  };
 
   render() {
     const { props } = this;

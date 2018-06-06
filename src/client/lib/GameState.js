@@ -7,32 +7,30 @@ export default class GameState {
   constructor(obj) {
     this.id = uuid();
     this.name = `Gamestate [${this.id.substr(0, 8) + '...'}]`;
-    this.state = {
-      masterToken: null,
-      characters: [],
-    };
+    this.masterToken = null;
+    this.characters = [];
     // Initialize from object
     Object.assign(this, obj);
-    this.state.characters = this.state.characters.map(x => new Character(x));
+    this.characters = this.characters.map(x => new Character(x));
   }
 
   createCharacter() {
-    this.state.characters.push(new Character());
-    store.triggerUpdate();
+    this.characters.push(new Character());
+    store.dispatch();
   }
 
   getCharacters() {
-    return this.state.characters;
+    return this.characters;
   }
 
   getCharacter(id) {
-    return this.state.characters.find(x => x.id === id);
+    return this.characters.find(x => x.id === id);
   }
 
   removeCharacter(id) {
-    const index = this.state.characters.findIndex(x => x.id === id);
-    this.state.characters.splice(index, 1);
-    store.triggerUpdate();
+    const index = this.characters.findIndex(x => x.id === id);
+    this.characters.splice(index, 1);
+    store.dispatch();
   }
 
 }

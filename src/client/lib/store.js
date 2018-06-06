@@ -32,8 +32,10 @@ class Store {
 
   async loadState() {
     console.log('Loading state...', this.gameStates);
-    this.gameStates = (await this.storage.get('gameStates'))
-      .map((x) => new GameState(x));
+    const gameStates = await this.storage.get('gameStates');
+    if (gameStates) {
+      this.gameStates = gameStates.map((x) => new GameState(x));
+    }
     this.emitter.emit('update');
   }
 
@@ -94,18 +96,18 @@ class Store {
 
   createGameState() {
     this.gameStates.push(new GameState());
-    this.triggerUpdate();
+    this.dispatch();
   }
 
-  addObserver(fn) {
+  subscribe(fn) {
     this.emitter.on('update', fn);
   }
 
-  removeObserver(fn) {
+  unsubscribe(fn) {
     this.emitter.off('update', fn);
   }
 
-  triggerUpdate() {
+  dispatch() {
     this.emitter.emit('update');
     this.saveState();
   }

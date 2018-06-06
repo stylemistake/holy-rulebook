@@ -31,13 +31,12 @@ export default class Layout extends React.Component {
       character: null,
     };
     // Game state
-    store.addObserver(() => this.forceUpdate());
+    store.subscribe(() => this.forceUpdate());
   }
 
   @throttle(200)
-  onSearch(text) {
-    this.state.searchText = text;
-    this.forceUpdate();
+  onSearch(searchText) {
+    this.setState({ searchText });
   }
 
   render() {
