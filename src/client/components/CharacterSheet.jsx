@@ -55,7 +55,14 @@ export default class CharacterSheet extends PureComponent {
             return <ListWidgetItem
               key={x.get('id')}
               name={x.get('name')}
-              value={x.get('value')} />;
+              value={x.get('value')}
+              onClick={() => {
+                // TODO: Move this to actions
+                this.props.dispatch({
+                  type: 'SELECT_CHARACTERISTIC',
+                  charc: x,
+                });
+              }} />;
           })}
         </ListWidget>
         {/*

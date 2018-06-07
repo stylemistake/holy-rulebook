@@ -77,6 +77,10 @@ function globalReducer(_state = INITIAL_STATE, action) {
       return withUpdate(state).setIn(path, action.value);
     }
 
+    case actionTypes.SELECT_CHARACTERISTIC: {
+      return state.set('activeCharc', action.charc);
+    }
+
     default: {
       console.log('Unhandled action', action);
       return state;

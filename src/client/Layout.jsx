@@ -15,11 +15,15 @@ import {
   SkillTable,
 } from './components';
 
+import { TextWidget } from './components/widgets';
+
 const STATE_TO_PROPS = (state) => ({
   gameStates: queries.getGameStates(state),
   activeGameState: queries.getActiveGameState(state),
   characters: queries.getCharacters(state),
   activeCharacter: queries.getActiveCharacter(state),
+  // TODO: Move this to queries
+  activeCharc: state.get('activeCharc'),
 });
 
 const DISPATCH_TO_PROPS = (dispatch) => ({
@@ -108,6 +112,17 @@ export default class Layout extends PureComponent {
         <div className="content">
           {props.activeCharacter && (
             <CharacterSheet character={props.activeCharacter} />
+          )}
+          {props.activeCharc && (
+            <TextWidget title={props.activeCharc.get('name')}>
+              <div>
+                {props.activeCharc.get('name')}:
+                {props.activeCharc.get('value')}
+              </div>
+              <div>
+                <button>Upgrade (-200XP)</button>
+              </div>
+            </TextWidget>
           )}
           {/*
           {sections
