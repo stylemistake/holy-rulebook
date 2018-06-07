@@ -10,7 +10,7 @@ const config = {
   entry: {
     client: [
       'babel-polyfill',
-      './src/client/index.js',
+      './src/client/index.jsx',
     ],
   },
   output: {

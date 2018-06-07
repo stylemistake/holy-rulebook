@@ -24,7 +24,6 @@
 }
 
 // Flex
-
 .flex {
   display: flex;
 }
@@ -55,4 +54,22 @@
 
 .flex-item {
   flex: 1;
+}
+
+// Clickable
+.clickable {
+  cursor: pointer;
+}
+
+// Float
+.float-right {
+  float: right;
+}
+
+.float-left {
+  float: left;
+}
+
+.float-clear {
+  clear: both;
 }

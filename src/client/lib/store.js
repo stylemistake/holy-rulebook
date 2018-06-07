@@ -3,10 +3,6 @@
 import Entity from './Entity.js';
 import Skill from './Skill.js';
 import Section from './Section.js';
-import GameState from './GameState.js';
-import EventEmitter from './EventEmitter.js';
-import Storage from './Storage.js';
-import { debounce } from './decorators.js';
 
 // Webpack context for YAML files
 const requireYaml = require.context('../../rulebook', true, /\.yaml$/);
@@ -21,29 +17,6 @@ const ENTITY_TYPE_MAP = new Map([
  * God class for managing all objects
  */
 class Store {
-
-  constructor() {
-    this.storage = new Storage();
-    this.emitter = new EventEmitter();
-    this.gameStates = [];
-    this.tokens = [];
-    this.loadState();
-  }
-
-  async loadState() {
-    console.log('Loading state...', this.gameStates);
-    const gameStates = await this.storage.get('gameStates');
-    if (gameStates) {
-      this.gameStates = gameStates.map((x) => new GameState(x));
-    }
-    this.emitter.emit('update');
-  }
-
-  @debounce(200)
-  async saveState() {
-    console.log('Saving state...', this.gameStates);
-    this.storage.set('gameStates', this.gameStates);
-  }
 
   /**
    * Query an entity.
@@ -92,24 +65,6 @@ class Store {
         const TargetEntity = ENTITY_TYPE_MAP.get(x.type) || Entity;
         return new TargetEntity().fromData(x);
       });
-  }
-
-  createGameState() {
-    this.gameStates.push(new GameState());
-    this.dispatch();
-  }
-
-  subscribe(fn) {
-    this.emitter.on('update', fn);
-  }
-
-  unsubscribe(fn) {
-    this.emitter.off('update', fn);
-  }
-
-  dispatch() {
-    this.emitter.emit('update');
-    this.saveState();
   }
 
 }

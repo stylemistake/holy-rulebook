@@ -8,7 +8,7 @@ export default class ValueWidget extends Component {
   render() {
     const { props } = this;
     return <Widget {...props}>
-      <Editable className="widget-content-value"
+      <Editable className="widget-value"
         value={props.value}
         onChange={props.onChange}
         editable={props.editable} />

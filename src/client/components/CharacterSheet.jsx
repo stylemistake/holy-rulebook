@@ -1,53 +1,64 @@
-import React from 'react';
+import React, { PureComponent, Fragment } from 'react';
 import Markdown from 'react-remarkable';
-import { classes } from '../lib/utils.js';
-import store from '../lib/store.js';
+import { connect } from 'react-redux';
 import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
 } from './widgets';
+import * as actions from '../actions.js';
+import * as queries from '../queries.js';
 
 const SKILL_TIERS = ['-20', '', '+10', '+20', '+30', '+40'];
 
-export default class CharacterSheet extends React.Component {
+@connect()
+export default class CharacterSheet extends PureComponent {
 
   /**
    * Returns an onChange handler
    */
-  getStateUpdater(stateObj, key) {
+  getStateUpdater(path) {
     return (value) => {
-      stateObj[key] = value;
-      store.dispatch();
+      const id = this.props.character.get('id');
+      this.props.dispatch(actions.updateCharacterValue(id, path, value));
     };
   }
 
   render() {
     const { character } = this.props;
-    const cstate = character.state;
-    return <Widget macro={true}>
+    const cstate = character.get('state');
+    return <Fragment>
       <ValueWidget title="Character name"
-        value={character.name}
-        onChange={this.getStateUpdater(character, 'name')} />
+        value={character.get('name')}
+        onChange={this.getStateUpdater(['name'])} />
       <Flex spread={true}>
         <ValueWidget title="Damage" color="red"
-          value={cstate.damage}
-          onChange={this.getStateUpdater(cstate, 'damage')} />
+          value={cstate.get('damage')}
+          onChange={this.getStateUpdater(['state', 'damage'])} />
         <ValueWidget title="Fatigue" color="orange"
-          value={cstate.fatigue}
-          onChange={this.getStateUpdater(cstate, 'fatigue')} />
+          value={cstate.get('fatigue')}
+          onChange={this.getStateUpdater(['state', 'fatigue'])} />
         <ValueWidget title="Corruption" color="yellow"
-          value={cstate.corruption}
-          onChange={this.getStateUpdater(cstate, 'corruption')} />
+          value={cstate.get('corruption')}
+          onChange={this.getStateUpdater(['state', 'corruption'])} />
         <ValueWidget title="Stress" color="green"
-          value={cstate.stress}
-          onChange={this.getStateUpdater(cstate, 'stress')} />
+          value={cstate.get('stress')}
+          onChange={this.getStateUpdater(['state', 'stress'])} />
         <ValueWidget title="Fate" color="teal"
-          value={cstate.fate}
-          onChange={this.getStateUpdater(cstate, 'fate')} />
+          value={cstate.get('fate')}
+          onChange={this.getStateUpdater(['state', 'fate'])} />
         <ValueWidget title="XP" color="blue"
-          value={cstate.experience}
-          onChange={this.getStateUpdater(cstate, 'experience')} />
+          value={cstate.get('experience')}
+          onChange={this.getStateUpdater(['state', 'experience'])} />
       </Flex>
       <Flex>
+        <ListWidget title="Characteristics">
+          {queries.getCharacterCharcs(character).map((x) => {
+            return <ListWidgetItem
+              key={x.get('id')}
+              name={x.get('name')}
+              value={x.get('value')} />;
+          })}
+        </ListWidget>
+        {/*
         <ListWidget title="Skills">
           {character.getSkills().map((x) => {
             return <ListWidgetItem
@@ -56,11 +67,12 @@ export default class CharacterSheet extends React.Component {
               value={SKILL_TIERS[x.tier]} />;
           })}
         </ListWidget>
+        */}
         <TextWidget title="Notes" color="purple" flex={true}>
           Hello world!
         </TextWidget>
       </Flex>
-    </Widget>;
+    </Fragment>;
   }
 
 }

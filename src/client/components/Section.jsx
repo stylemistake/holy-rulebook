@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Component } from 'react';
 import Markdown from 'react-remarkable';
 
 export default class Section extends Component {

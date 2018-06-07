@@ -7,7 +7,9 @@ export default class ListWidgetItem extends Component {
     const { props } = this;
     return <tr>
       <td>{props.name}</td>
-      <td className="text-right">{props.value}</td>
+      <td className="widget-number-stat">
+        {props.value}
+      </td>
     </tr>;
   }
 

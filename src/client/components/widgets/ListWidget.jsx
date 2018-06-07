@@ -6,7 +6,7 @@ export default class ListWidget extends Component {
 
   render() {
     const { props } = this;
-    return <Widget contentClass="widget-content-table" {...props}>
+    return <Widget contentClass="widget-table" {...props}>
       <table>
         <tbody>
           {props.children}

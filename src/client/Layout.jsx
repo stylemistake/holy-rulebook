@@ -1,46 +1,57 @@
 'use strict';
 
-import React from 'react';
-import store from './lib/store.js';
-import { bound, throttle } from './lib/decorators.js';
+import React, { PureComponent } from 'react';
+import { connect } from 'react-redux';
+import * as actions from './actions.js';
+import * as queries from './queries.js';
 
 import {
   CharacterSheet,
-  SkillCard,
+  Icon,
   Section,
-  SkillTable,
   Sidebar,
   SidebarItem,
-  SidebarItemButton,
+  SkillCard,
+  SkillTable,
 } from './components';
 
-// // Query for rulebook data
-// const acrobatics = store.query('/skills/acrobatics');
-// const sections = store.queryAll('/sections/skills');
-// const skills = store.findSkills();
-// const toc = store.query('/toc');
+const STATE_TO_PROPS = (state) => ({
+  gameStates: queries.getGameStates(state),
+  activeGameState: queries.getActiveGameState(state),
+  characters: queries.getCharacters(state),
+  activeCharacter: queries.getActiveCharacter(state),
+});
 
-export default class Layout extends React.Component {
+const DISPATCH_TO_PROPS = (dispatch) => ({
+  onPurgeState(text) {
+    dispatch(actions.purgeState(text));
+  },
+  onSearch(text) {
+    dispatch(actions.searchQuery(text));
+  },
+  onCreateGameState() {
+    dispatch(actions.createGameState());
+  },
+  onSelectGameState(id) {
+    dispatch(actions.selectGameState(id));
+  },
+  onCreateCharacter() {
+    dispatch(actions.createCharacter());
+  },
+  onSelectCharacter(id) {
+    dispatch(actions.selectCharacter(id));
+  },
+  onRemoveCharacter(id) {
+    dispatch(actions.removeCharacter(id));
+  },
+});
 
-  constructor() {
-    super();
-    // Local state
-    this.state = {
-      searchText: '',
-      gameState: null,
-      character: null,
-    };
-    // Game state
-    store.subscribe(() => this.forceUpdate());
-  }
-
-  @throttle(200)
-  onSearch(searchText) {
-    this.setState({ searchText });
-  }
+@connect(STATE_TO_PROPS, DISPATCH_TO_PROPS)
+export default class Layout extends PureComponent {
 
   render() {
-    const { gameState, character } = this.state;
+    const { props } = this;
+    console.log(props);
     return (
       <div className="react-container">
         <div className="header">
@@ -50,53 +61,54 @@ export default class Layout extends React.Component {
           <div className="header-item header-search">
             <input
               placeholder="Search..."
-              onChange={(e) => this.onSearch(e.target.value)} />
+              onChange={(e) => props.onSearch(e.target.value)} />
           </div>
         </div>
 
         <Sidebar>
           <SidebarItem group={true} title="Gamestates">
-            <SidebarItemButton icon="add"
-              onClick={() => store.createGameState()} />
+            <Icon icon="add" onClick={() => props.onCreateGameState()} />
           </SidebarItem>
-          {store.gameStates.map(gameState => {
-            return <SidebarItem
-              key={gameState.id}
-              title={gameState.name}
-              active={this.state.gameState === gameState}
-              onClick={() => {
-                this.setState({
-                  gameState,
-                  character: null,
-                });
-              }}>
+          {props.gameStates.map((gameState) => {
+            const id = gameState.get('id');
+            return <SidebarItem key={id}
+              title={gameState.get('name')}
+              active={gameState === props.activeGameState}
+              onClick={() => props.onSelectGameState(id)}>
             </SidebarItem>
           })}
-          {gameState && (
+          {props.activeGameState && (
             <SidebarItem group={true} title="Characters">
-              <SidebarItemButton icon="add"
-                onClick={() => gameState.createCharacter()} />
+              <Icon icon="add" onClick={() => props.onCreateCharacter()} />
             </SidebarItem>
           )}
-          {gameState && gameState.getCharacters().map(character => {
-            return <SidebarItem
-              key={character.id}
-              title={character.name}
-              active={this.state.character === character}
-              onClick={() => this.setState({ character })}>
-              <SidebarItemButton icon="remove" onClick={() => {
-                this.setState({ character: null });
-                gameState.removeCharacter(character.id);
+          {props.characters.map((character) => {
+            const id = character.get('id');
+            return <SidebarItem key={id}
+              title={character.get('name')}
+              active={props.activeCharacter === character}
+              onClick={() => props.onSelectCharacter(id)}>
+              <Icon icon="remove" onClick={(e) => {
+                props.onRemoveCharacter(id);
+                e.stopPropagation();
               }} />
             </SidebarItem>
           })}
+          {/*
           <SidebarItem group={true} title="Table of contents">
             <SidebarItem title="TODO" />
+          </SidebarItem>
+          */}
+          <SidebarItem group={true} title="Settings">
+            <SidebarItem title="Purge state"
+              onClick={() => props.onPurgeState()} />
           </SidebarItem>
         </Sidebar>
 
         <div className="content">
-          {character && <CharacterSheet character={character} />}
+          {props.activeCharacter && (
+            <CharacterSheet character={props.activeCharacter} />
+          )}
           {/*
           {sections
             .filter((section) => {
@@ -114,15 +126,3 @@ export default class Layout extends React.Component {
   }
 
 }
-
-// TODO: routing (currently not needed)
-// import { BrowserRouter, Route } from 'react-router-dom';
-// import { Link } from 'react-router';
-
-// const routes = (
-//   <BrowserRouter
-//     history={window.history}
-//     onUpdate={() => window.scrollTo(0, 0)}>
-//     <Route path='/' exact component={IndexPage} />
-//   </BrowserRouter>
-// );

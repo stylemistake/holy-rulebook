@@ -6,7 +6,7 @@ import Widget from './Widget.jsx';
 export default class Editable extends Component {
 
   static propTypes = {
-    value: PropTypes.string,
+    // value: PropTypes.string,
     onChange: PropTypes.func,
     editable: PropTypes.bool,
     readonly: PropTypes.bool,

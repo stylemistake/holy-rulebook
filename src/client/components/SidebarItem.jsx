@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
 import { classes } from '../lib/utils.js';
-import SidebarItemButton from './SidebarItemButton.jsx';
+import Icon from './Icon.jsx';
 
 export default class SidebarItem extends Component {
 
@@ -10,7 +10,7 @@ export default class SidebarItem extends Component {
     let buttonElements = [];
     let otherElements = [];
     React.Children.forEach(props.children, (x) => {
-      if (x.type === SidebarItemButton) {
+      if (x.type === Icon) {
         return buttonElements.push(x);
       }
       return otherElements.push(x);
@@ -23,7 +23,9 @@ export default class SidebarItem extends Component {
         'sidebar-item-link': props.onClick,
       })} onClick={props.onClick}>
         {props.title}
-        {buttonElements}
+        <div className="sidebar-item-buttons">
+          {buttonElements}
+        </div>
       </div>
       {otherElements}
     </Fragment>

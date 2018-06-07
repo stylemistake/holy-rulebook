@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { classes } from '../../lib/utils.js';
+import Icon from '../Icon.jsx';
 
 export default class Widget extends Component {
 
@@ -29,6 +30,9 @@ export default class Widget extends Component {
     return <div className={rootClass}>
       {props.title && <div className={titleClass}>
         {props.title}
+        {props.buttons && <div className="float-right">
+          {props.buttons}
+        </div>}
       </div>}
       <div className={contentClass}>
         {props.children}
