@@ -2,6 +2,7 @@
 
 const webpack = require('webpack');
 const path = require('path');
+const { compact } = require('lodash');
 
 const APP_ENV = process.env.APP_ENV || 'local';
 
@@ -9,7 +10,6 @@ const config = {
   mode: 'none',
   entry: {
     client: [
-      'babel-polyfill',
       './src/client/index.jsx',
     ],
   },
@@ -30,13 +30,26 @@ const config = {
           {
             loader: 'babel-loader',
             options: {
-              presets: APP_ENV === 'local'
-                ? ['env', 'react', 'react-hmre']
-                : ['env', 'react'],
-              plugins: [
-                'transform-decorators-legacy',
-                'transform-class-properties',
+              presets: [
+                ['@babel/preset-env', {
+                  modules: false,
+                  useBuiltIns: 'usage',
+                  targets: {
+                    browsers: [
+                      'last 1 chrome version',
+                      'last 1 firefox version',
+                    ],
+                  },
+                }],
+                '@babel/preset-react',
               ],
+              plugins: compact([
+                ['@babel/plugin-proposal-decorators', {
+                  legacy: true,
+                }],
+                '@babel/plugin-proposal-class-properties',
+                APP_ENV === 'local' && 'react-hot-loader/babel',
+              ]),
             },
           },
         ],
@@ -87,8 +100,7 @@ if (APP_ENV === 'production') {
         ecma: 8,
         parse: {},
         compress: {
-          // unsafe: true,
-          // passes: 2,
+          passes: 2,
         },
         output: {
           beautify: false,

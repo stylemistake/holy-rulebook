@@ -84,7 +84,6 @@ export default class Editable extends Component {
           editing: true,
           value: props.value,
         });
-        setTimeout(() => this.inputRef.current.focus(), 10);
       }}>
       {props.value}
     </div>;
