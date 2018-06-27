@@ -3,7 +3,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import Layout from './Layout.jsx';
 import configureStore from './configureStore.js';
 import { loadState, saveState } from './actions.js';
 import { debounce } from 'lodash';
@@ -13,21 +12,30 @@ import './styles/index.scss';
 const MOUNT_NODE = document.querySelector('.react-root');
 const store = configureStore();
 
-function render() {
-  const component = (
-    <Provider store={store}>
-      <Layout />
-    </Provider>
-  );
-  ReactDOM.render(component, MOUNT_NODE);
+function renderLayout() {
+  try {
+    const Layout = require('./Layout.jsx').default;
+    const component = (
+      <Provider store={store}>
+        <Layout />
+      </Provider>
+    );
+    ReactDOM.unmountComponentAtNode(MOUNT_NODE);
+    ReactDOM.render(component, MOUNT_NODE);
+  }
+  catch (err) {
+    console.error(err);
+    if (process.env.NODE_ENV !== 'production') {
+      const ErrorBox = require('redbox-react').default;
+      const component = <ErrorBox error={err} />;
+      ReactDOM.render(component, MOUNT_NODE);
+    }
+  }
 }
 
-// Hotswap the layout component
+// Hot module reload
 if (module.hot) {
-  module.hot.accept(['./Layout.jsx'], () => {
-    ReactDOM.unmountComponentAtNode(MOUNT_NODE);
-    render();
-  });
+  module.hot.accept('./Layout.jsx', renderLayout);
 }
 
 // Update listener
@@ -46,7 +54,7 @@ function updateListener() {
 
 window.addEventListener('load', () => {
   // Render the layout
-  render();
+  renderLayout();
   // Load state from the memory
   store.dispatch(loadState());
   // Subscribe for updates (with debounce)

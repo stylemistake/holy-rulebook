@@ -32,8 +32,8 @@ const config = {
             options: {
               presets: [
                 ['@babel/preset-env', {
-                  modules: false,
-                  useBuiltIns: 'usage',
+                  // modules: false,
+                  // useBuiltIns: 'usage',
                   targets: {
                     browsers: [
                       'last 1 chrome version',
@@ -48,7 +48,7 @@ const config = {
                   legacy: true,
                 }],
                 '@babel/plugin-proposal-class-properties',
-                APP_ENV === 'local' && 'react-hot-loader/babel',
+                // APP_ENV === 'local' && 'react-hot-loader/babel',
               ]),
             },
           },
@@ -60,6 +60,35 @@ const config = {
           'style-loader',
           'css-loader',
           'sass-loader',
+        ],
+      },
+      {
+        test: /\.css$/,
+        use: [
+          'style-loader',
+          'css-loader',
+        ],
+      },
+      {
+        test: /\.(png|jpg|gif|ico)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'images/[name].[ext]',
+            },
+          },
+        ],
+      },
+      {
+        test: /\.(ttf|woff|woff2|eot|svg)$/,
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'fonts/[name].[ext]',
+            },
+          },
         ],
       },
       {

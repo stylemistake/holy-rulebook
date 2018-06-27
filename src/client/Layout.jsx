@@ -26,36 +26,14 @@ const STATE_TO_PROPS = (state) => ({
   activeCharc: state.get('activeCharc'),
 });
 
-const DISPATCH_TO_PROPS = (dispatch) => ({
-  onPurgeState(text) {
-    dispatch(actions.purgeState(text));
-  },
-  onSearch(text) {
-    dispatch(actions.searchQuery(text));
-  },
-  onCreateGameState() {
-    dispatch(actions.createGameState());
-  },
-  onSelectGameState(id) {
-    dispatch(actions.selectGameState(id));
-  },
-  onCreateCharacter() {
-    dispatch(actions.createCharacter());
-  },
-  onSelectCharacter(id) {
-    dispatch(actions.selectCharacter(id));
-  },
-  onRemoveCharacter(id) {
-    dispatch(actions.removeCharacter(id));
-  },
-});
+const DISPATCH_TO_PROPS = (dispatch) => ({ dispatch });
 
 @connect(STATE_TO_PROPS, DISPATCH_TO_PROPS)
 export default class Layout extends PureComponent {
 
   render() {
     const { props } = this;
-    console.log(props);
+    const { dispatch } = this.props;
     return (
       <div className="react-container">
         <div className="header">
@@ -65,25 +43,33 @@ export default class Layout extends PureComponent {
           <div className="header-item header-search">
             <input
               placeholder="Search..."
-              onChange={(e) => props.onSearch(e.target.value)} />
+              onChange={(e) => {
+                dispatch(actions.searchQuery(e.target.value))
+              }} />
           </div>
         </div>
 
         <Sidebar>
           <SidebarItem group={true} title="Gamestates">
-            <Icon icon="add" onClick={() => props.onCreateGameState()} />
+            <Icon icon="add" onClick={() => {
+              dispatch(actions.createGameState());
+            }} />
           </SidebarItem>
           {props.gameStates.map((gameState) => {
             const id = gameState.get('id');
             return <SidebarItem key={id}
               title={gameState.get('name')}
               active={gameState === props.activeGameState}
-              onClick={() => props.onSelectGameState(id)}>
+              onClick={() => {
+                dispatch(actions.selectGameState(id));
+              }}>
             </SidebarItem>
           })}
           {props.activeGameState && (
             <SidebarItem group={true} title="Characters">
-              <Icon icon="add" onClick={() => props.onCreateCharacter()} />
+              <Icon icon="add" onClick={() => {
+                dispatch(actions.createCharacter());
+              }} />
             </SidebarItem>
           )}
           {props.characters.map((character) => {
@@ -91,9 +77,11 @@ export default class Layout extends PureComponent {
             return <SidebarItem key={id}
               title={character.get('name')}
               active={props.activeCharacter === character}
-              onClick={() => props.onSelectCharacter(id)}>
+              onClick={() => {
+                dispatch(actions.selectCharacter(id));
+              }}>
               <Icon icon="remove" onClick={(e) => {
-                props.onRemoveCharacter(id);
+                dispatch(actions.removeCharacter(id));
                 e.stopPropagation();
               }} />
             </SidebarItem>
@@ -105,7 +93,7 @@ export default class Layout extends PureComponent {
           */}
           <SidebarItem group={true} title="Settings">
             <SidebarItem title="Purge state"
-              onClick={() => props.onPurgeState()} />
+              onClick={() => dispatch(actions.purgeState())} />
           </SidebarItem>
         </Sidebar>
 
