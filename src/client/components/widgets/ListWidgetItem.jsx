@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { classes } from '../../lib/utils.js';
+import { classes } from '../../utils.js';
 
 export default class ListWidgetItem extends Component {
 

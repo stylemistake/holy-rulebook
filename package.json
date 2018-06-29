@@ -17,7 +17,7 @@
     "babel-loader": "^8.0.0-beta",
     "css-loader": "^0.28.7",
     "file-loader": "^1.1.11",
-    "immutable": "^3.8.2",
+    "immutable": "^4.0.0-rc.9",
     "js-yaml": "^3.10.0",
     "node-sass": "^4.6.0",
     "prop-types": "^15.6.2",
@@ -33,10 +33,11 @@
     "redux-thunk": "^2.3.0",
     "sass-loader": "^7.0.2",
     "semantic-ui-css": "^2.3.2",
-    "semantic-ui-react": "^0.81.2",
+    "semantic-ui-react": "^0.81.3",
     "style-loader": "^0.21.0",
     "uglifyjs-webpack-plugin": "^1.2.7",
-    "webpack": "^4.12.1",
+    "webpack": "^4.12.2",
+    "webpack-build-notifier": "^0.1.27",
     "webpack-cli": "^3.0.8",
     "webpack-dev-server": "^3.1.4"
   }

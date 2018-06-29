@@ -1,4 +1,8 @@
-import Storage from './lib/Storage.js';
+import Storage from './Storage.js';
+import { fromJS, isKeyed } from 'immutable';
+import Character from './structs/Character.js';
+import GameState from './structs/GameState.js';
+import { testKeyPath, transformCollection } from './utils.js';
 
 const storage = new Storage();
 
@@ -12,22 +16,79 @@ export const actionTypes = {
   REMOVE_CHARACTER: 'REMOVE_CHARACTER',
   UPDATE_CHARACTER_VALUE: 'UPDATE_CHARACTER_VALUE',
   SELECT_CHARACTERISTIC: 'SELECT_CHARACTERISTIC',
+  OPEN_DETAILS_PANE: 'OPEN_DETAILS_PANE',
+  CLOSE_DETAILS_PANE: 'CLOSE_DETAILS_PANE',
 };
+
+function serializeState(state) {
+  const filteredState = state.filter((x, i) => {
+    if (i === 'gameStates') {
+      return true;
+    }
+    return false;
+  });
+  return transformCollection(filteredState, (value, path) => {
+    if (testKeyPath(path, '/gameStates')) {
+      return value.toIndexedSeq().toArray();
+    }
+    if (testKeyPath(path, '/gameStates/*/characters')) {
+      return value.toIndexedSeq().toArray();
+    }
+    return isKeyed(value)
+      ? value.toObject()
+      : value.toArray();
+  });
+}
+
+function deserializeState(obj) {
+  return transformCollection(obj, (value, path) => {
+    if (testKeyPath(path, '/gameStates')) {
+      return value.toOrderedMap()
+        .mapKeys((i, value) => value.get('id'));
+    }
+    if (testKeyPath(path, '/gameStates/*')) {
+      return new GameState(value.toMap());
+    }
+    if (testKeyPath(path, '/gameStates/*/characters')) {
+      return value.toOrderedMap()
+        .mapKeys((i, value) => value.get('id'));
+    }
+    if (testKeyPath(path, '/gameStates/*/characters/*')) {
+      return new Character(value.toMap());
+    }
+    return isKeyed(value)
+      ? value.toMap()
+      : value.toList();
+  });
+}
 
 export function loadState() {
   return async (dispatch) => {
-    const gameStates = await storage.get('gameStates') || [];
+    console.log('Loading state...');
+    const obj = await storage.get('state');
+    console.log('Serialized state:', obj);
+    if (!obj) {
+      return;
+    }
+    const state = deserializeState(obj);
+    console.log('Loaded!');
     dispatch({
       type: actionTypes.LOAD_STATE,
-      gameStates,
+      state,
     });
   };
 };
 
 export function saveState(state) {
   return async (dispatch) => {
-    const gameStates = state.get('gameStates').toJS();
-    await storage.set('gameStates', gameStates);
+    console.log('Saving state...');
+    const obj = serializeState(state);
+    console.log('Serialized state:', obj);
+    if (!obj) {
+      return;
+    }
+    await storage.set('state', obj);
+    console.log('Saved!');
     dispatch({
       type: actionTypes.SAVE_STATE,
     });
@@ -84,9 +145,23 @@ export function removeCharacter(id) {
 
 export function updateCharacterValue(id, path, value) {
   return {
-    type: 'UPDATE_CHARACTER_VALUE',
+    type: actionTypes.UPDATE_CHARACTER_VALUE,
     id, // character id
     path, // path to the value
     value, // updated value
+  };
+}
+
+export function openDetailsPane(route, data = {}) {
+  return {
+    type: actionTypes.OPEN_DETAILS_PANE,
+    route,
+    data,
+  };
+}
+
+export function closeDetailsPane() {
+  return {
+    type: actionTypes.CLOSE_DETAILS_PANE,
   };
 }

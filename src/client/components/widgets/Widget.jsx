@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { classes } from '../../lib/utils.js';
-import Icon from '../Icon.jsx';
+import { classes } from '../../utils.js';
 
 export default class Widget extends Component {
 
@@ -20,6 +19,7 @@ export default class Widget extends Component {
     const rootClass = classes('widget', [
       props.color && ('widget-color-' + props.color),
       props.flex && 'flex-item',
+      props.onClick && 'clickable',
     ]);
     const titleClass = classes('widget-title', [
       props.macro && 'widget-title-big',
@@ -27,7 +27,7 @@ export default class Widget extends Component {
     const contentClass = classes('widget-content', [
       props.contentClass,
     ]);
-    return <div className={rootClass}>
+    return <div className={rootClass} onClick={props.onClick}>
       {props.title && <div className={titleClass}>
         {props.title}
         {props.buttons && <div className="float-right">

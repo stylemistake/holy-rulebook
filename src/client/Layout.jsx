@@ -3,40 +3,41 @@
 import React, { PureComponent } from 'react';
 import { connect } from 'react-redux';
 import * as actions from './actions.js';
-import * as queries from './queries.js';
+import * as selectors from './selectors.js';
 
 import {
   CharacterSheet,
-  Icon,
+  DetailsPane,
   Section,
   Sidebar,
   SidebarItem,
+  SidebarItemIcon,
   SkillCard,
   SkillTable,
 } from './components';
 
 import { TextWidget } from './components/widgets';
 
-const STATE_TO_PROPS = (state) => ({
-  gameStates: queries.getGameStates(state),
-  activeGameState: queries.getActiveGameState(state),
-  characters: queries.getCharacters(state),
-  activeCharacter: queries.getActiveCharacter(state),
-  // TODO: Move this to queries
-  activeCharc: state.get('activeCharc'),
-});
+const STATE_TO_PROPS = (state) => {
+  return {
+    gameStates: selectors.getGameStates(state),
+    activeGameState: selectors.getActiveGameState(state),
+    characters: selectors.getCharacters(state),
+    activeCharacter: selectors.getActiveCharacter(state),
+    // TODO: Move this to selectors
+    activeCharc: state.get('activeCharc'),
+  };
+};
 
-const DISPATCH_TO_PROPS = (dispatch) => ({ dispatch });
-
-@connect(STATE_TO_PROPS, DISPATCH_TO_PROPS)
+@connect(STATE_TO_PROPS)
 export default class Layout extends PureComponent {
 
   render() {
     const { props } = this;
     const { dispatch } = this.props;
     return (
-      <div className="react-container">
-        <div className="header">
+      <div className="Layout react-container">
+        <div className="Layout__header header">
           <div className="header-item header-title">
             Holy Rulebook
           </div>
@@ -49,9 +50,9 @@ export default class Layout extends PureComponent {
           </div>
         </div>
 
-        <Sidebar>
+        <div className="Layout__sidebar sidebar">
           <SidebarItem group={true} title="Gamestates">
-            <Icon icon="add" onClick={() => {
+            <SidebarItemIcon icon="add" onClick={() => {
               dispatch(actions.createGameState());
             }} />
           </SidebarItem>
@@ -67,7 +68,7 @@ export default class Layout extends PureComponent {
           })}
           {props.activeGameState && (
             <SidebarItem group={true} title="Characters">
-              <Icon icon="add" onClick={() => {
+              <SidebarItemIcon icon="add" onClick={() => {
                 dispatch(actions.createCharacter());
               }} />
             </SidebarItem>
@@ -80,7 +81,7 @@ export default class Layout extends PureComponent {
               onClick={() => {
                 dispatch(actions.selectCharacter(id));
               }}>
-              <Icon icon="remove" onClick={(e) => {
+              <SidebarItemIcon icon="remove" onClick={(e) => {
                 dispatch(actions.removeCharacter(id));
                 e.stopPropagation();
               }} />
@@ -95,9 +96,9 @@ export default class Layout extends PureComponent {
             <SidebarItem title="Purge state"
               onClick={() => dispatch(actions.purgeState())} />
           </SidebarItem>
-        </Sidebar>
+        </div>
 
-        <div className="content">
+        <div className="Layout__content">
           {props.activeCharacter && (
             <CharacterSheet character={props.activeCharacter} />
           )}
@@ -124,6 +125,8 @@ export default class Layout extends PureComponent {
           <SkillTable skills={skills} />
           */}
         </div>
+
+        <DetailsPane className="Layout__details" />
       </div>
     );
   }

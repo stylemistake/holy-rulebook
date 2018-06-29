@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { classes } from '../../lib/utils.js';
+import { classes } from '../../utils.js';
 import Widget from './Widget.jsx';
 
 export default class TextWidget extends Component {

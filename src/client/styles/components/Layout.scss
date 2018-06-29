@@ -1,0 +1,45 @@
+.Layout {
+
+}
+
+.Layout__header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4rem;
+}
+
+.Layout__sidebar {
+  position: fixed;
+  top: 4rem;
+  bottom: 0;
+  left: 0;
+  width: 16rem;
+}
+
+.Layout__content {
+  margin-top: 4rem;
+  margin-left: 16rem;
+  margin-right: 32rem;
+  min-width: 48rem;
+}
+
+.Layout__details {
+  position: fixed;
+  top: 4rem;
+  bottom: 0;
+  right: 0;
+  width: 32rem;
+}
+
+@media only screen and (max-width: 64rem) {
+  .Layout__details {
+    position: absolute;
+    top: 4rem;
+    bottom: 0;
+    right: 0;
+    left: 16rem;
+    width: auto;
+  }
+}

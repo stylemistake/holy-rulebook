@@ -1,17 +1,18 @@
 import { combineReducers } from 'redux-immutable';
-import { fromJS } from 'immutable';
+import { fromJS, OrderedMap, Record } from 'immutable';
 import { actionTypes } from './actions.js';
-import * as queries from './queries.js';
+import * as selectors from './selectors.js';
+import GameState from './structs/GameState.js';
 
-const INITIAL_STATE = fromJS({
+const INITIAL_STATE = OrderedMap({
   updatedAt: null,
   loaded: false,
-  gameStates: [],
+  gameStates: OrderedMap(),
   activeGameStateId: null,
   activeCharacterId: null,
 });
 
-function withUpdate(state) {
+function markStateAsUpdated(state) {
   return state.merge({
     updatedAt: Date.now(),
   });
@@ -23,10 +24,9 @@ function globalReducer(_state = INITIAL_STATE, action) {
   switch (action.type) {
 
     case actionTypes.LOAD_STATE: {
-      return state.merge({
-        loaded: true,
-        gameStates: action.gameStates,
-      });
+      return state
+        .set('loaded', true)
+        .merge(action.state);
     }
 
     case actionTypes.SAVE_STATE: {
@@ -34,13 +34,9 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.CREATE_GAME_STATE: {
-      return withUpdate(state).update('gameStates', (x) => {
-        const gameState = queries.makeGameState();
-        if (!x) {
-          return fromJS([gameState]);
-        }
-        return x.push(gameState);
-      });
+      const gameState = GameState.make();
+      return markStateAsUpdated(state)
+        .setIn(['gameStates', gameState.id], gameState);
     }
 
     case actionTypes.SELECT_GAME_STATE: {
@@ -48,11 +44,11 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.CREATE_CHARACTER: {
-      const gameStateIndex = queries.getActiveGameStateIndex(state);
-      const path = ['gameStates', gameStateIndex, 'characters'];
-      return withUpdate(state).updateIn(path, (x) => {
-        return x.push(queries.makeCharacter());
-      });
+      const gameStateId = state.get('activeGameStateId');
+      return markStateAsUpdated(state)
+        .updateIn(['gameStates', gameStateId], (gameState) => {
+          return gameState.createCharacter();
+        });
     }
 
     case actionTypes.SELECT_CHARACTER: {
@@ -60,25 +56,32 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.REMOVE_CHARACTER: {
-      const characterIndex = queries.getCharacterIndex(state, action.id);
-      if (state.get('activeCharacterId') === action.id) {
-        state = state.delete('activeCharacterId', null);
-      }
-      const gameStateIndex = queries.getActiveGameStateIndex(state);
-      const path = ['gameStates', gameStateIndex, 'characters', characterIndex];
-      return withUpdate(state).deleteIn(path);
+      const gameStateId = state.get('activeGameStateId');
+      return markStateAsUpdated(state)
+        .updateIn(['gameStates', gameStateId], (gameState) => {
+          return gameState.removeCharacter(action.id);
+        });
     }
 
     case actionTypes.UPDATE_CHARACTER_VALUE: {
-      const gameStateIndex = queries.getActiveGameStateIndex(state);
-      const characterIndex = queries.getCharacterIndex(state, action.id);
-      const path = ['gameStates', gameStateIndex, 'characters', characterIndex]
-        .concat(action.path);
-      return withUpdate(state).setIn(path, action.value);
+      const gameStateId = state.get('activeGameStateId');
+      return markStateAsUpdated(state)
+        .updateIn(['gameStates', gameStateId], (gameState) => {
+          return gameState.updateCharacter(action.id, (character) => {
+            return character.setIn(action.path, action.value);
+          });
+        });
     }
 
-    case actionTypes.SELECT_CHARACTERISTIC: {
-      return state.set('activeCharc', action.charc);
+    case actionTypes.OPEN_DETAILS_PANE: {
+      return state.set('detailsPane', fromJS({
+        route: action.route,
+        data: action.data,
+      }));
+    }
+
+    case actionTypes.CLOSE_DETAILS_PANE: {
+      return state.delete('detailsPane');
     }
 
     default: {

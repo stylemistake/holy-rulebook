@@ -5,7 +5,7 @@ import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
 } from './widgets';
 import * as actions from '../actions.js';
-import * as queries from '../queries.js';
+import * as selectors from '../selectors.js';
 
 const SKILL_TIERS = ['-20', '', '+10', '+20', '+30', '+40'];
 
@@ -15,53 +15,50 @@ export default class CharacterSheet extends PureComponent {
   /**
    * Returns an onChange handler
    */
-  getStateUpdater(path) {
+  getValueUpdater(path) {
+    const { character, dispatch } = this.props;
     return (value) => {
-      const id = this.props.character.get('id');
-      this.props.dispatch(actions.updateCharacterValue(id, path, value));
+      const id = character.get('id');
+      dispatch(actions.updateCharacterValue(id, path, value));
     };
   }
 
   render() {
-    const { character } = this.props;
-    const cstate = character.get('state');
+    const { character, dispatch } = this.props;
     return <Fragment>
       <ValueWidget title="Character name"
         value={character.get('name')}
-        onChange={this.getStateUpdater(['name'])} />
+        onChange={this.getValueUpdater(['name'])} />
       <Flex spread={true}>
         <ValueWidget title="Damage" color="red"
-          value={cstate.get('damage')}
-          onChange={this.getStateUpdater(['state', 'damage'])} />
+          value={character.getIn(['state', 'damage'])}
+          onChange={this.getValueUpdater(['state', 'damage'])} />
         <ValueWidget title="Fatigue" color="orange"
-          value={cstate.get('fatigue')}
-          onChange={this.getStateUpdater(['state', 'fatigue'])} />
+          value={character.getIn(['state', 'fatigue'])}
+          onChange={this.getValueUpdater(['state', 'fatigue'])} />
         <ValueWidget title="Corruption" color="yellow"
-          value={cstate.get('corruption')}
-          onChange={this.getStateUpdater(['state', 'corruption'])} />
+          value={character.getIn(['state', 'corruption'])}
+          onChange={this.getValueUpdater(['state', 'corruption'])} />
         <ValueWidget title="Stress" color="green"
-          value={cstate.get('stress')}
-          onChange={this.getStateUpdater(['state', 'stress'])} />
+          value={character.getIn(['state', 'stress'])}
+          onChange={this.getValueUpdater(['state', 'stress'])} />
         <ValueWidget title="Fate" color="teal"
-          value={cstate.get('fate')}
-          onChange={this.getStateUpdater(['state', 'fate'])} />
+          value={character.getIn(['state', 'fate'])}
+          onChange={this.getValueUpdater(['state', 'fate'])} />
         <ValueWidget title="XP" color="blue"
-          value={cstate.get('experience')}
-          onChange={this.getStateUpdater(['state', 'experience'])} />
+          editable={false}
+          value={character.getIn(['state', 'experience'])}
+          onClick={() => dispatch(actions.openDetailsPane('xp'))} />
       </Flex>
       <Flex>
         <ListWidget title="Characteristics">
-          {queries.getCharacterCharcs(character).map((x) => {
+          {character.getCharcs().map((x) => {
             return <ListWidgetItem
               key={x.get('id')}
               name={x.get('name')}
               value={x.get('value')}
               onClick={() => {
-                // TODO: Move this to actions
-                this.props.dispatch({
-                  type: 'SELECT_CHARACTERISTIC',
-                  charc: x,
-                });
+                dispatch(actions.openDetailsPane('characteristic', x));
               }} />;
           })}
         </ListWidget>

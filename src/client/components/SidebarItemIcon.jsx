@@ -1,12 +1,12 @@
 import React, { Component, Fragment } from 'react';
-import { classes } from '../lib/utils.js';
+import { classes } from '../utils.js';
 
 const ICONS = {
   add: '+',
   remove: '×',
 };
 
-export default class Icon extends Component {
+export default class SidebarItemIcon extends Component {
 
   render() {
     const { props } = this;

@@ -1,5 +1,3 @@
-'use strict';
-
 import {
   debounce as _debounce,
   throttle as _throttle,

@@ -1,6 +1,6 @@
 import React, { Component, Fragment } from 'react';
-import { classes } from '../lib/utils.js';
-import Icon from './Icon.jsx';
+import { classes } from '../utils.js';
+import SidebarItemIcon from './SidebarItemIcon.jsx';
 
 export default class SidebarItem extends Component {
 
@@ -10,7 +10,7 @@ export default class SidebarItem extends Component {
     let buttonElements = [];
     let otherElements = [];
     React.Children.forEach(props.children, (x) => {
-      if (x.type === Icon) {
+      if (x.type === SidebarItemIcon) {
         return buttonElements.push(x);
       }
       return otherElements.push(x);

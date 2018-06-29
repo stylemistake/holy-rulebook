@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { classes } from '../../lib/utils.js';
+import { classes } from '../../utils.js';
 import Widget from './Widget.jsx';
 
 export default class Editable extends Component {

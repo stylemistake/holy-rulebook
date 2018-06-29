@@ -1,10 +1,10 @@
-import { uuid } from './utils.js';
+import { createUuid } from './utils.js';
 
 export default class Entity {
 
   constructor() {
     // Unique id
-    this.id = uuid();
+    this.id = createUuid();
     // Entity type
     this.type = 'default';
   }

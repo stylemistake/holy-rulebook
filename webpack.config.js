@@ -3,6 +3,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const { compact } = require('lodash');
+const BuildNotifierPlugin = require('webpack-build-notifier');
 
 const APP_ENV = process.env.APP_ENV || 'local';
 
@@ -99,14 +100,33 @@ const config = {
       },
     ],
   },
-  plugins: [],
+  plugins: [
+    new BuildNotifierPlugin(),
+  ],
   devtool: 'source-map',
   devServer: {
-    inline: true,
+    // Mandatory settings
     port: 3000,
     contentBase: 'public',
     historyApiFallback: {
       index: '/index.html'
+    },
+    // Informational flags
+    progress: false,
+    quiet: false,
+    noInfo: false,
+    // Fine-grained logging control
+    stats: {
+      assets: false,
+      builtAt: false,
+      cached: false,
+      children: false,
+      chunks: true,
+      colors: true,
+      hash: false,
+      timings: false,
+      version: false,
+      modules: false,
     },
   },
 };

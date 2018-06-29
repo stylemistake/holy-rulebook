@@ -8,7 +8,7 @@ export APP_ENV='local'
 task_serve() {
   yarn install
   rm -rf public/bundles
-  webpack-dev-server --progress --inline --hot
+  webpack-dev-server --inline --hot
 }
 
 task_build() {
