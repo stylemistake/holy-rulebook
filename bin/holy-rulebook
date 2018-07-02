@@ -5,40 +5,36 @@ cd "$(dirname "${0}")/.."
 PATH="${PATH}:node_modules/.bin"
 export APP_ENV='local'
 
-task_serve() {
-  yarn install
-  rm -rf public/bundles
-  webpack-dev-server --inline --hot
-}
-
-task_build() {
+## Default task
+task_default() {
   export APP_ENV='production'
   yarn install
-  webpack --progress
+  exec node --experimental-modules src/http/server.mjs "${@}"
 }
 
 ## Development server
-if [[ ${1} == '--dev' ]]; then
-  task_serve
-  exit ${?}
-fi
+task_serve() {
+  yarn install
+  rm -rf public/bundles
+  exec webpack-dev-server --inline --hot
+}
 
-## Run a production build
-if [[ ${1} == '--build' ]]; then
-  task_build
-  exit ${?}
-fi
+## Build the client bundle
+task_build() {
+  export APP_ENV='production'
+  yarn install
+  exec webpack --progress
+}
 
-## Clean build artifacts
-if [[ ${1} == '--clean' ]]; then
+## Clean all build artifacts
+task_clean() {
   rm -rf public/bundles node_modules
   exit ${?}
-fi
+}
 
-## Check if we need to build the bundle before running the server
-[[ ! -d public/bundles ]] && task_build
+## Parse args
+[[ ${1} == '--dev' ]] && task_serve
+[[ ${1} == '--build' ]] && task_build
+[[ ${1} == '--clean' ]] && task_clean
 
-## Launch the server
-export APP_ENV='production'
-yarn install --production
-exec node --experimental-modules src/http/server.mjs "${@}"
+task_default
