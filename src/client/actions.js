@@ -74,7 +74,7 @@ export function loadState() {
     console.log('Loaded!');
     dispatch({
       type: actionTypes.LOAD_STATE,
-      state,
+      payload: { state },
     });
   };
 };
@@ -106,7 +106,7 @@ export function purgeState() {
 export function searchQuery(text) {
   return {
     type: 'SEARCH_QUERY',
-    text,
+    payload: { text },
   };
 }
 
@@ -119,7 +119,7 @@ export function createGameState() {
 export function selectGameState(id) {
   return {
     type: actionTypes.SELECT_GAME_STATE,
-    id,
+    payload: { id },
   };
 }
 
@@ -132,31 +132,35 @@ export function createCharacter() {
 export function selectCharacter(id) {
   return {
     type: actionTypes.SELECT_CHARACTER,
-    id,
+    payload: { id },
   };
 }
 
 export function removeCharacter(id) {
   return {
     type: actionTypes.REMOVE_CHARACTER,
-    id,
+    payload: { id },
   };
 }
 
 export function updateCharacterValue(id, path, value) {
   return {
     type: actionTypes.UPDATE_CHARACTER_VALUE,
-    id, // character id
-    path, // path to the value
-    value, // updated value
+    payload: {
+      id, // character id
+      path, // path to the value
+      value, // updated value
+    },
   };
 }
 
 export function openDetailsPane(route, data = {}) {
   return {
     type: actionTypes.OPEN_DETAILS_PANE,
-    route,
-    data,
+    payload: {
+      route,
+      data,
+    },
   };
 }
 

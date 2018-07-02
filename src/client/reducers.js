@@ -19,6 +19,7 @@ function markStateAsUpdated(state) {
 }
 
 function globalReducer(_state = INITIAL_STATE, action) {
+  const { payload } = action;
   let state = _state;
 
   switch (action.type) {
@@ -26,7 +27,7 @@ function globalReducer(_state = INITIAL_STATE, action) {
     case actionTypes.LOAD_STATE: {
       return state
         .set('loaded', true)
-        .merge(action.state);
+        .merge(payload.state);
     }
 
     case actionTypes.SAVE_STATE: {
@@ -40,7 +41,7 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.SELECT_GAME_STATE: {
-      return state.set('activeGameStateId', action.id);
+      return state.set('activeGameStateId', payload.id);
     }
 
     case actionTypes.CREATE_CHARACTER: {
@@ -52,14 +53,14 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.SELECT_CHARACTER: {
-      return state.set('activeCharacterId', action.id);
+      return state.set('activeCharacterId', payload.id);
     }
 
     case actionTypes.REMOVE_CHARACTER: {
       const gameStateId = state.get('activeGameStateId');
       return markStateAsUpdated(state)
         .updateIn(['gameStates', gameStateId], (gameState) => {
-          return gameState.removeCharacter(action.id);
+          return gameState.removeCharacter(payload.id);
         });
     }
 
@@ -67,16 +68,16 @@ function globalReducer(_state = INITIAL_STATE, action) {
       const gameStateId = state.get('activeGameStateId');
       return markStateAsUpdated(state)
         .updateIn(['gameStates', gameStateId], (gameState) => {
-          return gameState.updateCharacter(action.id, (character) => {
-            return character.setIn(action.path, action.value);
+          return gameState.updateCharacter(payload.id, (character) => {
+            return character.setIn(payload.path, payload.value);
           });
         });
     }
 
     case actionTypes.OPEN_DETAILS_PANE: {
       return state.set('detailsPane', fromJS({
-        route: action.route,
-        data: action.data,
+        route: payload.route,
+        data: payload.data,
       }));
     }
 
