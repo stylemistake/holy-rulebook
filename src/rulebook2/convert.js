@@ -11,7 +11,12 @@ fs.readFile('src/rulebook2/HE2E/SKLS.html', 'utf8', function (err, data) {
 
     sheet('table tbody').find('td.s27').each((index, sheetTd) => {
         skills.push({
-            name: sheetTd.children[0].data,
+            name: sheet(sheetTd).text(),
+            characteristic: sheet(sheetTd.parent.next.next).find('td.s32').first().text(),
+            apptitudes: [
+                sheet(sheetTd.parent.next.next.next.next).find('td.s34').first().text(),
+                sheet(sheetTd.parent.next.next.next.next.next).find('td.s34').first().text(),
+            ]
         });
     });
 
