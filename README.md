@@ -18,7 +18,7 @@ yarn start
 
 Usage of the `holy-rulebook` executable:
 
-- `bin/holy-rulebook` - build and launch a production server
+- `bin/holy-rulebook` - launch a production server
 - `bin/holy-rulebook --build` - just build
 - `bin/holy-rulebook --dev` - launch a development server
 - `bin/holy-rulebook --clean` - clean build artifacts

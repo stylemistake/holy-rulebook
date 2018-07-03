@@ -5,7 +5,7 @@ const path = require('path');
 const { compact } = require('lodash');
 const BuildNotifierPlugin = require('webpack-build-notifier');
 
-const APP_ENV = process.env.APP_ENV || 'local';
+const NODE_ENV = process.env.NODE_ENV || 'local';
 
 const config = {
   mode: 'none',
@@ -44,13 +44,12 @@ const config = {
                 }],
                 '@babel/preset-react',
               ],
-              plugins: compact([
+              plugins: [
                 ['@babel/plugin-proposal-decorators', {
                   legacy: true,
                 }],
                 '@babel/plugin-proposal-class-properties',
-                // APP_ENV === 'local' && 'react-hot-loader/babel',
-              ]),
+              ],
             },
           },
         ],
@@ -107,9 +106,10 @@ const config = {
   devServer: {
     // Mandatory settings
     port: 3000,
+    publicPath: '/bundles/',
     contentBase: 'public',
     historyApiFallback: {
-      index: '/index.html'
+      index: '/index.html',
     },
     // Informational flags
     progress: false,
@@ -121,7 +121,7 @@ const config = {
       builtAt: false,
       cached: false,
       children: false,
-      chunks: true,
+      chunks: false,
       colors: true,
       hash: false,
       timings: false,
@@ -132,7 +132,7 @@ const config = {
 };
 
 // Add optimization plugins when generating the final bundle
-if (APP_ENV === 'production') {
+if (NODE_ENV === 'production') {
   const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
   config.devtool = false;
   config.plugins = config.plugins.concat([
@@ -149,6 +149,7 @@ if (APP_ENV === 'production') {
         ecma: 8,
         parse: {},
         compress: {
+          inline: false, // Workaround, see: https://github.com/mishoo/UglifyJS2/issues/2842
           passes: 2,
         },
         output: {

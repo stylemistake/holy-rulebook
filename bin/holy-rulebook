@@ -3,11 +3,11 @@ set -e
 cd "$(dirname "${0}")/.."
 
 PATH="${PATH}:node_modules/.bin"
-export APP_ENV='local'
+export NODE_ENV='local'
 
 ## Default task
 task_default() {
-  export APP_ENV='production'
+  export NODE_ENV='production'
   yarn install
   exec node --experimental-modules src/http/server.mjs "${@}"
 }
@@ -16,19 +16,19 @@ task_default() {
 task_serve() {
   yarn install
   rm -rf public/bundles
-  exec webpack-dev-server --inline --hot
+  exec node --experimental-modules src/http/server.mjs "${@}"
 }
 
 ## Build the client bundle
 task_build() {
-  export APP_ENV='production'
+  export NODE_ENV='production'
   yarn install
   exec webpack --progress
 }
 
 ## Clean all build artifacts
 task_clean() {
-  rm -rf public/bundles node_modules
+  rm -rf public/bundles node_modules yarn-error.log
   exit ${?}
 }
 

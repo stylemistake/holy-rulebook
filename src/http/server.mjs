@@ -1,25 +1,45 @@
 import path from 'path';
 import http from 'http';
 import Express from 'express';
+import setupRoutes from './setupRoutes.mjs';
 
-// initialize the server and configure support for ejs templates
-const app = new Express();
-
-// Setup EJS templating engine
-// app.set('view engine', 'ejs');
-// app.set('views', path.join(__dirname, 'views'));
-
-// Define the folder that will be used for static assets
-app.use(Express.static('./public'));
-
-// Start the server
+// Get configuration
 const port = process.env.PORT || 3000;
-const env = process.env.NODE_ENV || 'production';
-const server = new http.Server(app);
+const env = process.argv.includes('--dev') && 'local'
+  || process.env.NODE_ENV
+  || 'production';
 
-server.listen(port, (err) => {
-  if (err) {
-    return console.error(err);
+async function require(uri) {
+  return (await import(uri)).default;
+}
+
+async function setupServer() {
+  // Initialize the server
+  const app = new Express();
+
+  // Define the folder that will be used for static assets
+  app.use(Express.static('./public'));
+
+  // Setup Webpack
+  if (env === 'local') {
+    const setupWebpack = await require('./setupWebpack.mjs');
+    setupWebpack(app);
   }
-  console.info(`Server running on http://localhost:${port} [${env}]`);
+
+  // Setup routes
+  setupRoutes(app);
+
+  // Start the server
+  const server = new http.Server(app);
+  server.listen(port, (err) => {
+    if (err) {
+      throw err;
+    }
+    console.info(`Server running on http://localhost:${port} [${env}]`);
+  });
+}
+
+setupServer().catch((e) => {
+  console.error(e);
+  process.exit(1);
 });
