@@ -42,3 +42,8 @@ __MACOSX
 .Trash*
 ehthumbs.db
 Thumbs.db
+
+## Git patches and archives
+/*.patch
+/*.tar.*
+/*.zip
