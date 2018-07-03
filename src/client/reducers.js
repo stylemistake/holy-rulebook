@@ -1,5 +1,5 @@
 import { combineReducers } from 'redux-immutable';
-import { fromJS, OrderedMap, Record } from 'immutable';
+import { fromJS, Map, OrderedMap, Record } from 'immutable';
 import { actionTypes } from './actions.js';
 import * as selectors from './selectors.js';
 import GameState from './structs/GameState.js';
@@ -75,14 +75,35 @@ function globalReducer(_state = INITIAL_STATE, action) {
     }
 
     case actionTypes.OPEN_DETAILS_PANE: {
-      return state.set('detailsPane', fromJS({
-        route: payload.route,
-        data: payload.data,
-      }));
+      return state.set('detailsPane', Map(payload));
     }
 
     case actionTypes.CLOSE_DETAILS_PANE: {
       return state.delete('detailsPane');
+    }
+
+    case actionTypes.XP_LOG_APPEND: {
+      const gameStateId = state.get('activeGameStateId');
+      const characterId = state.get('activeCharacterId');
+      return markStateAsUpdated(state)
+        .updateIn([
+          'gameStates', gameStateId,
+          'characters', characterId,
+          'xpLog',
+        ], (xpLog) => {
+          return xpLog.push(Map(payload));
+        });
+    }
+
+    case actionTypes.XP_LOG_REMOVE: {
+      const gameStateId = state.get('activeGameStateId');
+      const characterId = state.get('activeCharacterId');
+      return markStateAsUpdated(state)
+        .deleteIn([
+          'gameStates', gameStateId,
+          'characters', characterId,
+          'xpLog', payload.index,
+        ]);
     }
 
     default: {

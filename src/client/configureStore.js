@@ -1,7 +1,7 @@
 import { createStore, applyMiddleware, compose } from 'redux';
 import thunk from 'redux-thunk';
 import { fromJS } from 'immutable';
-import { createReducer } from './reducers';
+import { createReducer } from './reducers.js';
 
 // Refer to https://github.com/flexdinesh/react-redux-boilerplate
 
@@ -30,7 +30,8 @@ export default function configureStore(initialState) {
 
   // Make reducers hot reloadable, see http://mxs.is/googmo
   if (module.hot) {
-    module.hot.accept('./reducers', () => {
+    module.hot.accept('./reducers.js', () => {
+      const { createReducer } = require('./reducers.js');
       store.replaceReducer(createReducer());
     });
   }

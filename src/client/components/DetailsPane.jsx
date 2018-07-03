@@ -4,10 +4,14 @@ import * as actions from '../actions.js';
 import * as selectors from '../selectors.js';
 import { classes } from '../utils.js';
 
+// Views
+import CharacteristicsView from './views/CharacteristicsView.jsx';
+import XpView from './views/XpView.jsx';
+
 function DetailsPane(props) {
   const { dispatch, state } = props;
-  const route = router(state);
-  if (!route) {
+  const { component, title } = router(state);
+  if (!component) {
     return null;
   }
   return (
@@ -18,11 +22,11 @@ function DetailsPane(props) {
           <i className="icon left arrow" />
         </div>
         <div className="active item">
-          {route.title}
+          {title || 'Details'}
         </div>
       </div>
       <div className="DetailsPane__content">
-        {route.content}
+        {component}
       </div>
     </div>
   );
@@ -36,37 +40,25 @@ export default connect((state) => {
 
 function router(state) {
   if (!state) {
-    return;
+    return {};
   }
   const route = state.get('route');
+  const params = state.get('params');
+  const props = { params };
 
-  if (route === 'characteristic') {
-    // TODO: Move this to a separate self-contained component
+  if (route === 'characteristics') {
     return {
-      title: 'Characteristic',
-      content: (
-        <Fragment>
-          <div>
-            {state.getIn(['data', 'name'])}:
-            {state.getIn(['data', 'value'])}
-          </div>
-          <div>
-            <div className="ui button">
-              Upgrade (-200XP)
-            </div>
-          </div>
-        </Fragment>
-      ),
+      title: 'Characteristics',
+      component: <CharacteristicsView {...props} />,
     };
   }
 
   if (route === 'xp') {
     return {
       title: 'XP granted/spent',
-      content: (
-        <div>TODO: XP granted/spent table</div>
-      ),
+      component: <XpView {...props} />,
     };
   }
 
+  return {};
 }

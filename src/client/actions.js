@@ -18,6 +18,8 @@ export const actionTypes = {
   SELECT_CHARACTERISTIC: 'SELECT_CHARACTERISTIC',
   OPEN_DETAILS_PANE: 'OPEN_DETAILS_PANE',
   CLOSE_DETAILS_PANE: 'CLOSE_DETAILS_PANE',
+  XP_LOG_APPEND: 'XP_LOG_APPEND',
+  XP_LOG_REMOVE: 'XP_LOG_REMOVE',
 };
 
 function serializeState(state) {
@@ -154,12 +156,12 @@ export function updateCharacterValue(id, path, value) {
   };
 }
 
-export function openDetailsPane(route, data = {}) {
+export function openDetailsPane(route, params = {}) {
   return {
     type: actionTypes.OPEN_DETAILS_PANE,
     payload: {
       route,
-      data,
+      params,
     },
   };
 }

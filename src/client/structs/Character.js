@@ -64,4 +64,10 @@ export default class Character extends RecordFactory {
     });
   }
 
+  getXP() {
+    return this.get('xpLog')
+      .map(x => x.get('amount'))
+      .reduce((a, b) => a + b);
+  }
+
 }

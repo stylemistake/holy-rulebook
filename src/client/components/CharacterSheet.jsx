@@ -47,7 +47,7 @@ export default class CharacterSheet extends PureComponent {
           onChange={this.getValueUpdater(['state', 'fate'])} />
         <ValueWidget title="XP" color="blue"
           editable={false}
-          value={character.getIn(['state', 'experience'])}
+          value={character.getXP()}
           onClick={() => dispatch(actions.openDetailsPane('xp'))} />
       </Flex>
       <Flex>
@@ -58,7 +58,7 @@ export default class CharacterSheet extends PureComponent {
               name={x.get('name')}
               value={x.get('value')}
               onClick={() => {
-                dispatch(actions.openDetailsPane('characteristic', x));
+                dispatch(actions.openDetailsPane('characteristics', x));
               }} />;
           })}
         </ListWidget>
