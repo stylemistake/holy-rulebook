@@ -4,6 +4,7 @@
     "start": "yarn install && node --experimental-modules src/http/server.mjs --dev"
   },
   "dependencies": {
+    "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.2",
     "lodash": "^4.17.4"
   },
