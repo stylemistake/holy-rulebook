@@ -51,15 +51,23 @@ export default class CharacterSheet extends PureComponent {
           onClick={() => dispatch(actions.openDetailsPane('xp'))} />
       </Flex>
       <Flex>
-        <ListWidget title="Characteristics">
+        <ListWidget title="Characteristics"
+          onClick={() => {
+            dispatch(actions.openDetailsPane('characteristics'));
+          }}>
           {character.getCharcs().map((x) => {
             return <ListWidgetItem
               key={x.get('id')}
               name={x.get('name')}
-              value={x.get('value')}
-              onClick={() => {
-                dispatch(actions.openDetailsPane('characteristics', x));
-              }} />;
+              value={x.get('value')} />;
+          })}
+        </ListWidget>
+        <ListWidget title="Aptitudes"
+          onClick={() => {
+            dispatch(actions.openDetailsPane('aptitudes'));
+          }}>
+          {character.get('aptitudes').map((x) => {
+            return <ListWidgetItem key={x} name={x} />;
           })}
         </ListWidget>
         {/*

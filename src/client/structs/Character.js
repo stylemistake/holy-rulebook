@@ -30,6 +30,7 @@ const RecordFactory = Record({
   skills: List(),
   talents: List(),
   xpLog: List(),
+  aptitudes: List(),
 });
 
 const CHARCS_META = fromJS([

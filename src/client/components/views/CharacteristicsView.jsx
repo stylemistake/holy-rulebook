@@ -9,9 +9,6 @@ export default class CharacteristicsView extends Component {
     return (
       <Fragment>
         <div>
-          {params.get('name')}: {params.get('value')}
-        </div>
-        <div>
           <div className="ui button">
             Upgrade (-200XP)
           </div>

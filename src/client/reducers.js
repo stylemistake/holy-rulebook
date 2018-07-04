@@ -106,6 +106,33 @@ function globalReducer(_state = INITIAL_STATE, action) {
         ]);
     }
 
+    case actionTypes.APTITUDE_APPEND: {
+      const gameStateId = state.get('activeGameStateId');
+      const characterId = state.get('activeCharacterId');
+      return markStateAsUpdated(state)
+        .updateIn([
+          'gameStates', gameStateId,
+          'characters', characterId,
+          'aptitudes',
+        ], (aptitudes) => {
+          return aptitudes.push(payload.name);
+        });
+    }
+
+    case actionTypes.APTITUDE_REMOVE: {
+      const gameStateId = state.get('activeGameStateId');
+      const characterId = state.get('activeCharacterId');
+      return markStateAsUpdated(state)
+        .updateIn([
+          'gameStates', gameStateId,
+          'characters', characterId,
+          'aptitudes',
+        ], (aptitudes) => {
+          const index = aptitudes.indexOf(payload.name);
+          return aptitudes.delete(index);
+        });
+    }
+
     default: {
       console.log('Unhandled action', action);
       return state;

@@ -20,6 +20,8 @@ export const actionTypes = {
   CLOSE_DETAILS_PANE: 'CLOSE_DETAILS_PANE',
   XP_LOG_APPEND: 'XP_LOG_APPEND',
   XP_LOG_REMOVE: 'XP_LOG_REMOVE',
+  APTITUDE_APPEND: 'APTITUDE_APPEND',
+  APTITUDE_REMOVE: 'APTITUDE_REMOVE',
 };
 
 function serializeState(state) {

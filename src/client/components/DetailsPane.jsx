@@ -7,6 +7,7 @@ import { classes } from '../utils.js';
 // Views
 import CharacteristicsView from './views/CharacteristicsView.jsx';
 import XpView from './views/XpView.jsx';
+import AptitudesView from './views/AptitudesView.jsx';
 
 function DetailsPane(props) {
   const { dispatch, state } = props;
@@ -57,6 +58,13 @@ function router(state) {
     return {
       title: 'XP granted/spent',
       component: <XpView {...props} />,
+    };
+  }
+
+  if (route === 'aptitudes') {
+    return {
+      title: 'Aptitudes',
+      component: <AptitudesView {...props} />,
     };
   }
 
