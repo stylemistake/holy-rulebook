@@ -8,44 +8,82 @@ class Cursor {
     if ($) {
       this.$ = $;
       this.tbody = $('table tbody').get(0);
+      // Build cell matrix
+      this.matrix = [];
+      this.tbody.children.filter(x => x.tagName === 'tr')
+        .forEach((row, rowIndex, rows) => {
+          const matrixRow = [];
+          const prevMatrixRow = this.matrix[rowIndex - 1];
+          let currentX = 0;
+          let currentY = rowIndex;
+          row.children.filter(x => x.tagName === 'td')
+            .forEach((cell, cellIndex, cells) => {
+              const colSpan = parseInt(cell.attribs.colspan, 10) || 1;
+              const rowSpan = parseInt(cell.attribs.rowspan, 10) || 1;
+              const matrixCell = {
+                x: currentX,
+                y: currentY,
+                w: colSpan,
+                h: rowSpan,
+                cell,
+              };
+              if (prevMatrixRow) {
+                while (true) {
+                  const prevMatrixCell = prevMatrixRow[currentX];
+                  if (!prevMatrixCell) {
+                    break;
+                  }
+                  const yMax = prevMatrixCell.y + prevMatrixCell.h;
+                  if (currentY >= yMax) {
+                    break;
+                  }
+                  matrixRow.push(prevMatrixCell);
+                  currentX++;
+                }
+              }
+              for (let i = 0; i < colSpan; i++) {
+                matrixRow.push(matrixCell);
+                currentX++;
+              }
+            });
+          this.matrix.push(matrixRow);
+        });
     }
     // Try to determine coordinates
-    if (elem) {
-      let cell = null;
-      let row = null;
-      if (elem.tagName === 'td') {
-        cell = elem;
-        row = elem.parent;
-      }
-      else if (elem.tagName === 'tr') {
-        row = elem;
-      }
-      // Set X coordinate
-      if (cell) {
-        this.x = 0;
-        let current = cell.prev;
-        while (true) {
-          // Break when reached end
-          if (!current || current.tagName === 'th') {
-            break;
-          }
-          // Add width of the cell
-          this.x += parseInt(current.attribs.colspan, 10) || 1;
-          // Get previous cell
-          current = current.prev;
-        }
-      }
-      // Set Y coordinate
-      if (row) {
-        this.y = this.tbody.children
-          .filter(x => x.tagName === 'tr')
-          .indexOf(row);
+    if (elem && elem.tagName === 'td') {
+      let matrixCell = this.findMatrixCell(elem);
+      if (matrixCell) {
+        this.x = matrixCell.x;
+        this.y = matrixCell.y;
       }
     }
   }
 
   clone(extraProps) {
     return Object.assign(new Cursor(), this, extraProps);
+  }
+
+  getMatrixCell() {
+    const matrixRow = this.matrix[this.y];
+    if (!matrixRow) {
+      return null;
+    }
+    const matrixCell = matrixRow[this.x];
+    if (!matrixCell) {
+      return null;
+    }
+    return matrixCell;
+  }
+
+  findMatrixCell(cell) {
+    for (let matrixRow of this.matrix) {
+      for (let matrixCell of matrixRow) {
+        if (matrixCell.cell === cell) {
+          return matrixCell;
+        }
+      }
+    }
+    return null;
   }
 
   toJS() {
@@ -57,6 +95,8 @@ class Cursor {
 
   /**
    * Set cursor position.
+   *
+   * Cursor position is absolute.
    */
   set(x = 0, y = 0) {
     return this.clone({ x, y });
@@ -64,6 +104,8 @@ class Cursor {
 
   /**
    * Move cursor relative to current cursor position.
+   *
+   * Cursor position is absolute.
    */
   move(x = 0, y = 0) {
     return this.clone({
@@ -72,53 +114,75 @@ class Cursor {
     });
   }
 
+  moveUp(num = 1) {
+    return this.move(0, -num);
+  }
+
+  moveRight(num = 1) {
+    return this.move(num, 0);
+  }
+
+  moveDown(num = 1) {
+    return this.move(0, num);
+  }
+
+  moveLeft(num = 1) {
+    return this.move(-num, 0);
+  }
+
   /**
-   * Walk over cells in specified direction.
-   *   - Honors merged cells.
-   *   - Walks vertically first, then horizontally.
+   * Walk over the cells in specified direction.
    *
-   * NOTE: Very hacky solution, but hey, it FUCKING WORKS!
+   * Merged cells counts as 1 cell, so if you walk over it, cursor will
+   * jump to the coordinates of the next cell.
+   *
+   * You can use it to navigate the table,
    */
   walk(x = 0, y = 0) {
     if (y > 0) {
-      const rowSpan = parseInt(this.cell().attr('rowspan'), 10) || 1;
-      return this.move(0, rowSpan).walk(x, y - 1);
+      const box = this.getMatrixCell();
+      return this.move(0, box.h).walk(x, y - 1);
     }
-    // TODO: Walking up doesn't work yet.
-    // if (y < 0) {
-    //   const nextCell = this.move(0, -1).cell().get(0);
-    //   return new Cursor(this.$, nextCell).walk(x, y + 1);
-    // }
+    if (y < 0) {
+      const box = this.move(0, -1).getMatrixCell();
+      return this.set(box.x, box.y).walk(x, y + 1);
+    }
     if (x > 0) {
-      const colSpan = parseInt(this.cell().attr('colspan'), 10) || 1;
-      return this.move(colSpan, 0).walk(x - 1, y);
+      const box = this.getMatrixCell();
+      return this.move(box.w, 0).walk(x - 1, y);
     }
     if (x < 0) {
-      const nextCell = this.move(-1, 0).cell().get(0);
-      return new Cursor(this.$, nextCell).walk(x + 1, y);
+      const box = this.move(-1, 0).getMatrixCell();
+      return this.set(box.x, box.y).walk(x + 1, y);
     }
     return this;
   }
 
+  walkUp(num = 1) {
+    return this.walk(0, -num);
+  }
+
+  walkRight(num = 1) {
+    return this.walk(num, 0);
+  }
+
+  walkDown(num = 1) {
+    return this.walk(0, num);
+  }
+
+  walkLeft(num = 1) {
+    return this.walk(-num, 0);
+  }
+
   /**
-   * Get a cell at current cursor position
+   * Get the cell at current cursor position
    */
   cell() {
     const $ = this.$;
-    const row = this.tbody.children.filter(x => x.tagName === 'tr')[this.y];
-    if (!row) {
-      return $(null);
-    }
-    const cells = row.children.filter(x => x.tagName === 'td');
-    let currentX = 0;
-    for (let i = 0; i < cells.length; i++) {
-      const colSpan = parseInt(cells[i].attribs.colspan, 10) || 1;
-      if (this.x === currentX || this.x > currentX && this.x < currentX + colSpan) {
-        return $(cells[i]);
-      }
-      currentX += colSpan;
-    }
-    return $(null);
+    const matrixCell = this.getMatrixCell();
+    return matrixCell
+      ? $(matrixCell.cell)
+      : $(null);
   }
 
   /**

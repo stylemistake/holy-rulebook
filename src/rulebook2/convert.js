@@ -32,14 +32,13 @@ function getSkills() {
   $('table tbody').find('td:contains("DESCRIPTION")')
     .each((i, cell) => {
       // Get cursors
-      const cursor = new Cursor($, cell).move(-8, 0);
+      const cursor = new Cursor($, cell).walkLeft();
       // Create basic skill object
       const skillObj = {
         name: titleCase(cursor.text()).replace('†', '').trim(),
-        characteristic: titleCase(cursor.move(0, 2).text()),
-        aptitudes: cursor.move(0, 4).rows(2)
-          .map(x => titleCase(x.text())),
-        // description: cursor.walk(1, 0).walk(0, 1).text().trim(),
+        characteristic: titleCase(cursor.moveDown(2).text()),
+        aptitudes: cursor.moveDown(4).rows(2).map(x => titleCase(x.text())),
+        // description: cursor.walkRight().walkDown().text().trim(),
       };
       // Try to collect specialization skills
       const hasSpecs = cursor.text().includes('†');
@@ -51,10 +50,10 @@ function getSkills() {
           return;
         }
         // Get a cursor positioned on first spec description
-        let curSpecDesc = cursor.walk(1, 0).walk(0, 2);
-        let specClass = curSpecDesc.move(-8, 0).cell().attr('class');
+        let curSpecDesc = cursor.walkRight().walkDown(2);
+        let specClass = curSpecDesc.walkLeft().cell().attr('class');
         while (true) {
-          const specCell = curSpecDesc.move(-8, 0).cell();
+          const specCell = curSpecDesc.walkLeft().cell();
           const specName = specCell.text();
           // Break when cell doesn't include the spec symbol
           if (!specName.includes('†')) {
@@ -67,7 +66,7 @@ function getSkills() {
           const specNameClean = titleCase(specName).replace('†', '').trim();
           skillObj.specs.push(specNameClean);
           // Walk towards the next description
-          curSpecDesc = curSpecDesc.walk(0, 1);
+          curSpecDesc = curSpecDesc.walkDown();
         }
       }
       // Push object
