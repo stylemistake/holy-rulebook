@@ -32,27 +32,26 @@ function getSkills() {
   $('table tbody').find('td:contains("DESCRIPTION")')
     .each((i, cell) => {
       // Get cursors
-      const curDesc = new Cursor($, cell);
-      const curOrigin = curDesc.move(-8, 0);
+      const cursor = new Cursor($, cell).move(-8, 0);
       // Create basic skill object
-      const name = curOrigin.text();
-      const hasSpecs = name.includes('†');
       const skillObj = {
-        name: titleCase(name).replace('†', '').trim(),
-        characteristic: titleCase(curOrigin.move(0, 2).text()),
-        aptitudes: curOrigin.move(0, 4).rows(2)
+        name: titleCase(cursor.text()).replace('†', '').trim(),
+        characteristic: titleCase(cursor.move(0, 2).text()),
+        aptitudes: cursor.move(0, 4).rows(2)
           .map(x => titleCase(x.text())),
-        // description: curDesc.walk(0, 1).text(),
+        // description: cursor.walk(1, 0).walk(0, 1).text().trim(),
       };
       // Try to collect specialization skills
+      const hasSpecs = cursor.text().includes('†');
       if (hasSpecs) {
+        skillObj.specs = [];
         // Skip "operate" skill specs because it's problematic to parse
         if (skillObj.name.includes('Operate')) {
           skills.push(skillObj);
           return;
         }
         // Get a cursor positioned on first spec description
-        let curSpecDesc = curDesc.walk(0, 2);
+        let curSpecDesc = cursor.walk(1, 0).walk(0, 2);
         let specClass = curSpecDesc.move(-8, 0).cell().attr('class');
         while (true) {
           const specCell = curSpecDesc.move(-8, 0).cell();
@@ -66,19 +65,13 @@ function getSkills() {
             break;
           }
           const specNameClean = titleCase(specName).replace('†', '').trim();
-          const specSkillObj = Object.assign({}, skillObj, {
-            name: `${skillObj.name} [${specNameClean}]`,
-          });
-          // Push object
-          skills.push(specSkillObj);
+          skillObj.specs.push(specNameClean);
           // Walk towards the next description
           curSpecDesc = curSpecDesc.walk(0, 1);
         }
       }
-      else {
-        // Push object
-        skills.push(skillObj);
-      }
+      // Push object
+      skills.push(skillObj);
     });
 
   return skills;
