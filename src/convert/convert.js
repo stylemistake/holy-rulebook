@@ -1,6 +1,17 @@
 const definitions = require('./definitions');
 const Converter = require('./Converter.js');
 
-const converter = new Converter(definitions, `${__dirname}/HE2E/`);
+function getRulebookJson() {
+  const converter = new Converter(definitions, `${__dirname}/HE2E/`);
+  return converter.convert();
+}
 
-console.log(JSON.stringify(converter.convert(), null, 2));
+module.exports = {
+  getRulebookJson,
+};
+
+// If running this file directly
+if (require.main === module) {
+  const obj = getRulebookJson();
+  console.log(JSON.stringify(obj, null, 2));
+}
