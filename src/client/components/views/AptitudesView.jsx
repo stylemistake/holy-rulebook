@@ -46,23 +46,31 @@ export default class AptitudeView extends Component {
       .map(x => ({ text: x, value: x }));
     return (
       <div>
-        <div>
-          <strong>Aptitudes:</strong>
-          {aptitudes.map((name) => {
-            return (
-              <div key={name}>
-                {name}
-                <Icon className="clickable" name="delete"
+        <table className="GenericTable">
+          <thead>
+            <tr>
+              <th>Aptitudes</th>
+              <th />
+            </tr>
+          </thead>
+          <tbody>
+            {aptitudes.map((name) => (
+              <tr key={name}>
+                <td>{name}</td>
+                <td className="clickable"
                   onClick={() => {
                     dispatch({
                       type: 'APTITUDE_REMOVE',
                       payload: { name },
                     });
-                  }} />
-              </div>
-            );
-          })}
-        </div>
+                  }}>
+                  <i className="icon delete fitted" />
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className="ui divider" />
         <Dropdown selection
           placeholder="Aptitude"
           options={options}
