@@ -18,6 +18,7 @@ module.exports = {
     {
       name: "examples",
       type: "html",
+      seperator: "<br>",
       marker: "td.s30",
       horizontalOffset: 1,
       verticalOffset: 1,

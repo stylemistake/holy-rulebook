@@ -6,24 +6,33 @@ class Converter {
   constructor(definitions, rulebookDirectory) {
     this.definitions = definitions;
     this.rulebookDirectory = rulebookDirectory;
+    this.baseHandler = this.baseHandler.bind(this);
   }
 
-  processAttribure(definition, object, baseRow) {
-    let row = baseRow;
-    if (definition.verticalOffset) {
-      let counter = 0;
-      while (counter !== definition.verticalOffset) {
-        if (definition.verticalOffset > 0) {
-          row = row.next();
-          counter++;
-        } else {
-          row = row.prev();
-          counter--;
-        }
+  applyOffset(offset, baseElement) {
+    let element = baseElement;
+    let counter = 0;
+    while (counter !== offset) {
+      if (offset > 0) {
+        element = element.next();
+        counter++;
+      } else {
+        element = element.prev();
+        counter--;
       }
     }
-    if (['text', 'html'].includes(definition.type)) {
-      object[definition.name] = this.extractValue(definition, row);
+    return element;
+  }
+
+  //TODO decompose this functionality into class
+  processAttribure(baseDefinition, object, baseRow) {
+    let row = baseRow;
+    let definition = Object.assign({}, baseDefinition);
+    if (definition.verticalOffset) {
+      row = this.applyOffset(definition.verticalOffset, baseRow);
+    }
+    if (['text', 'html', 'encodedSet'].includes(definition.type)) {
+      object[definition.name] = this.extractValue(definition, this.getValue(definition, row));
     } else if (['set'].includes(definition.type)) {
       //TODO handle horizontal set direction
       if (definition.count || definition.stopMarker) {
@@ -39,7 +48,8 @@ class Converter {
             ) {
             finished = true;
           }
-          if (this.checkIfValueMatches(definition, row)) {
+          const value = this.getValue(definition, row);
+          if (this.checkIfValueMatches(definition, value)) {
             if (definition.attributes) {
               let newNestedObject = {};
               object[definition.name].push(newNestedObject);
@@ -47,11 +57,15 @@ class Converter {
                 this.processAttribure(attribute, newNestedObject, row);
               });
             } else {
-              object[definition.name].push(this.extractValue(definition, row));
+              object[definition.name].push(this.extractValue(definition, value));
             }
           }
           counter++;
-          row = row.next();
+          if (definition.direction === 'horizontal') {
+            definition.horizontalOffset = definition.horizontalOffset ? definition.horizontalOffset + 1 : 1;
+          } else {
+            row = row.next();
+          }
         }
       } else {
         console.error(`Attribute ${definition.type} is "set" but has no count nor stop marker.`);
@@ -62,9 +76,19 @@ class Converter {
   }
 
   //TODO decompose this functionality into class
-  checkIfValueMatches(definition, row) {
-    const horizontalOffset = definition.horizontalOffset ? definition.horizontalOffset : 0;
-    let value = row.children(definition.marker).eq(horizontalOffset).text();
+  getValue(definition, row) {
+    let element = row.children(definition.marker).first();
+    if (definition.horizontalOffset) {
+      element = this.applyOffset(definition.horizontalOffset, element);
+    }
+    if (definition.type === 'html') {
+      return element.html() ? element.html() : element.text();
+    }
+    return element.text();
+  }
+
+  //TODO decompose this functionality into class
+  checkIfValueMatches(definition, value) {
     if (value.trim()) {
       if (definition.contentMatcher) {
         const regexp = new RegExp(definition.contentMatcher);
@@ -79,34 +103,45 @@ class Converter {
   }
 
   //TODO decompose this functionality into class
-  extractValue(definition, row) {
-    const horizontalOffset = definition.horizontalOffset ? definition.horizontalOffset : 0;
-    let value = row.children(definition.marker).eq(horizontalOffset).text();
-    if (definition.type !== 'html') {
+  extractValue(definition, text) {
+    let value = text;
+    if (definition.seperator) {
+      value = value.split(definition.seperator).map(string => string.trim().toLowerCase());
+    } else if (definition.type !== 'html') {
       value = value.trim().toLowerCase().replace('†', '');
+      if (definition.contentFilter) {
+        const match = value.match(definition.contentFilter);
+        if(match){
+          value = match[0];
+        }
+      }
     } else {
       //TODO maybe encode html and/or wrap in some tag
     }
     return value;
   }
 
-  handlers() {
-    //TODO move handlers to seperate classes
-    return {
-      skills: (definition) => {
-        const data = fs.readFileSync(`${this.rulebookDirectory}${definition.sourceFile}`, 'utf8');
-        const sheet = cheerio.load(data);
-        const skills = [];
-        sheet(definition.containerMarker).find(definition.marker).each((index, element) => {
-          const baseRow = sheet(element).parent();
-          let skill = {};
-          for (let i = 0; i < definition.attributes.length; i++) {
-            this.processAttribure(definition.attributes[i], skill, baseRow);
-          }
-          skills.push(skill);
-        });
-        return skills;
+  //TODO move handlers to seperate classes
+  baseHandler(definition) {
+    const data = fs.readFileSync(`${this.rulebookDirectory}${definition.sourceFile}`, 'utf8');
+    const sheet = cheerio.load(data);
+    const skills = [];
+    sheet(definition.containerMarker).find(definition.marker).each((index, element) => {
+      const baseRow = sheet(element).parent();
+      let skill = {};
+      for (let i = 0; i < definition.attributes.length; i++) {
+        this.processAttribure(definition.attributes[i], skill, baseRow);
       }
+      skills.push(skill);
+    });
+    return skills;
+  }
+
+  handlers() {
+    return {
+      skills: this.baseHandler,
+      talents: this.baseHandler,
+      weapons: this.baseHandler,
     }
   }
 
