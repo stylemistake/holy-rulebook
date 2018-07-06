@@ -18,7 +18,7 @@ module.exports = {
     {
       name: "examples",
       type: "html",
-      seperator: "<br>",
+      separator: "<br>",
       marker: "td.s30",
       horizontalOffset: 1,
       verticalOffset: 1,
@@ -44,11 +44,11 @@ module.exports = {
       verticalOffset: 4,
     },
     {
-      name: "specialisations",
+      name: "specializations",
       type: "set",
       attributes: [
         {
-          name: "specialisation",
+          name: "name",
           type: "text",
           marker: "td.s11",
         },
@@ -69,7 +69,7 @@ module.exports = {
       type: "set",
       attributes: [
         {
-          name: "subskill",
+          name: "name",
           type: "text",
           marker: "td.s11",
         },

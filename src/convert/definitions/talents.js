@@ -13,7 +13,7 @@ module.exports = {
     {
       name: "prerequisites",
       type: "text",
-      seperator: ",",
+      separator: ",",
       marker: "td.s50, td.s60",
       horizontalOffset: -4,
     },

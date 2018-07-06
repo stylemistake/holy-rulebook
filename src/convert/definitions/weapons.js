@@ -13,7 +13,7 @@ module.exports = {
       name: "class",
       type: "text",
       marker: "td.s49",
-      seperator: ",",
+      separator: ",",
       horizontalOffset: 1,
     },
     {
@@ -26,7 +26,7 @@ module.exports = {
       name: "rateOfFire",
       type: "text",
       marker: "td.s49",
-      seperator: "/",
+      // separator: "/",
       horizontalOffset: 3,
     },
     {
@@ -66,7 +66,7 @@ module.exports = {
       name: "qualities",
       type: "text",
       marker: "td.s49",
-      seperator: ",",
+      separator: ",",
       horizontalOffset: 8,
     },
     {

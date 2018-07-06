@@ -105,8 +105,8 @@ class Converter {
   //TODO decompose this functionality into class
   extractValue(definition, text) {
     let value = text;
-    if (definition.seperator) {
-      value = value.split(definition.seperator).map(string => string.trim().toLowerCase());
+    if (definition.separator) {
+      value = value.split(definition.separator).map(string => string.trim().toLowerCase());
     } else if (definition.type !== 'html') {
       value = value.trim().toLowerCase().replace('†', '');
       if (definition.contentFilter) {
