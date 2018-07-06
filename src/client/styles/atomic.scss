@@ -1,26 +1,26 @@
 // Text transforms
 .text-capitalized {
-  text-transform: capitalize;
+  text-transform: capitalize !important;
 }
 
 .text-center {
-  text-align: center;
+  text-align: center !important;
 }
 
 .text-left {
-  text-align: left;
+  text-align: left !important;
 }
 
 .text-right {
-  text-align: right;
+  text-align: right !important;
 }
 
 .text-bold {
-  font-weight: bold;
+  font-weight: bold !important;
 }
 
 .text-italic {
-  font-style: italic;
+  font-style: italic !important;
 }
 
 // Flex
@@ -58,18 +58,18 @@
 
 // Clickable
 .clickable {
-  cursor: pointer;
+  cursor: pointer !important;
 }
 
 // Float
 .float-right {
-  float: right;
+  float: right !important;
 }
 
 .float-left {
-  float: left;
+  float: left !important;
 }
 
 .float-clear {
-  clear: both;
+  clear: both !important;
 }

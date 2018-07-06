@@ -30,13 +30,13 @@ export default class CharacterSheet extends PureComponent {
         value={character.get('name')}
         onChange={this.getValueUpdater(['name'])} />
       <Flex spread={true}>
-        <ValueWidget title="Damage" color="red"
-          value={character.getIn(['state', 'damage'])}
-          onChange={this.getValueUpdater(['state', 'damage'])} />
+        <ValueWidget title="Wounds" color="red"
+          value={character.getIn(['state', 'wounds'])}
+          onChange={this.getValueUpdater(['state', 'wounds'])} />
         <ValueWidget title="Fatigue" color="orange"
           value={character.getIn(['state', 'fatigue'])}
           onChange={this.getValueUpdater(['state', 'fatigue'])} />
-        <ValueWidget title="Corruption" color="yellow"
+        <ValueWidget title="Corrup." color="yellow"
           value={character.getIn(['state', 'corruption'])}
           onChange={this.getValueUpdater(['state', 'corruption'])} />
         <ValueWidget title="Stress" color="green"
@@ -47,26 +47,29 @@ export default class CharacterSheet extends PureComponent {
           onChange={this.getValueUpdater(['state', 'fate'])} />
         <ValueWidget title="XP" color="blue"
           editable={false}
-          value={character.getXP()}
+          value={character.getAvailableXp()}
           onClick={() => dispatch(actions.openDetailsPane('xp'))} />
+        <ValueWidget title="Influence"
+          value={character.getIn(['state', 'influence'])}
+          onChange={this.getValueUpdater(['state', 'influence'])} />
       </Flex>
       <Flex>
         <ListWidget title="Characteristics"
           onClick={() => {
             dispatch(actions.openDetailsPane('characteristics'));
           }}>
-          {character.getCharcs().map((x) => {
+          {character.getCharacteristics().map(charc => {
             return <ListWidgetItem
-              key={x.get('id')}
-              name={x.get('name')}
-              value={x.get('value')} />;
+              key={charc.id}
+              name={charc.name}
+              value={charc.value} />;
           })}
         </ListWidget>
         <ListWidget title="Aptitudes"
           onClick={() => {
             dispatch(actions.openDetailsPane('aptitudes'));
           }}>
-          {character.get('aptitudes').map((x) => {
+          {character.get('aptitudes').map(x => {
             return <ListWidgetItem key={x} name={x} />;
           })}
         </ListWidget>

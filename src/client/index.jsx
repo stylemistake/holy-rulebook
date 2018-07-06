@@ -33,9 +33,17 @@ function renderLayout() {
   }
 }
 
-// Hot module reload
+// Make Layout component hot reloadable
 if (module.hot) {
   module.hot.accept('./Layout.jsx', renderLayout);
+}
+
+// Make data structures hot reloadable (a bit hacky)
+if (module.hot) {
+  module.hot.accept('./actions.js', () => {
+    const actions = require('./actions.js');
+    store.dispatch(actions.loadState());
+  });
 }
 
 // Update listener

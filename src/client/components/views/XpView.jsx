@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Button, Input, Icon } from 'semantic-ui-react';
+import { Form } from 'semantic-ui-react';
 import * as selectors from '../../selectors.js';
 
 @connect(state => {
@@ -13,68 +13,116 @@ export default class XpView extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      value: '',
+      amount: '',
+      desc: '',
     };
   }
 
   render() {
     const { dispatch, params, character } = this.props;
+
+    const XP_GRANT_FORM = (
+      <Form
+        onSubmit={() => {
+          const amount = parseInt(this.state.amount, 10);
+          const desc = this.state.desc || undefined;
+          if (!amount) {
+            return;
+          }
+          dispatch({
+            type: 'XP_GRANT',
+            payload: { amount, desc },
+          });
+          this.setState({
+            amount: '',
+            desc: '',
+          });
+        }}>
+        <Form.Group widths="equal">
+          <Form.Input
+            label="Amount"
+            placeholder="Example: 300"
+            value={this.state.amount}
+            onChange={(e, data) => {
+              this.setState({ amount: data.value });
+            }} />
+          <Form.Input
+            label="Description"
+            placeholder="Example: Session #1 / Starting XP"
+            value={this.state.desc}
+            onChange={(e, data) => {
+              this.setState({ desc: data.value });
+            }} />
+        </Form.Group>
+        <Form.Button fluid primary
+          type="submit"
+          content="Grant XP" />
+      </Form>
+    );
+
+    const XP_GRANT_TABLE = (
+      <table className="GenericTable">
+        <thead>
+          <tr>
+            <th>XP granted</th>
+            <th>Amount</th>
+            <th>Description</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          {character.getGrantedXpLogEntries().map(entry => (
+            <tr>
+              <th>{entry.get('type')}</th>
+              <td>{entry.get('amount')}</td>
+              <td>{entry.getIn(['payload', 'desc'])}</td>
+              <td className="clickable"
+                onClick={() => {
+                  dispatch({
+                    type: 'XP_LOG_REMOVE',
+                    payload: { entry },
+                  });
+                }}>
+                <i className="icon delete" />
+              </td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    );
+
+    const XP_SPENT_TABLE = (
+      <table className="GenericTable">
+        <thead>
+          <tr>
+            <th>XP spent</th>
+            <th></th>
+            <th>Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          {character.getSpentXpLogEntries().map(entry => {
+            const payloadType = entry.getIn(['payload', 'type']);
+            const payloadId = entry.getIn(['payload', 'id']);
+            return (
+              <tr>
+                <th>{payloadType}</th>
+                <th className="text-center">{payloadId}</th>
+                <td>{entry.get('amount')}</td>
+              </tr>
+            );
+          })}
+        </tbody>
+      </table>
+    );
+
     return (
-      <div>
-        <strong>XP granted:</strong>
-        {character.get('xpLog').map((x, i) => {
-          const amount = x.get('amount');
-          if (!amount || amount < 0) {
-            return null;
-          }
-          return (
-            <div key={i}>
-              {amount}
-              <Icon className="clickable" name="delete"
-                onClick={() => {
-                  dispatch({
-                    type: 'XP_LOG_REMOVE',
-                    payload: { index: i },
-                  });
-                }} />
-            </div>
-          );
-        })}
-        <strong>XP spent:</strong>
-        {character.get('xpLog').map((x, i) => {
-          const amount = x.get('amount');
-          if (amount >= 0) {
-            return null;
-          }
-          return (
-            <div key={i}>
-              {amount}
-              <Icon className="clickable" name="delete"
-                onClick={() => {
-                  dispatch({
-                    type: 'XP_LOG_REMOVE',
-                    payload: { index: i },
-                  });
-                }} />
-            </div>
-          );
-        })}
-        <Input value={this.state.value}
-          onChange={(e, data) => {
-            this.setState({ value: data.value });
-          }} />
-        <Button content="Grant"
-          onClick={() => {
-            const amount = parseInt(this.state.value, 10);
-            if (!amount) {
-              return;
-            }
-            dispatch({
-              type: 'XP_LOG_APPEND',
-              payload: { amount },
-            });
-            this.setState({ value: '' });
-          }} />
+      <div className="XpView">
+        {XP_GRANT_FORM}
+        <div className="ui divider" />
+        {XP_GRANT_TABLE}
+        <div className="ui divider" />
+        {XP_SPENT_TABLE}
       </div>
     );
   }
