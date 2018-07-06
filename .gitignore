@@ -48,3 +48,6 @@ Thumbs.db
 /*.patch
 /*.tar.*
 /*.zip
+
+## Generated rulebook
+/public/rulebook.json

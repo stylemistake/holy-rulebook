@@ -32,9 +32,16 @@ task_clean() {
   exit ${?}
 }
 
+## Convert HE2E to JSON
+task_convert() {
+  yarn install
+  exec node src/convert/convert.js "${@}"
+}
+
 ## Parse args
 [[ ${1} == '--dev' ]] && task_serve
 [[ ${1} == '--build' ]] && task_build
 [[ ${1} == '--clean' ]] && task_clean
+[[ ${1} == '--convert' ]] && task_convert
 
 task_default
