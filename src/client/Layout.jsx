@@ -8,12 +8,9 @@ import * as selectors from './selectors.js';
 import {
   CharacterSheet,
   DetailsPane,
-  Section,
   Sidebar,
   SidebarItem,
   SidebarItemIcon,
-  SkillCard,
-  SkillTable,
 } from './components';
 
 import { TextWidget } from './components/widgets';
@@ -87,11 +84,6 @@ export default class Layout extends PureComponent {
               }} />
             </SidebarItem>
           })}
-          {/*
-          <SidebarItem group={true} title="Table of contents">
-            <SidebarItem title="TODO" />
-          </SidebarItem>
-          */}
           <SidebarItem group={true} title="Settings">
             <SidebarItem title="Purge state"
               onClick={() => dispatch(actions.purgeState())} />
@@ -113,17 +105,6 @@ export default class Layout extends PureComponent {
               </div>
             </TextWidget>
           )}
-          {/*
-          {sections
-            .filter((section) => {
-              const title = section.title.toLowerCase();
-              const query = this.state.searchText.toLowerCase();
-              return title.includes(query);
-            })
-            .map((section) => <Section key={section.id} item={section} />)}
-          <SkillCard item={acrobatics} />
-          <SkillTable skills={skills} />
-          */}
         </div>
 
         <DetailsPane className="Layout__details" />

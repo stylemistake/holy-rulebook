@@ -9,14 +9,14 @@ export NODE_ENV='local'
 task_default() {
   yarn install
   export NODE_ENV='production'
-  exec node --experimental-modules src/http/server.mjs "${@}"
+  exec node --experimental-modules src/server/index.mjs "${@}"
 }
 
 ## Development server
 task_serve() {
   yarn install
   rm -rf public/bundles
-  exec node --experimental-modules src/http/server.mjs "${@}"
+  exec node --experimental-modules src/server/index.mjs "${@}"
 }
 
 ## Build the client bundle
