@@ -1,10 +1,8 @@
-'use strict';
-
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 import configureStore from './configureStore.js';
-import { loadState, saveState } from './actions.js';
+import * as actions from './actions.js';
 import { debounce } from 'lodash';
 
 import './styles/index.scss';
@@ -54,7 +52,7 @@ function updateListener() {
   const updatedAt = state.get('updatedAt');
   // Dispatch a save action
   if (updatedAt > lastUpdatedAt) {
-    store.dispatch(saveState(state));
+    store.dispatch(actions.saveState(state));
   }
   // Update the timestamp
   lastUpdatedAt = updatedAt;
@@ -64,7 +62,9 @@ window.addEventListener('load', () => {
   // Render the layout
   renderLayout();
   // Load state from the memory
-  store.dispatch(loadState());
+  store.dispatch(actions.loadState());
+  // Load rulebook
+  store.dispatch(actions.loadRulebook());
   // Subscribe for updates (with debounce)
   store.subscribe(_.debounce(updateListener, 100));
 });

@@ -9,6 +9,7 @@ const storage = new Storage();
 export const actionTypes = {
   LOAD_STATE: 'LOAD_STATE',
   SAVE_STATE: 'SAVE_STATE',
+  LOAD_RULEBOOK: 'LOAD_RULEBOOK',
   CREATE_GAME_STATE: 'CREATE_GAME_STATE',
   SELECT_GAME_STATE: 'SELECT_GAME_STATE',
   CREATE_CHARACTER: 'CREATE_CHARACTER',
@@ -107,6 +108,17 @@ export function purgeState() {
   return async (dispatch) => {
     storage.purge();
     window.location.reload();
+  };
+}
+
+export function loadRulebook() {
+  return async (dispatch) => {
+    const res = await fetch('/rulebook');
+    const rulebook = await res.json();
+    dispatch({
+      type: actionTypes.LOAD_RULEBOOK,
+      payload: { rulebook },
+    });
   };
 }
 

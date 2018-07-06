@@ -31,6 +31,12 @@ export default function globalReducer(state = INITIAL_STATE, action) {
     return state;
   }
 
+  if (type === actionTypes.LOAD_RULEBOOK) {
+    return state.merge({
+      rulebook: payload.rulebook,
+    });
+  }
+
   if (type === actionTypes.CREATE_GAME_STATE) {
     const gameState = GameState.make();
     return markStateAsUpdated(state)
