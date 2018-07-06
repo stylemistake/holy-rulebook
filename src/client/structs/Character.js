@@ -164,7 +164,7 @@ export default class Character extends RecordFactory {
   }
 
   refundCharacteristic(id) {
-
+    return this.refundXp({ type: 'charc', id });
   }
 
   getAvailableXp() {
@@ -210,7 +210,7 @@ export default class Character extends RecordFactory {
     return this.updateIn(['xpLog'], x => x.push(entry));
   }
 
-  refundXp(amount, payload) {
+  refundXp(payload) {
     return this.updateIn(['xpLog'], xpLog => {
       const lastEntryIndex = xpLog.findLastKey(x => {
         return x.get('type') === 'spend'

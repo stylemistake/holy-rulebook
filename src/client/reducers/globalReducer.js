@@ -2,7 +2,7 @@ import { fromJS, Map, OrderedMap, Record } from 'immutable';
 import { actionTypes } from '../actions.js';
 import GameState from '../structs/GameState.js';
 import characterReducer from './characterReducer.js';
-import { unhandledAction } from './utils.js';
+import { unhandledAction } from './index.js';
 
 const INITIAL_STATE = OrderedMap({
   updatedAt: null,
@@ -91,5 +91,5 @@ export default function globalReducer(state = INITIAL_STATE, action) {
       });
   }
 
-  return unhandledAction(state, action);
+  return unhandledAction(state, action, 'globalReducer');
 }

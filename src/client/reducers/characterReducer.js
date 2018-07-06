@@ -1,6 +1,6 @@
 import { fromJS, Map, OrderedMap, Record } from 'immutable';
 import { actionTypes } from '../actions.js';
-import { unhandledAction } from './utils.js';
+import { unhandledAction } from './index.js';
 
 export default function characterReducer(character, action) {
   const { type, payload } = action;
@@ -35,7 +35,11 @@ export default function characterReducer(character, action) {
     return character.buyCharacteristic(payload.id);
   }
 
-  return unhandledAction(state, action);
+  if (type === actionTypes.XP_REFUND_CHARACTERISTIC) {
+    return character.refundCharacteristic(payload.id);
+  }
+
+  return unhandledAction(state, action, 'characterReducer');
 }
 
 characterReducer.acceptedTypes = [
@@ -44,4 +48,5 @@ characterReducer.acceptedTypes = [
   actionTypes.APTITUDE_APPEND,
   actionTypes.APTITUDE_REMOVE,
   actionTypes.XP_BUY_CHARACTERISTIC,
+  actionTypes.XP_REFUND_CHARACTERISTIC,
 ];
