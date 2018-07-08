@@ -1,13 +1,13 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import * as actions from '../actions.js';
-import * as selectors from '../selectors.js';
+import { actions, selectors } from '../state';
 import { classes } from '../utils.js';
 
-// Views
-import CharacteristicsView from './views/CharacteristicsView.jsx';
-import XpView from './views/XpView.jsx';
-import AptitudesView from './views/AptitudesView.jsx';
+import {
+  CharacterAptitudes,
+  CharacterCharacteristics,
+  CharacterXp,
+} from '../views';
 
 function DetailsPane(props) {
   const { dispatch, state } = props;
@@ -50,21 +50,21 @@ function router(state) {
   if (route === 'characteristics') {
     return {
       title: 'Characteristics',
-      component: <CharacteristicsView {...props} />,
+      component: <CharacterCharacteristics {...props} />,
     };
   }
 
   if (route === 'xp') {
     return {
       title: 'XP granted/spent',
-      component: <XpView {...props} />,
+      component: <CharacterXp {...props} />,
     };
   }
 
   if (route === 'aptitudes') {
     return {
       title: 'Aptitudes',
-      component: <AptitudesView {...props} />,
+      component: <CharacterAptitudes {...props} />,
     };
   }
 

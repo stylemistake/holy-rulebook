@@ -1,30 +1,36 @@
-import React, { PureComponent, Fragment } from 'react';
+import React, { Component, Fragment } from 'react';
 import Markdown from 'react-remarkable';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actions, selectors, Character } from '../state';
 import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
-} from './widgets';
-import * as actions from '../actions.js';
-import * as selectors from '../selectors.js';
+} from '../widgets';
 
 const SKILL_TIERS = ['-20', '', '+10', '+20', '+30', '+40'];
 
-@connect()
-export default class CharacterSheet extends PureComponent {
+@connect((state, props) => ({
+  character: selectors.getCharacter(state, props.characterId),
+}), dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
+}))
+export default class CharacterSheet extends Component {
 
   /**
    * Returns an onChange handler
    */
   getValueUpdater(path) {
-    const { character, dispatch } = this.props;
+    const { character, actions } = this.props;
     return (value) => {
-      const id = character.get('id');
-      dispatch(actions.updateCharacterValue(id, path, value));
+      const characterId = character.get('id');
+      actions.updateCharacterValue(characterId, path, value);
     };
   }
 
   render() {
-    const { character, dispatch } = this.props;
+    const { character, actions } = this.props;
+    const characteristics = Character.getCharacteristics(character);
+    const aptitudes = character.get('aptitudes');
     return <Fragment>
       <ValueWidget title="Character name"
         value={character.get('name')}
@@ -47,18 +53,16 @@ export default class CharacterSheet extends PureComponent {
           onChange={this.getValueUpdater(['state', 'fate'])} />
         <ValueWidget title="XP" color="blue"
           editable={false}
-          value={character.getAvailableXp()}
-          onClick={() => dispatch(actions.openDetailsPane('xp'))} />
+          value={Character.getAvailableXp(character)}
+          onClick={() => actions.openDetailsPane('xp')} />
         <ValueWidget title="Influence"
           value={character.getIn(['state', 'influence'])}
           onChange={this.getValueUpdater(['state', 'influence'])} />
       </Flex>
       <Flex>
         <ListWidget title="Characteristics"
-          onClick={() => {
-            dispatch(actions.openDetailsPane('characteristics'));
-          }}>
-          {character.getCharacteristics().map(charc => {
+          onClick={() => actions.openDetailsPane('characteristics')}>
+          {characteristics.map(charc => {
             return <ListWidgetItem
               key={charc.id}
               name={charc.name}
@@ -66,10 +70,8 @@ export default class CharacterSheet extends PureComponent {
           })}
         </ListWidget>
         <ListWidget title="Aptitudes"
-          onClick={() => {
-            dispatch(actions.openDetailsPane('aptitudes'));
-          }}>
-          {character.get('aptitudes').map(x => {
+          onClick={() => actions.openDetailsPane('aptitudes')}>
+          {aptitudes.map(x => {
             return <ListWidgetItem key={x} name={x} />;
           })}
         </ListWidget>

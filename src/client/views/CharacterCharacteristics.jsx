@@ -1,17 +1,21 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
-import * as selectors from '../../selectors.js';
-import { mapValueToColorScale } from '../../color.js';
+import { bindActionCreators } from 'redux';
+import { actions, selectors, Character } from '../state';
+import { mapValueToColorScale } from '../color.js';
 
-@connect(state => {
-  return {
-    character: selectors.getActiveCharacter(state),
-  };
-})
-export default class CharacteristicsView extends Component {
+@connect(state => ({
+  character: selectors.getActiveCharacter(state),
+  // TODO: Move characterId to props
+  characterId: state.get('activeCharacterId'),
+}), dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
+}))
+export default class CharacterCharacteristics extends Component {
 
   render() {
-    const { params, character, dispatch } = this.props;
+    const { actions, params, character, characterId } = this.props;
+    const characteristics = Character.getCharacteristics(character);
     return (
       <div className="CharacteristicsView">
         <table className="GenericTable">
@@ -27,19 +31,14 @@ export default class CharacteristicsView extends Component {
             </tr>
           </thead>
           <tbody>
-            {character.getCharacteristics().map(charc => (
+            {characteristics.map(charc => (
               <tr key={charc.id}>
                 <th>{charc.name}</th>
-                <th className="GenericTable__statistic text-center">{charc.value}</th>
+                <th className="GenericTable__statistic text-center">
+                  {charc.value}
+                </th>
                 <td className="clickable"
-                  onClick={() => {
-                    dispatch({
-                      type: 'XP_REFUND_CHARACTERISTIC',
-                      payload: {
-                        id: charc.id,
-                      },
-                    });
-                  }}>
+                  onClick={() => actions.refundCharacteristic(characterId, charc.id)}>
                   <i className="icon minus fitted" />
                 </td>
                 <td className="text-center"
@@ -53,14 +52,7 @@ export default class CharacteristicsView extends Component {
                   {charc.cost || '--'}
                 </td>
                 <td className="clickable"
-                  onClick={() => {
-                    dispatch({
-                      type: 'XP_BUY_CHARACTERISTIC',
-                      payload: {
-                        id: charc.id,
-                      },
-                    });
-                  }}>
+                  onClick={() => actions.buyCharacteristic(characterId, charc.id)}>
                   <i className="icon plus fitted" />
                 </td>
                 <td>{charc.aptitudes.join(', ')}</td>

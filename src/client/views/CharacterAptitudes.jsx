@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actions, selectors } from '../state';
 import { Button, Dropdown, Icon } from 'semantic-ui-react';
-import * as selectors from '../../selectors.js';
 
 const APTITUDE_LIST = [
   'Agility',
@@ -24,12 +25,14 @@ const APTITUDE_LIST = [
   'Willpower',
 ];
 
-@connect(state => {
-  return {
-    character: selectors.getActiveCharacter(state),
-  };
-})
-export default class AptitudeView extends Component {
+@connect(state => ({
+  character: selectors.getActiveCharacter(state),
+  // TODO: Move characterId to props
+  characterId: state.get('activeCharacterId'),
+}), dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
+}))
+export default class CharacterAptitudes extends Component {
 
   constructor(props) {
     super(props);
@@ -39,7 +42,7 @@ export default class AptitudeView extends Component {
   }
 
   render() {
-    const { dispatch, params, character } = this.props;
+    const { actions, params, character, characterId } = this.props;
     const aptitudes = character.get('aptitudes');
     const options = APTITUDE_LIST
       .filter(x => !aptitudes.includes(x))
@@ -58,12 +61,7 @@ export default class AptitudeView extends Component {
               <tr key={name}>
                 <td>{name}</td>
                 <td className="clickable"
-                  onClick={() => {
-                    dispatch({
-                      type: 'APTITUDE_REMOVE',
-                      payload: { name },
-                    });
-                  }}>
+                  onClick={() => actions.removeAptitude(characterId, name)}>
                   <i className="icon delete fitted" />
                 </td>
               </tr>
@@ -87,10 +85,7 @@ export default class AptitudeView extends Component {
             if (aptitudes.includes(value)) {
               return;
             }
-            dispatch({
-              type: 'APTITUDE_APPEND',
-              payload: { name: value },
-            });
+            actions.addAptitude(characterId, value);
             this.setState({ value: '' });
           }} />
       </div>

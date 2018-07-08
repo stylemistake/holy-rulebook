@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
+import { actions, selectors, Character } from '../state';
 import { Form } from 'semantic-ui-react';
-import * as selectors from '../../selectors.js';
 
-@connect(state => {
-  return {
-    character: selectors.getActiveCharacter(state),
-  };
-})
-export default class XpView extends Component {
+@connect(state => ({
+  character: selectors.getActiveCharacter(state),
+  // TODO: Move characterId to props
+  characterId: state.get('activeCharacterId'),
+}), dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
+}))
+export default class CharacterXp extends Component {
 
   constructor(props) {
     super(props);
@@ -19,7 +22,9 @@ export default class XpView extends Component {
   }
 
   render() {
-    const { dispatch, params, character } = this.props;
+    const { actions, params, character, characterId } = this.props;
+    const grantedXpEntries = Character.getGrantedXpLogEntries(character);
+    const spentXpEntries = Character.getSpentXpLogEntries(character);
 
     const XP_GRANT_FORM = (
       <Form
@@ -29,10 +34,7 @@ export default class XpView extends Component {
           if (!amount) {
             return;
           }
-          dispatch({
-            type: 'XP_GRANT',
-            payload: { amount, desc },
-          });
+          actions.grantXp(characterId, amount, desc);
           this.setState({
             amount: '',
             desc: '',
@@ -71,18 +73,13 @@ export default class XpView extends Component {
           </tr>
         </thead>
         <tbody>
-          {character.getGrantedXpLogEntries().map(entry => (
-            <tr>
+          {grantedXpEntries.map(entry => (
+            <tr key={entry.hashCode()}>
               <th>{entry.get('type')}</th>
               <td>{entry.get('amount')}</td>
               <td>{entry.getIn(['payload', 'desc'])}</td>
               <td className="clickable"
-                onClick={() => {
-                  dispatch({
-                    type: 'XP_LOG_REMOVE',
-                    payload: { entry },
-                  });
-                }}>
+                onClick={() => actions.removeXpLogEntry(characterId, entry)}>
                 <i className="icon delete" />
               </td>
             </tr>
@@ -101,11 +98,11 @@ export default class XpView extends Component {
           </tr>
         </thead>
         <tbody>
-          {character.getSpentXpLogEntries().map(entry => {
+          {spentXpEntries.map(entry => {
             const payloadType = entry.getIn(['payload', 'type']);
             const payloadId = entry.getIn(['payload', 'id']);
             return (
-              <tr>
+              <tr key={entry.hashCode()}>
                 <th>{payloadType}</th>
                 <th className="text-center">{payloadId}</th>
                 <td>{entry.get('amount')}</td>

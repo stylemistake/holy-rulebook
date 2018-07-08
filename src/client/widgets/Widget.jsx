@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { classes } from '../../utils.js';
+import { classes } from '../utils.js';
 
 export default class Widget extends Component {
 

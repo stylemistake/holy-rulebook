@@ -1,18 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
-import configureStore from './configureStore.js';
-import * as actions from './actions.js';
+import createStore from './createStore.js';
+import { actions } from './state';
 import { debounce } from 'lodash';
 
 import './styles/index.scss';
 
 const MOUNT_NODE = document.querySelector('.react-root');
-const store = configureStore();
+const store = createStore();
 
 function renderLayout() {
   try {
-    const Layout = require('./Layout.jsx').default;
+    const Layout = require('./layout').Layout;
     const component = (
       <Provider store={store}>
         <Layout />
@@ -33,15 +33,7 @@ function renderLayout() {
 
 // Make Layout component hot reloadable
 if (module.hot) {
-  module.hot.accept('./Layout.jsx', renderLayout);
-}
-
-// Make data structures hot reloadable (a bit hacky)
-if (module.hot) {
-  module.hot.accept('./actions.js', () => {
-    const actions = require('./actions.js');
-    store.dispatch(actions.loadState());
-  });
+  module.hot.accept(['./layout', './state'], renderLayout);
 }
 
 // Update listener
@@ -50,12 +42,16 @@ let lastUpdatedAt = null;
 function updateListener() {
   const state = store.getState();
   const updatedAt = state.get('updatedAt');
+  // Set initial timestamp
+  if (!lastUpdatedAt) {
+    lastUpdatedAt = updatedAt;
+  }
   // Dispatch a save action
   if (updatedAt > lastUpdatedAt) {
     store.dispatch(actions.saveState(state));
+    // Update the timestamp
+    lastUpdatedAt = updatedAt;
   }
-  // Update the timestamp
-  lastUpdatedAt = updatedAt;
 }
 
 window.addEventListener('load', () => {
@@ -66,5 +62,5 @@ window.addEventListener('load', () => {
   // Load rulebook
   store.dispatch(actions.loadRulebook());
   // Subscribe for updates (with debounce)
-  store.subscribe(_.debounce(updateListener, 100));
+  store.subscribe(_.debounce(updateListener, 2500));
 });
