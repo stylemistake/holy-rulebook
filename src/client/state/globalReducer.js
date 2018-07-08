@@ -16,7 +16,7 @@ function actionLogger(state, action) {
   return state;
 }
 
-function rootReducer(state = INITIAL_STATE, action) {
+function globalReducer(state = INITIAL_STATE, action) {
   const { type, payload, meta } = action;
 
   if (type === 'LOAD_STATE') {
@@ -70,7 +70,7 @@ function updatedAtReducer(state, action) {
 
 export default chainReducers([
   actionLogger,
-  rootReducer,
+  globalReducer,
   // Scoped reducers
   gameStateReducer,
   characterReducer,

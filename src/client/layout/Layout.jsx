@@ -8,15 +8,23 @@ import Sidebar from './Sidebar.jsx';
 import SidebarItem from './SidebarItem.jsx';
 import SidebarItemIcon from './SidebarItemIcon.jsx';
 
-@connect(state => {
-  return {
-    gameStates: selectors.getGameStates(state),
-    activeGameState: selectors.getActiveGameState(state),
-    characters: selectors.getActiveGameStateCharacters(state),
-    activeCharacter: selectors.getActiveCharacter(state),
-  };
-})
+import * as relayActions from '../state/relayActions.js';
+
+@connect(state => ({
+  gameStates: selectors.getGameStates(state),
+  activeGameState: selectors.getActiveGameState(state),
+  characters: selectors.getActiveGameStateCharacters(state),
+  activeCharacter: selectors.getActiveCharacter(state),
+}))
 export default class Layout extends Component {
+
+  componentDidMount() {
+    this.props.dispatch(relayActions.connectToRelay());
+  }
+
+  componentWillUnmount() {
+    this.props.dispatch(relayActions.disconnectFromRelay());
+  }
 
   render() {
     const {

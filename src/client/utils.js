@@ -171,4 +171,12 @@ export class EventEmitter {
     }
   }
 
+  clear() {
+    this.listeners = {};
+  }
+
+}
+
+export function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
 }

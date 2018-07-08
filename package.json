@@ -6,6 +6,7 @@
   "dependencies": {
     "cheerio": "^1.0.0-rc.2",
     "express": "^4.16.2",
+    "express-ws": "^4.0.0",
     "lodash": "^4.17.4"
   },
   "devDependencies": {
@@ -29,6 +30,7 @@
     "redbox-react": "^1.6.0",
     "redux": "^4.0.0",
     "redux-immutable": "^4.0.0",
+    "redux-semaphore": "^1.0.3",
     "redux-thunk": "^2.3.0",
     "sass-loader": "^7.0.2",
     "semantic-ui-css": "^2.3.2",

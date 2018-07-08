@@ -1,6 +1,7 @@
 import path from 'path';
 import http from 'http';
 import Express from 'express';
+import setupExpressWs from 'express-ws';
 import setupRoutes from './setupRoutes.mjs';
 
 // Get configuration
@@ -14,8 +15,14 @@ async function require(uri) {
 }
 
 async function setupServer() {
-  // Initialize the server
+  // Create Express app
   const app = new Express();
+
+  // Create HTTP server
+  const server = new http.Server(app);
+
+  // Setup websockets
+  setupExpressWs(app, server, {});
 
   // Define the folder that will be used for static assets
   app.use(Express.static('./public'));
@@ -30,7 +37,6 @@ async function setupServer() {
   setupRoutes(app);
 
   // Start the server
-  const server = new http.Server(app);
   server.listen(port, (err) => {
     if (err) {
       throw err;

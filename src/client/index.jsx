@@ -62,5 +62,5 @@ window.addEventListener('load', () => {
   // Load rulebook
   store.dispatch(actions.loadRulebook());
   // Subscribe for updates (with debounce)
-  store.subscribe(_.debounce(updateListener, 2500));
+  store.subscribe(_.debounce(updateListener, 500));
 });
