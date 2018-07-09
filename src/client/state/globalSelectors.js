@@ -1,4 +1,4 @@
-import { OrderedMap, getIn } from 'immutable';
+import { List } from 'immutable';
 
 export function getGameStates(state) {
   return state.get('gameStates').toList();
@@ -14,6 +14,9 @@ export function getActiveGameStateCharacters(state) {
   const characterIds = state.getIn([
     'gameStates', gameStateId, 'characters',
   ]);
+  if (!characterIds) {
+    return List();
+  }
   return getCharacters(state)
     .filter((character) => characterIds.has(character.get('id')));
 }

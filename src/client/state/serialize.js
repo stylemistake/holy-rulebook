@@ -1,4 +1,4 @@
-import { isKeyed } from 'immutable';
+import { isKeyed, fromJS } from 'immutable';
 import { testKeyPath, transformCollection } from '../utils.js';
 
 function pick(map, keys) {
@@ -16,6 +16,11 @@ const DEFAULT_PROPS = [
 export function serializeState(state, props = DEFAULT_PROPS) {
   const filteredState = pick(state, props);
   return transformCollection(filteredState, (value, path) => {
+    // Single objects
+    if (testKeyPath(path, '/gameState/characters')) {
+      return value.toArray();
+    }
+    // Full state objects
     if (testKeyPath(path, '/gameStates')) {
       return value.toIndexedSeq().toArray();
     }
@@ -33,6 +38,11 @@ export function serializeState(state, props = DEFAULT_PROPS) {
 
 export function deserializeState(obj) {
   return transformCollection(obj, (value, path) => {
+    // Single objects
+    if (testKeyPath(path, '/gameState/characters')) {
+      return value.toSet();
+    }
+    // Full state objects
     if (testKeyPath(path, '/gameStates')) {
       return value.toOrderedMap()
         .mapKeys((i, value) => value.get('id'));

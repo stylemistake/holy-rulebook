@@ -36,31 +36,31 @@ if (module.hot) {
   module.hot.accept(['./layout', './state'], renderLayout);
 }
 
-// Update listener
-// Saves changes when timestamp is newer than the previous one
-let lastUpdatedAt = null;
-function updateListener() {
-  const state = store.getState();
-  const updatedAt = state.get('updatedAt');
-  // Set initial timestamp
-  if (!lastUpdatedAt) {
-    lastUpdatedAt = updatedAt;
-  }
-  // Dispatch a save action
-  if (updatedAt > lastUpdatedAt) {
-    store.dispatch(actions.saveState(state));
-    // Update the timestamp
-    lastUpdatedAt = updatedAt;
-  }
-}
+// // Update listener
+// // Saves changes when timestamp is newer than the previous one
+// let lastUpdatedAt = null;
+// function updateListener() {
+//   const state = store.getState();
+//   const updatedAt = state.get('updatedAt');
+//   // Set initial timestamp
+//   if (!lastUpdatedAt) {
+//     lastUpdatedAt = updatedAt;
+//   }
+//   // Dispatch a save action
+//   if (updatedAt > lastUpdatedAt) {
+//     store.dispatch(actions.saveState(state));
+//     // Update the timestamp
+//     lastUpdatedAt = updatedAt;
+//   }
+// }
 
 window.addEventListener('load', () => {
   // Render the layout
   renderLayout();
-  // Load state from the memory
-  store.dispatch(actions.loadState());
   // Load rulebook
   store.dispatch(actions.loadRulebook());
-  // Subscribe for updates (with debounce)
-  store.subscribe(_.debounce(updateListener, 500));
+  // // Load state from the memory
+  // store.dispatch(actions.loadState());
+  // // Subscribe for updates (with debounce)
+  // store.subscribe(_.debounce(updateListener, 500));
 });

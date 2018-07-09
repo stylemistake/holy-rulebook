@@ -1,6 +1,7 @@
 import { fromJS, Map, OrderedMap, Record } from 'immutable';
 import characterReducer from './characterReducer.js';
 import gameStateReducer from './gameStateReducer.js';
+import relayReducer from './relayReducer.js';
 
 const INITIAL_STATE = OrderedMap({
   gameStates: OrderedMap(),
@@ -72,6 +73,7 @@ export default chainReducers([
   actionLogger,
   globalReducer,
   // Scoped reducers
+  relayReducer,
   gameStateReducer,
   characterReducer,
   // Meta

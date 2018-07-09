@@ -1,9 +1,14 @@
+function updateGameState(state, gameStateId, updater) {
+  return state.updateIn(['gameStates', gameStateId], updater);
+}
+
 export default function gameStateReducer(state, action) {
-  const { type, payload } = action;
+  const { type, payload, meta } = action;
 
   if (type === 'GAME_STATE_CREATE') {
     const { gameState } = payload;
-    return state.setIn(['gameStates', gameState.get('id')], gameState);
+    return state.setIn(['gameStates', gameState.get('id')],
+      gameState.set('updatedAt', meta.updatedAt));
   }
 
   if (type === 'GAME_STATE_SELECT') {
@@ -14,20 +19,25 @@ export default function gameStateReducer(state, action) {
   if (type === 'CHARACTER_CREATE') {
     const gameStateId = state.get('activeGameStateId');
     const { character } = payload;
-    return state.updateIn([
-      'gameStates', gameStateId, 'characters',
-    ], (characters) => {
-      return characters.add(character.get('id'));
+    return updateGameState(state, gameStateId, gameState => {
+      return gameState
+        .updateIn(['characters'], (characters) => {
+          return characters.add(character.get('id'));
+        })
+        .set('updatedAt', meta.updatedAt);
     });
   }
 
   if (type === 'CHARACTER_REMOVE') {
     const gameStateId = state.get('activeGameStateId');
     const { characterId } = payload;
-    return state.deleteIn([
-      'gameStates', gameStateId,
-      'characters', characterId,
-    ]);
+    return updateGameState(state, gameStateId, gameState => {
+      return gameState
+        .updateIn(['characters'], (characters) => {
+          return characters.delete(characterId);
+        })
+        .set('updatedAt', meta.updatedAt);
+    });
   }
 
   return state;

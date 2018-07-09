@@ -4,6 +4,9 @@ import Express from 'express';
 import setupExpressWs from 'express-ws';
 import setupRoutes from './setupRoutes.mjs';
 
+import { createLogger } from './logger.mjs';
+const logger = createLogger('setupServer');
+
 // Get configuration
 const port = process.env.PORT || 3000;
 const env = process.argv.includes('--dev') && 'local'
@@ -29,6 +32,7 @@ async function setupServer() {
 
   // Setup Webpack
   if (env === 'local') {
+    logger.log('Using webpack middleware');
     const setupWebpack = await require('./setupWebpack.mjs');
     setupWebpack(app);
   }
@@ -39,13 +43,14 @@ async function setupServer() {
   // Start the server
   server.listen(port, (err) => {
     if (err) {
-      throw err;
+      logger.error(err);
+      process.exit(1);
     }
-    console.info(`Server running on http://localhost:${port} [${env}]`);
+    logger.log(`Server running on http://localhost:${port} [${env}]`);
   });
 }
 
-setupServer().catch((e) => {
-  console.error(e);
+setupServer().catch((err) => {
+  logger.error(err);
   process.exit(1);
 });

@@ -15,8 +15,8 @@ export function selectGameState(gameStateId) {
   return {
     type: 'GAME_STATE_SELECT',
     payload: { gameStateId },
-    meta: {
-      updatedAt: Date.now(),
-    },
+    // meta: {
+    //   updatedAt: Date.now(),
+    // },
   };
 }

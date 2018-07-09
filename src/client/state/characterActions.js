@@ -15,9 +15,9 @@ export function selectCharacter(characterId) {
   return {
     type: 'CHARACTER_SELECT',
     payload: { characterId },
-    meta: {
-      updatedAt: Date.now(),
-    },
+    // meta: {
+    //   updatedAt: Date.now(),
+    // },
   };
 }
 
