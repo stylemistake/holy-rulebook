@@ -2,7 +2,7 @@ function updateGameState(state, gameStateId, updater) {
   return state.updateIn(['gameStates', gameStateId], updater);
 }
 
-export default function gameStateReducer(state, action) {
+export function gameStateReducer(state, action) {
   const { type, payload, meta } = action;
 
   if (type === 'GAME_STATE_CREATE') {

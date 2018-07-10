@@ -1,6 +1,6 @@
 import { Map, Set } from 'immutable';
-import { createUuid } from '../utils.js';
-import * as Character from './character.js';
+import { createUuid } from '../uuid.js';
+import * as Character from './characterClass.js';
 
 export function make() {
   const uuid = createUuid();

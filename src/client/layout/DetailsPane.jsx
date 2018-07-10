@@ -1,6 +1,6 @@
 import React, { Fragment } from 'react';
 import { connect } from 'react-redux';
-import { actions, selectors } from '../state';
+import { actions, selectors } from '../store';
 import { classes } from '../utils.js';
 
 import {

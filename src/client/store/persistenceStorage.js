@@ -1,7 +1,7 @@
 const DB_NAME = 'holy-rulebook-storage';
 const DB_STORE_NAME = 'persistence';
 
-export default class Storage {
+export class Storage {
 
   constructor() {
     this.db = null;

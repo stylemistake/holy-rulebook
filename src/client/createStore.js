@@ -1,17 +1,13 @@
-import { createStore as createReduxStore, applyMiddleware, compose } from 'redux';
-import thunk from 'redux-thunk';
-import { createSemaphoreMiddleware } from 'redux-semaphore';
-import { fromJS } from 'immutable';
-import { globalReducer } from './state';
+import { createStore as createReduxStore } from 'redux';
+import { applyMiddleware, compose } from 'redux';
+import { createReducer, createEnhancer } from './store';
 
 // Refer to https://github.com/flexdinesh/react-redux-boilerplate
 export default function createStore() {
-  const middlewares = [
-    thunk,
-    createSemaphoreMiddleware(),
-  ];
+  const middlewares = [];
   const enhancers = [
-    applyMiddleware(...middlewares),
+    // applyMiddleware(...middlewares),
+    createEnhancer(),
   ];
 
   // If Redux DevTools Extension is installed use it, otherwise use Redux compose
@@ -26,14 +22,14 @@ export default function createStore() {
     : compose;
 
   // Create store
-  const store = createReduxStore(globalReducer,
+  const store = createReduxStore(createReducer(),
     composeEnhancers(...enhancers));
 
   // Make reducers hot reloadable
   if (module.hot) {
-    module.hot.accept('./state', () => {
-      const { globalReducer } = require('./state');
-      store.replaceReducer(globalReducer);
+    module.hot.accept('./store', () => {
+      const { createReducer } = require('./store');
+      store.replaceReducer(createReducer());
     });
   }
 

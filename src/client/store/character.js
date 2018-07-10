@@ -1,10 +1,10 @@
-import * as Character from './character.js';
+import * as Character from './characterClass.js';
 
 function updateCharacter(state, characterId, updater) {
   return state.updateIn(['characters', characterId], updater);
 }
 
-export default function characterReducer(state, action) {
+export function characterReducer(state, action) {
   const { type, payload, meta } = action;
 
   if (type === 'CHARACTER_CREATE') {

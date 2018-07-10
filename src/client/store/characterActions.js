@@ -1,4 +1,4 @@
-import * as Character from './character.js';
+import * as Character from './characterClass.js';
 
 export function createCharacter() {
   const character = Character.make();

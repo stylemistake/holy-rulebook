@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react';
 import Markdown from 'react-remarkable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors, Character } from '../state';
+import { actions, selectors, Character } from '../store';
 import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
 } from '../widgets';

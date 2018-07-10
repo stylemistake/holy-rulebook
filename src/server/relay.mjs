@@ -22,12 +22,9 @@ class Client {
     return `[${this.id.substr(0, 7)}]`;
   }
 
-  sendMsg(type, payload) {
-    this.ws.send(JSON.stringify({
-      type,
-      payload,
-      time: Date.now() + this.timeOffset,
-    }));
+  sendMessage(type, payload) {
+    const time = Date.now() + this.timeOffset;
+    this.ws.send(JSON.stringify({ type, payload, time }));
   }
 
   canManage(obj) {
@@ -131,11 +128,11 @@ function handleMessage(client, msg) {
     logger.log(`Time offset: ${client.timeOffset}ms`);
     for (let gameState of gameStates.values()) {
       logger.log(`Pushing GameState to client ${client}`);
-      client.sendMsg('GAME_STATE', gameState);
+      client.sendMessage('GAME_STATE', gameState);
     }
     for (let character of characters.values()) {
       logger.log(`Pushing Character to client ${client}`);
-      client.sendMsg('CHARACTER', character);
+      client.sendMessage('CHARACTER', character);
     }
     return;
   }
@@ -169,7 +166,7 @@ function handleMessage(client, msg) {
       //   return;
       // }
       logger.log(`Pushing GameState to client ${_client}`);
-      _client.sendMsg('GAME_STATE', gameState);
+      _client.sendMessage('GAME_STATE', gameState);
     });
     return;
   }
@@ -203,7 +200,7 @@ function handleMessage(client, msg) {
       //   return;
       // }
       logger.log(`Pushing Character to client ${_client}`);
-      _client.sendMsg('CHARACTER', character);
+      _client.sendMessage('CHARACTER', character);
     });
     return;
   }

@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors, Character } from '../state';
+import { actions, selectors, Character } from '../store';
 import { mapValueToColorScale } from '../color.js';
 
 @connect(state => ({

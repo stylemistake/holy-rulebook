@@ -1,4 +1,4 @@
-import * as GameState from './gameState.js';
+import * as GameState from './gameStateClass.js';
 
 export function createGameState() {
   const gameState = GameState.make();

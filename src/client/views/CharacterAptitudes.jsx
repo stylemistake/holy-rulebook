@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors } from '../state';
+import { actions, selectors } from '../store';
 import { Button, Dropdown, Icon } from 'semantic-ui-react';
 
 const APTITUDE_LIST = [

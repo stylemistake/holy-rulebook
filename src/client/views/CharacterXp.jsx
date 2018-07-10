@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors, Character } from '../state';
+import { actions, selectors, Character } from '../store';
 import { Form } from 'semantic-ui-react';
 
 @connect(state => ({

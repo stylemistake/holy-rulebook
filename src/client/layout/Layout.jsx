@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { actions, selectors } from '../state';
+import { bindActionCreators } from 'redux';
+import { actions, selectors } from '../store';
 import { CharacterSheet } from '../views';
 
 import DetailsPane from './DetailsPane.jsx';
@@ -8,27 +9,18 @@ import Sidebar from './Sidebar.jsx';
 import SidebarItem from './SidebarItem.jsx';
 import SidebarItemIcon from './SidebarItemIcon.jsx';
 
-import * as relayActions from '../state/relayActions.js';
-
 @connect(state => ({
   gameStates: selectors.getGameStates(state),
   activeGameState: selectors.getActiveGameState(state),
   characters: selectors.getActiveGameStateCharacters(state),
   activeCharacter: selectors.getActiveCharacter(state),
+}), dispatch => ({
+  actions: bindActionCreators(actions, dispatch),
 }))
 export default class Layout extends Component {
-
-  componentDidMount() {
-    this.props.dispatch(relayActions.connectToRelay());
-  }
-
-  componentWillUnmount() {
-    this.props.dispatch(relayActions.disconnectFromRelay());
-  }
-
   render() {
     const {
-      dispatch,
+      actions,
       gameStates, activeGameState,
       characters, activeCharacter,
     } = this.props;
@@ -41,33 +33,27 @@ export default class Layout extends Component {
           <div className="header-item header-search">
             <input
               placeholder="Search..."
-              onChange={(e) => {
-                dispatch(actions.searchQuery(e.target.value))
-              }} />
+              onChange={(e) => actions.searchQuery(e.target.value)} />
           </div>
         </div>
 
         <div className="Layout__sidebar sidebar">
           <SidebarItem group={true} title="Gamestates">
-            <SidebarItemIcon icon="add" onClick={() => {
-              dispatch(actions.createGameState());
-            }} />
+            <SidebarItemIcon icon="add"
+              onClick={() => actions.createGameState()} />
           </SidebarItem>
           {gameStates.map((gameState) => {
             const id = gameState.get('id');
             return <SidebarItem key={id}
               title={gameState.get('name')}
               active={gameState === activeGameState}
-              onClick={() => {
-                dispatch(actions.selectGameState(id));
-              }}>
+              onClick={() => actions.selectGameState(id)}>
             </SidebarItem>
           })}
           {activeGameState && (
             <SidebarItem group={true} title="Characters">
-              <SidebarItemIcon icon="add" onClick={() => {
-                dispatch(actions.createCharacter());
-              }} />
+              <SidebarItemIcon icon="add"
+                onClick={() => actions.createCharacter()} />
             </SidebarItem>
           )}
           {characters.map((character) => {
@@ -75,18 +61,17 @@ export default class Layout extends Component {
             return <SidebarItem key={id}
               title={character.get('name')}
               active={activeCharacter === character}
-              onClick={() => {
-                dispatch(actions.selectCharacter(id));
-              }}>
-              <SidebarItemIcon icon="remove" onClick={(e) => {
-                dispatch(actions.removeCharacter(id));
-                e.stopPropagation();
-              }} />
+              onClick={() => actions.selectCharacter(id)}>
+              <SidebarItemIcon icon="remove"
+                onClick={(e) => {
+                  actions.removeCharacter(id);
+                  e.stopPropagation();
+                }} />
             </SidebarItem>
           })}
           <SidebarItem group={true} title="Settings">
             <SidebarItem title="Purge state"
-              onClick={() => dispatch(actions.purgeState())} />
+              onClick={() => actions.purgeState()} />
           </SidebarItem>
         </div>
 
@@ -100,5 +85,4 @@ export default class Layout extends Component {
       </div>
     );
   }
-
 }

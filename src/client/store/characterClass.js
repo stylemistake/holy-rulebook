@@ -1,5 +1,5 @@
 import { Record, Map, List, fromJS } from 'immutable';
-import { createUuid } from '../utils.js';
+import { createUuid } from '../uuid.js';
 import { CHARCS_PRIMARY, XP_COSTS_CHARC } from './rulebookConstants.js';
 
 export function make() {
