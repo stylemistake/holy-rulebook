@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors } from '../store';
+import { actions, routerActions, selectors } from '../store';
 import { Button, Dropdown, Icon } from 'semantic-ui-react';
 
 const APTITUDE_LIST = [
@@ -25,12 +25,14 @@ const APTITUDE_LIST = [
   'Willpower',
 ];
 
-@connect(state => ({
-  character: selectors.getActiveCharacter(state),
-  // TODO: Move characterId to props
-  characterId: state.get('activeCharacterId'),
+import Breadcrumb from './Breadcrumb.jsx';
+
+@connect((state, props) => ({
+  character: selectors.getCharacter(state, props.characterId),
+  gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
+  router: bindActionCreators(routerActions, dispatch),
 }))
 export default class CharacterAptitudes extends Component {
 
@@ -42,13 +44,26 @@ export default class CharacterAptitudes extends Component {
   }
 
   render() {
-    const { actions, params, character, characterId } = this.props;
+    const {
+      characterId, character, gameStateId,
+      actions, router,
+    } = this.props;
+    if (!character) {
+      return null;
+    }
     const aptitudes = character.get('aptitudes');
     const options = APTITUDE_LIST
       .filter(x => !aptitudes.includes(x))
       .map(x => ({ text: x, value: x }));
     return (
       <div>
+        <Breadcrumb router={router} padded
+          items={[
+            ['index'],
+            ['gameState', { gameStateId }],
+            ['character', { characterId }],
+            ['character.aptitudes', { characterId }],
+          ]} />
         <table className="GenericTable">
           <thead>
             <tr>

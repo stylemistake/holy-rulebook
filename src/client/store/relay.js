@@ -22,24 +22,42 @@ function relayMiddleware(store, relay) {
   });
   relay.onMessage(msg => {
     const { type, payload, time } = msg;
+    const updatedAt = store.getState().get('updatedAt');
     if (type === 'GAME_STATE') {
+      // if (updatedAt && payload.updatedAt <= updatedAt) {
+      //   return;
+      // }
       return store.dispatch({
         type: 'RELAY_ACCEPT_GAME_STATE',
         payload: deserializeState({ gameState: payload }),
+        meta: {
+          updatedAt: payload.updatedAt,
+        },
       });
     }
     if (type === 'CHARACTER') {
+      // if (updatedAt && payload.updatedAt <= updatedAt) {
+      //   return;
+      // }
       return store.dispatch({
         type: 'RELAY_ACCEPT_CHARACTER',
         payload: deserializeState({ character: payload }),
+        meta: {
+          updatedAt: payload.updatedAt,
+        },
       });
     }
   });
   // Handle state updates
   return next => action => {
+    next(action);
     // Skip if no payload
-    if (!action.payload) {
-      return next(action);
+    if (!action.payload || !action.meta || !action.meta.updatedAt) {
+      return;
+    }
+    // Ignore own actions
+    if (action.type.startsWith('RELAY_ACCEPT')) {
+      return;
     }
     const state = store.getState();
     const updatedAt = state.get('updatedAt');
@@ -58,7 +76,7 @@ function relayMiddleware(store, relay) {
         relay.sendMessage('CHARACTER', character);
       }
     });
-    return next(action);
+    return;
   };
 }
 

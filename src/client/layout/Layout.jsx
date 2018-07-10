@@ -1,29 +1,82 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors } from '../store';
-import { CharacterSheet } from '../views';
+import { actions, routerActions, selectors } from '../store';
 
-import DetailsPane from './DetailsPane.jsx';
-import Sidebar from './Sidebar.jsx';
-import SidebarItem from './SidebarItem.jsx';
-import SidebarItemIcon from './SidebarItemIcon.jsx';
+import IndexPage from '../views/IndexPage.jsx';
+import GameState from '../views/GameState.jsx';
+import CharacterSheet from '../views/CharacterSheet.jsx';
+import CharacterXp from '../views/CharacterXp.jsx';
+import CharacterCharcs from '../views/CharacterCharcs.jsx';
+import CharacterAptitudes from '../views/CharacterAptitudes.jsx';
+import NotFound from '../views/NotFound.jsx';
 
 @connect(state => ({
-  gameStates: selectors.getGameStates(state),
-  activeGameState: selectors.getActiveGameState(state),
-  characters: selectors.getActiveGameStateCharacters(state),
-  activeCharacter: selectors.getActiveCharacter(state),
+  route: state.getIn(['router', 'route']),
 }), dispatch => ({
+  router: bindActionCreators(routerActions, dispatch),
   actions: bindActionCreators(actions, dispatch),
 }))
 export default class Layout extends Component {
+
+  getRoutedComponent() {
+    const { route } = this.props;
+    if (!route) {
+      return <NotFound />
+    }
+    const { name, params } = route;
+    if (name === 'index') {
+      return <IndexPage />
+    }
+    if (name === 'gameState') {
+      return <GameState
+        gameStateId={params.gameStateId} />
+    }
+    if (name === 'character') {
+      return <CharacterSheet
+        characterId={params.characterId} />
+    }
+    if (name === 'character.xp') {
+      return <CharacterXp
+        characterId={params.characterId} />
+    }
+    if (name === 'character.charcs') {
+      return <CharacterCharcs
+        characterId={params.characterId} />
+    }
+    if (name === 'character.aptitudes') {
+      return <CharacterAptitudes
+        characterId={params.characterId} />
+    }
+    return <NotFound />
+  }
+
   render() {
-    const {
-      actions,
-      gameStates, activeGameState,
-      characters, activeCharacter,
-    } = this.props;
+    const { actions, router, route } = this.props;
+    const routeName = route && route.name;
+
+    const component = this.getRoutedComponent();
+
+    return (
+      <div className="Layout react-container">
+        <div className="Layout__header header">
+          <div className="header-item header-title">
+            Holy Rulebook
+          </div>
+          <div className="header-item header-search">
+            <input
+              placeholder="Search..."
+              onChange={(e) => actions.searchQuery(e.target.value)} />
+          </div>
+        </div>
+
+        <div className="Layout__content Layout__content--padded">
+          {component}
+        </div>
+      </div>
+    );
+
+    /*
     return (
       <div className="Layout react-container">
         <div className="Layout__header header">
@@ -84,5 +137,6 @@ export default class Layout extends Component {
         <DetailsPane className="Layout__details" />
       </div>
     );
+    */
   }
 }

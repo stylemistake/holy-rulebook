@@ -17,8 +17,7 @@ export function gameStateReducer(state, action) {
   }
 
   if (type === 'CHARACTER_CREATE') {
-    const gameStateId = state.get('activeGameStateId');
-    const { character } = payload;
+    const { character, gameStateId } = payload;
     return updateGameState(state, gameStateId, gameState => {
       return gameState
         .updateIn(['characters'], (characters) => {
@@ -29,7 +28,6 @@ export function gameStateReducer(state, action) {
   }
 
   if (type === 'CHARACTER_REMOVE') {
-    const gameStateId = state.get('activeGameStateId');
     const { characterId } = payload;
     return updateGameState(state, gameStateId, gameState => {
       return gameState

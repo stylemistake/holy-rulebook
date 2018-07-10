@@ -2,17 +2,22 @@ import React, { Component, Fragment } from 'react';
 import Markdown from 'react-remarkable';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors, Character } from '../store';
+import { actions, routerActions, selectors, Character } from '../store';
 import {
   Widget, Flex, ValueWidget, ListWidget, ListWidgetItem, TextWidget,
 } from '../widgets';
+
+import Breadcrumb from './Breadcrumb.jsx';
 
 const SKILL_TIERS = ['-20', '', '+10', '+20', '+30', '+40'];
 
 @connect((state, props) => ({
   character: selectors.getCharacter(state, props.characterId),
+  gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
+  skills: selectors.getCharacterSkills(state),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
+  router: bindActionCreators(routerActions, dispatch),
 }))
 export default class CharacterSheet extends Component {
 
@@ -20,19 +25,29 @@ export default class CharacterSheet extends Component {
    * Returns an onChange handler
    */
   getValueUpdater(path) {
-    const { character, actions } = this.props;
-    return (value) => {
-      const characterId = character.get('id');
-      actions.updateCharacterValue(characterId, path, value);
-    };
+    const { characterId, actions } = this.props;
+    return value => actions.updateCharacterValue(characterId, path, value);
   }
 
   render() {
-    const { character, actions } = this.props;
+    const {
+      characterId, character, gameStateId, skills,
+      actions, router,
+    } = this.props;
+    if (!character) {
+      return null;
+    }
     const characteristics = Character.getCharacteristics(character);
     const aptitudes = character.get('aptitudes');
-    return <Fragment>
-      <ValueWidget title="Character name"
+    return <div style={{ maxWidth: '64rem', minWidth: '48rem' }}>
+      <Breadcrumb router={router} padded
+        items={[
+          ['index'],
+          ['gameState', { gameStateId }],
+          ['character', { characterId }],
+        ]} />
+      <ValueWidget
+        title="Character name"
         value={character.get('name')}
         onChange={this.getValueUpdater(['name'])} />
       <Flex spread={true}>
@@ -54,14 +69,18 @@ export default class CharacterSheet extends Component {
         <ValueWidget title="XP" color="blue"
           editable={false}
           value={Character.getAvailableXp(character)}
-          onClick={() => actions.openDetailsPane('xp')} />
+          onClick={() => {
+            router.navigateTo('character.xp', { characterId });
+          }} />
         <ValueWidget title="Influence"
           value={character.getIn(['state', 'influence'])}
           onChange={this.getValueUpdater(['state', 'influence'])} />
       </Flex>
       <Flex>
         <ListWidget title="Characteristics"
-          onClick={() => actions.openDetailsPane('characteristics')}>
+          onClick={() => {
+            router.navigateTo('character.charcs', { characterId });
+          }}>
           {characteristics.map(charc => {
             return <ListWidgetItem
               key={charc.id}
@@ -70,18 +89,20 @@ export default class CharacterSheet extends Component {
           })}
         </ListWidget>
         <ListWidget title="Aptitudes"
-          onClick={() => actions.openDetailsPane('aptitudes')}>
+          onClick={() => {
+            router.navigateTo('character.aptitudes', { characterId });
+          }}>
           {aptitudes.map(x => {
             return <ListWidgetItem key={x} name={x} />;
           })}
         </ListWidget>
         {/*
-        <ListWidget title="Skills">
-          {character.getSkills().map((x) => {
-            return <ListWidgetItem
-              key={x.name}
-              name={x.name}
-              value={SKILL_TIERS[x.tier]} />;
+        <ListWidget title="Skills"
+          onClick={() => {
+            router.navigateTo('character.skills', { characterId });
+          }}>
+          {skills.map(x => {
+            return <ListWidgetItem key={x} name={x} />;
           })}
         </ListWidget>
         */}
@@ -89,7 +110,7 @@ export default class CharacterSheet extends Component {
           Hello world!
         </TextWidget>
       </Flex>
-    </Fragment>;
+    </div>;
   }
 
 }

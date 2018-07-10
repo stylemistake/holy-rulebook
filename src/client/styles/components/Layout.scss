@@ -8,22 +8,28 @@
   left: 0;
   right: 0;
   height: 4rem;
+  min-width: 520px;
 }
 
-.Layout__sidebar {
-  position: fixed;
-  top: 4rem;
-  bottom: 0;
-  left: 0;
-  width: 16rem;
-}
+// .Layout__sidebar {
+//   position: fixed;
+//   top: 4rem;
+//   bottom: 0;
+//   left: 0;
+//   width: 16rem;
+// }
+
+// .Layout__content {
+//   margin-top: 4rem;
+//   margin-left: 16rem;
+//   // margin-right: 32rem;
+//   min-width: 48rem;
+//   max-width: 64rem;
+// }
 
 .Layout__content {
-  margin-top: 4rem;
-  margin-left: 16rem;
-  // margin-right: 32rem;
-  min-width: 48rem;
-  max-width: 64rem;
+  margin: 5rem 1rem;
+  min-width: 520px;
 }
 
 .Layout__details {
@@ -36,24 +42,24 @@
   overflow-y: auto;
 }
 
-@media only screen and (max-width: 64rem) {
-  .Layout__details {
-    position: absolute;
-    top: 4rem;
-    bottom: 0;
-    right: 0;
-    left: 16rem;
-    width: auto;
-  }
-}
+// @media only screen and (max-width: 64rem) {
+//   .Layout__details {
+//     position: absolute;
+//     top: 4rem;
+//     bottom: 0;
+//     right: 0;
+//     left: 16rem;
+//     width: auto;
+//   }
+// }
 
-@media only screen and (max-width: 48rem) {
-  .Layout__details {
-    position: absolute;
-    top: 4rem;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    width: auto;
-  }
-}
+// @media only screen and (max-width: 48rem) {
+//   .Layout__details {
+//     position: absolute;
+//     top: 4rem;
+//     bottom: 0;
+//     right: 0;
+//     left: 0;
+//     width: auto;
+//   }
+// }

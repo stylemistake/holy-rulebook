@@ -145,7 +145,7 @@ function handleMessage(client, msg) {
       //   return; // DISCARD
       // }
       const diff = gameState.updatedAt - payload.updatedAt;
-      if (diff > 0) {
+      if (diff >= 0) {
         logger.log(`Discarding (older by ${diff}ms)`);
         return; // DISCARD
       }
@@ -179,7 +179,7 @@ function handleMessage(client, msg) {
       //   return; // DISCARD
       // }
       const diff = character.updatedAt - payload.updatedAt;
-      if (diff > 0) {
+      if (diff >= 0) {
         logger.log(`Discarding (older by ${diff}ms)`);
         return; // DISCARD
       }

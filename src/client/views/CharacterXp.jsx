@@ -1,15 +1,17 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, selectors, Character } from '../store';
+import { actions, routerActions, selectors, Character } from '../store';
 import { Form } from 'semantic-ui-react';
 
-@connect(state => ({
-  character: selectors.getActiveCharacter(state),
-  // TODO: Move characterId to props
-  characterId: state.get('activeCharacterId'),
+import Breadcrumb from './Breadcrumb.jsx';
+
+@connect((state, props) => ({
+  character: selectors.getCharacter(state, props.characterId),
+  gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
+  router: bindActionCreators(routerActions, dispatch),
 }))
 export default class CharacterXp extends Component {
 
@@ -22,7 +24,13 @@ export default class CharacterXp extends Component {
   }
 
   render() {
-    const { actions, params, character, characterId } = this.props;
+    const {
+      characterId, character, gameStateId,
+      actions, router,
+    } = this.props;
+    if (!character) {
+      return null;
+    }
     const grantedXpEntries = Character.getGrantedXpLogEntries(character);
     const spentXpEntries = Character.getSpentXpLogEntries(character);
 
@@ -115,6 +123,13 @@ export default class CharacterXp extends Component {
 
     return (
       <div className="XpView">
+        <Breadcrumb router={router} padded
+          items={[
+            ['index'],
+            ['gameState', { gameStateId }],
+            ['character', { characterId }],
+            ['character.xp', { characterId }],
+          ]} />
         {XP_GRANT_FORM}
         <div className="ui divider" />
         {XP_GRANT_TABLE}

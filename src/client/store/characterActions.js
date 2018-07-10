@@ -1,10 +1,10 @@
 import * as Character from './characterClass.js';
 
-export function createCharacter() {
+export function createCharacter(gameStateId) {
   const character = Character.make();
   return {
     type: 'CHARACTER_CREATE',
-    payload: { character },
+    payload: { character, gameStateId },
     meta: {
       updatedAt: Date.now(),
     },
