@@ -2,6 +2,7 @@ const {
   compose,
   toTitleCase,
   toIdentifier,
+  toInteger,
   splitStringBy,
   cleanUpString,
 } = require('../transforms.js');
@@ -29,6 +30,7 @@ module.exports = {
     {
       name: "tier",
       type: "text",
+      transform: toInteger,
       marker: "td.s50, td.s60",
       horizontalOffset: -3,
     },
