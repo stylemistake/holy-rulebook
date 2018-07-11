@@ -1,3 +1,12 @@
+const {
+  compose,
+  toTitleCase,
+  toIdentifier,
+  splitStringBy,
+  filterContentBy,
+  cleanUpString,
+} = require('../transforms.js');
+
 module.exports = {
   type: "weapons",
   marker: "td.s48",
@@ -7,13 +16,14 @@ module.exports = {
     {
       name: "name",
       type: "text",
+      transform: compose(cleanUpString, toTitleCase),
       marker: "td.s49",
     },
     {
       name: "class",
       type: "text",
+      transform: compose(splitStringBy(','), cleanUpString, toTitleCase),
       marker: "td.s49",
-      separator: ",",
       horizontalOffset: 1,
     },
     {
@@ -26,28 +36,28 @@ module.exports = {
       name: "rateOfFire",
       type: "text",
       marker: "td.s49",
-      // separator: "/",
+      transform: compose(cleanUpString, splitStringBy('/')),
       horizontalOffset: 3,
     },
     {
       name: "damage",
       type: "text",
+      transform: filterContentBy('[0-9]+d[0-9]+([+-][0-9]+)?'),
       marker: "td.s49",
-      contentFilter: "[0-9]+d[0-9]+([+-][0-9]+)?",
       horizontalOffset: 4,
     },
     {
       name: "damageType",
       type: "text",
+      transform: filterContentBy('[rxie]$'),
       marker: "td.s49",
-      contentFilter: "[rxie]$",
       horizontalOffset: 4,
     },
     {
       name: "penetration",
       type: "text",
+      transform: filterContentBy('[0-9]+'),
       marker: "td.s49",
-      contentFilter: "[0-9]+",
       horizontalOffset: 5,
     },
     {
@@ -72,8 +82,8 @@ module.exports = {
     {
       name: "weight",
       type: "text",
+      transform: filterContentBy('[0-9.]+'),
       marker: "td.s49",
-      contentFilter: "[0-9.]+",
       horizontalOffset: 9,
     },
   ]

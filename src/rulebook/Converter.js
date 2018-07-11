@@ -106,17 +106,11 @@ class Converter {
   extractValue(definition, text) {
     let value = text;
     if (definition.separator) {
-      value = value.split(definition.separator).map(string => string.trim().toLowerCase());
-    } else if (definition.type !== 'html') {
-      value = value.trim().toLowerCase().replace('†', '');
-      if (definition.contentFilter) {
-        const match = value.match(definition.contentFilter);
-        if(match){
-          value = match[0];
-        }
-      }
-    } else {
-      //TODO maybe encode html and/or wrap in some tag
+      value = value.split(definition.separator)
+        .map(string => string.trim().toLowerCase());
+    }
+    if (definition.transform) {
+      value = definition.transform(value);
     }
     return value;
   }
