@@ -69,6 +69,7 @@ module.exports = {
     {
       name: "reloadTime",
       type: "text",
+      transform: cleanUpString,
       marker: "td.s49",
       horizontalOffset: 7,
     },
