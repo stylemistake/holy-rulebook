@@ -8,7 +8,7 @@
   left: 0;
   right: 0;
   height: 4rem;
-  min-width: 520px;
+  min-width: 48rem;
 }
 
 // .Layout__sidebar {
@@ -28,8 +28,12 @@
 // }
 
 .Layout__content {
-  margin: 5rem 1rem;
-  min-width: 520px;
+  padding-top: 4rem;
+  min-width: 48rem;
+}
+
+.Layout__content-padding {
+  margin: 1rem;
 }
 
 .Layout__details {

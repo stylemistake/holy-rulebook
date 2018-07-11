@@ -1,3 +1,5 @@
+import { fromJS } from 'immutable';
+
 export function createRulebookMiddleware() {
   return rulebookMiddleware;
 }
@@ -30,7 +32,7 @@ export function rulebookReducer(state, action) {
 
   if (type === 'RULEBOOK_LOAD') {
     return state.merge({
-      rulebook: payload.rulebook,
+      rulebook: fromJS(payload.rulebook),
     });
   }
 

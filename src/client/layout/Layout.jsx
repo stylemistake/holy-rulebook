@@ -9,6 +9,8 @@ import CharacterSheet from '../views/CharacterSheet.jsx';
 import CharacterXp from '../views/CharacterXp.jsx';
 import CharacterCharcs from '../views/CharacterCharcs.jsx';
 import CharacterAptitudes from '../views/CharacterAptitudes.jsx';
+import CharacterSkills from '../views/CharacterSkills.jsx';
+
 import NotFound from '../views/NotFound.jsx';
 
 @connect(state => ({
@@ -48,6 +50,10 @@ export default class Layout extends Component {
       return <CharacterAptitudes
         characterId={params.characterId} />
     }
+    if (name === 'character.skills') {
+      return <CharacterSkills
+        characterId={params.characterId} />
+    }
     return <NotFound />
   }
 
@@ -70,7 +76,7 @@ export default class Layout extends Component {
           </div>
         </div>
 
-        <div className="Layout__content Layout__content--padded">
+        <div className="Layout__content">
           {component}
         </div>
       </div>

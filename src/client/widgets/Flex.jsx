@@ -6,7 +6,7 @@ export default class Flex extends Component {
   render() {
     const { props } = this;
     const rootClass = classes('flex', [
-      props.spread && 'flex-spread',
+      props.spreadChildren && 'flex-spread',
     ]);
     return <div className={rootClass}>
       {this.props.children}

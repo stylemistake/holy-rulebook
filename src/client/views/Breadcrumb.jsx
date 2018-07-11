@@ -27,13 +27,10 @@ export default function Breadcrumb(props) {
     );
   })
   return (
-    <Fragment>
+    <div className="Layout__content-padding">
       <div className="ui breadcrumb">
         {sections}
       </div>
-      {props.padded && (
-        <div style={{ marginTop: '1rem' }} />
-      )}
-    </Fragment>
+    </div>
   );
 }

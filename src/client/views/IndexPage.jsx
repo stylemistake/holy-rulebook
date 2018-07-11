@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actions, routerActions, selectors } from '../store';
@@ -16,51 +16,53 @@ export default class IndexPage extends Component {
   render() {
     const { gameStates, actions, router } = this.props;
     return (
-      <div>
+      <Fragment>
         <Breadcrumb router={router}
           items={[
             ['index'],
           ]} />
-        <table className="ui table unstackable striped selectable">
-          <thead>
-            <tr>
-              <th>Game States</th>
-              <th className="collapsing text-right">
-                <div className="ui button compact fitted icon labeled black"
-                  onClick={() => actions.createGameState()}>
-                  <i className="icon plus" />
-                  Create new gamestate
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {gameStates.map(gameState => {
-              const gameStateId = gameState.get('id');
-              return (
-                <tr key={gameState.get('id')}
-                  className="clickable"
-                  onClick={() => {
-                    router.navigateTo('gameState', { gameStateId });
-                  }}>
-                  <td>
-                    <i className="icon folder" />
-                    GameState [{gameStateId.substr(0, 7)}]
-                  </td>
-                  <td className="text-right">
-                    {gameState.get('characters').size} characters
-                  </td>
-                </tr>
-              );
-            })}
-            {gameStates.size === 0 && (
+        <div className="Layout__content-padding">
+          <table className="ui table unstackable striped selectable">
+            <thead>
               <tr>
-                <td colSpan="2" className="text-center">No items</td>
+                <th>Game States</th>
+                <th className="collapsing text-right">
+                  <div className="ui button compact fitted icon labeled black"
+                    onClick={() => actions.createGameState()}>
+                    <i className="icon plus" />
+                    Create new gamestate
+                  </div>
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {gameStates.map(gameState => {
+                const gameStateId = gameState.get('id');
+                return (
+                  <tr key={gameState.get('id')}
+                    className="clickable"
+                    onClick={() => {
+                      router.navigateTo('gameState', { gameStateId });
+                    }}>
+                    <td>
+                      <i className="icon folder" />
+                      GameState [{gameStateId.substr(0, 7)}]
+                    </td>
+                    <td className="text-right">
+                      {gameState.get('characters').size} characters
+                    </td>
+                  </tr>
+                );
+              })}
+              {gameStates.size === 0 && (
+                <tr>
+                  <td colSpan="2" className="text-center">No items</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Fragment>
     );
   }
 

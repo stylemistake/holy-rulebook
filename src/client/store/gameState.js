@@ -11,11 +11,6 @@ export function gameStateReducer(state, action) {
       gameState.set('updatedAt', meta.updatedAt));
   }
 
-  if (type === 'GAME_STATE_SELECT') {
-    const { gameStateId } = payload;
-    return state.set('activeGameStateId', gameStateId);
-  }
-
   if (type === 'CHARACTER_CREATE') {
     const { character, gameStateId } = payload;
     return updateGameState(state, gameStateId, gameState => {

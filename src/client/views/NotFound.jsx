@@ -10,8 +10,11 @@ export default class NotFound extends Component {
 
   render() {
     const { router } = this.props;
-    setTimeout(() => router.navigateTo('index'), 2000);
-    return <div>Not Found</div>;
+    return (
+      <div className="Layout__content-padding">
+        Not Found
+      </div>
+    );
   }
 
 }

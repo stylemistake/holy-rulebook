@@ -1,7 +1,7 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, routerActions, selectors, Character } from '../store';
+import { actions, routerActions, selectors } from '../store';
 import { Form } from 'semantic-ui-react';
 
 import Breadcrumb from './Breadcrumb.jsx';
@@ -9,6 +9,8 @@ import Breadcrumb from './Breadcrumb.jsx';
 @connect((state, props) => ({
   character: selectors.getCharacter(state, props.characterId),
   gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
+  grantedXpEntries: selectors.getCharacterGrantedXpLogEntries(state, props.characterId),
+  spentXpEntries: selectors.getCharacterSpentXpLogEntries(state, props.characterId),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   router: bindActionCreators(routerActions, dispatch),
@@ -25,15 +27,12 @@ export default class CharacterXp extends Component {
 
   render() {
     const {
-      characterId, character, gameStateId,
+      characterId, character, gameStateId, grantedXpEntries, spentXpEntries,
       actions, router,
     } = this.props;
     if (!character) {
       return null;
     }
-    const grantedXpEntries = Character.getGrantedXpLogEntries(character);
-    const spentXpEntries = Character.getSpentXpLogEntries(character);
-
     const XP_GRANT_FORM = (
       <Form
         onSubmit={() => {
@@ -122,7 +121,7 @@ export default class CharacterXp extends Component {
     );
 
     return (
-      <div className="XpView">
+      <Fragment>
         <Breadcrumb router={router} padded
           items={[
             ['index'],
@@ -130,12 +129,14 @@ export default class CharacterXp extends Component {
             ['character', { characterId }],
             ['character.xp', { characterId }],
           ]} />
-        {XP_GRANT_FORM}
-        <div className="ui divider" />
-        {XP_GRANT_TABLE}
-        <div className="ui divider" />
-        {XP_SPENT_TABLE}
-      </div>
+        <div className="XpView Layout__content-padding">
+          {XP_GRANT_FORM}
+          <div className="ui divider" />
+          {XP_GRANT_TABLE}
+          <div className="ui divider" />
+          {XP_SPENT_TABLE}
+        </div>
+      </Fragment>
     );
   }
 

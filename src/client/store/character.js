@@ -1,7 +1,36 @@
-import * as Character from './characterClass.js';
+import { Map } from 'immutable';
 
-function updateCharacter(state, characterId, updater) {
-  return state.updateIn(['characters', characterId], updater);
+function updateCharacter(state, action, updater) {
+  const { characterId } = action.payload;
+  return state.updateIn(['characters', characterId], character => {
+    return updater(character).set('updatedAt', action.meta.updatedAt);
+  });
+}
+
+function addXpLogEntry(character, type, amount, payload) {
+  const entry = Map({
+    type, amount,
+    payload: Map(payload),
+  });
+  return character.update('xpLog', x => x.push(entry));
+}
+
+function grantXp(character, amount, payload) {
+  return addXpLogEntry(character, 'grant', amount, payload);
+}
+
+function spendXp(character, amount, payload) {
+  return addXpLogEntry(character, 'spend', amount, payload);
+}
+
+function refundXp(character, payload) {
+  return character.update('xpLog', xpLog => {
+    const lastEntryIndex = xpLog.findLastKey(entry => {
+      return entry.get('type') === 'spend'
+        && Map(payload).isSubset(entry.get('payload'));
+    });
+    return xpLog.delete(lastEntryIndex);
+  });
 }
 
 export function characterReducer(state, action) {
@@ -9,13 +38,9 @@ export function characterReducer(state, action) {
 
   if (type === 'CHARACTER_CREATE') {
     const { character } = payload;
-    return state.setIn(['characters', character.get('id')],
+    const characterId = character.get('id');
+    return state.setIn(['characters', characterId],
       character.set('updatedAt', meta.updatedAt));
-  }
-
-  if (type === 'CHARACTER_SELECT') {
-    const { characterId } = payload;
-    return state.set('activeCharacterId', characterId);
   }
 
   if (type === 'CHARACTER_REMOVE') {
@@ -24,69 +49,93 @@ export function characterReducer(state, action) {
   }
 
   if (type === 'CHARACTER_VALUE_UPDATE') {
-    const { characterId, path, value } = payload;
-    return updateCharacter(state, characterId, character => {
-      return character.setIn(path, value)
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { path, value } = payload;
+      return character.setIn(path, value);
     });
   }
 
   if (type === 'CHARACTER_XP_GRANT') {
-    const { characterId, amount, desc } = payload;
-    return updateCharacter(state, characterId, character => {
-      return Character.grantXp(character, amount, { desc })
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { amount, desc } = payload;
+      return grantXp(character, amount, { desc });
     });
   }
 
   if (type === 'CHARACTER_XP_LOG_REMOVE') {
-    const { characterId } = payload;
-    return updateCharacter(state, characterId, character => {
-      return character
-        .updateIn(['xpLog'], xpLog => {
-          const index = xpLog.indexOf(payload.entry);
-          return xpLog.delete(index);
-        })
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { entry } = payload;
+      return character.update('xpLog', xpLog => {
+        const index = xpLog.indexOf(entry);
+        return xpLog.delete(index);
+      });
     });
   }
 
   if (type === 'CHARACTER_APTITUDE_ADD') {
-    const { characterId, aptitudeName } = payload;
-    return updateCharacter(state, characterId, character => {
-      return character
-        .updateIn(['aptitudes'], aptitudes => {
-          return aptitudes.push(aptitudeName);
-        })
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { aptitudeName } = payload;
+      return character.update('aptitudes', aptitudes => {
+        return aptitudes.push(aptitudeName);
+      });
     });
   }
 
   if (type === 'CHARACTER_APTITUDE_REMOVE') {
-    const { characterId, aptitudeName } = payload;
-    return updateCharacter(state, characterId, character => {
-      return character
-        .updateIn(['aptitudes'], aptitudes => {
-          const index = aptitudes.indexOf(aptitudeName);
-          return aptitudes.delete(index);
-        })
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { aptitudeName } = payload;
+      return character.update('aptitudes', aptitudes => {
+        const index = aptitudes.indexOf(aptitudeName);
+        return aptitudes.delete(index);
+      });
     });
   }
 
   if (type === 'CHARACTER_CHARACTERISTIC_BUY') {
-    const { characterId, charcId } = payload;
-    return updateCharacter(state, characterId, character => {
-      return Character.buyCharacteristic(character, charcId)
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { charcId, cost } = payload;
+      if (cost === undefined) {
+        return character;
+      }
+      return spendXp(character, cost, {
+        type: 'charc',
+        id: charcId,
+      });
     });
   }
 
   if (type === 'CHARACTER_CHARACTERISTIC_REFUND') {
-    const { characterId, charcId } = payload;
-    return updateCharacter(state, characterId, character => {
-      return Character.refundCharacteristic(character, charcId)
-        .set('updatedAt', meta.updatedAt);
+    return updateCharacter(state, action, character => {
+      const { charcId } = payload;
+      return refundXp(character, {
+        type: 'charc',
+        id: charcId,
+      });
+    });
+  }
+
+  if (type === 'CHARACTER_SKILL_BUY') {
+    return updateCharacter(state, action, character => {
+      const { skillName, skillSpec, cost } = payload;
+      if (cost === undefined) {
+        return character;
+      }
+      return spendXp(character, cost, {
+        type: 'skill',
+        name: skillName,
+        spec: skillSpec,
+      });
+    });
+  }
+
+  if (type === 'CHARACTER_SKILL_REFUND') {
+    return updateCharacter(state, action, character => {
+      const { skillName, skillSpec } = payload;
+      return refundXp(character, {
+        type: 'skill',
+        name: skillName,
+        spec: skillSpec,
+      });
     });
   }
 

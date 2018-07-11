@@ -66,9 +66,25 @@ export const CHARCS_SECONDARY = [
   },
 ];
 
-// matching aptitudes -> tier -> xp cost
+// matchingAptitudes -> currentTier [0..4] -> cost
 export const XP_COSTS_CHARC = [
   [500, 750, 1000, 1500, 2500],
   [250, 500, 750, 1000, 1500],
   [100, 250, 500, 750, 1250],
 ];
+
+// matchingAptitudes -> currentTier [0..4] -> cost
+export const XP_COSTS_SKILL = [
+  [300, 600, 900, 1200],
+  [200, 400, 600, 800],
+  [100, 200, 300, 400],
+];
+
+// matchingAptitudes -> staticTier [0..3] -> cost
+export const XP_COSTS_TALENT = [
+  [600, 900, 1200, 1500],
+  [300, 450, 600, 750],
+  [200, 300, 400, 500],
+];
+
+export const SKILL_TIER_CHARC_BONUS = [-20, 0, 10, 20, 30, 40];

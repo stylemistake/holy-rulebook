@@ -6,7 +6,7 @@ export default class TextWidget extends Component {
 
   render() {
     const { props } = this;
-    return <Widget contentClass="widget-text" {...props} />;
+    return <Widget contentClass="Widget__text" {...props} />;
   }
 
 }

@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actions, routerActions, selectors } from '../store';
@@ -23,50 +23,52 @@ export default class IndexPage extends Component {
       return null;
     }
     return (
-      <div>
+      <Fragment>
         <Breadcrumb router={router}
           items={[
             ['index'],
             ['gameState', { gameStateId }],
           ]} />
-        <table className="ui table unstackable striped selectable">
-          <thead>
-            <tr>
-              <th>Characters</th>
-              <th className="collapsing text-right">
-                <div className="ui button compact fitted icon labeled black"
-                  onClick={() => actions.createCharacter(gameStateId)}>
-                  <i className="icon plus" />
-                  Create new character
-                </div>
-              </th>
-            </tr>
-          </thead>
-          <tbody>
-            {characters.map(character => {
-              const characterId = character.get('id');
-              return (
-                <tr key={characterId}
-                  className="clickable"
-                  onClick={() => {
-                    router.navigateTo('character', { characterId });
-                  }}>
-                  <td>
-                    <i className="icon id card" />
-                    {character.get('name')}
-                  </td>
-                  <td />
-                </tr>
-              );
-            })}
-            {characters.size === 0 && (
+        <div className="Layout__content-padding">
+          <table className="ui table unstackable striped selectable">
+            <thead>
               <tr>
-                <td colSpan="2" className="text-center">No items</td>
+                <th>Characters</th>
+                <th className="collapsing text-right">
+                  <div className="ui button compact fitted icon labeled black"
+                    onClick={() => actions.createCharacter(gameStateId)}>
+                    <i className="icon plus" />
+                    Create new character
+                  </div>
+                </th>
               </tr>
-            )}
-          </tbody>
-        </table>
-      </div>
+            </thead>
+            <tbody>
+              {characters.map(character => {
+                const characterId = character.get('id');
+                return (
+                  <tr key={characterId}
+                    className="clickable"
+                    onClick={() => {
+                      router.navigateTo('character', { characterId });
+                    }}>
+                    <td>
+                      <i className="icon id card" />
+                      {character.get('name')}
+                    </td>
+                    <td />
+                  </tr>
+                );
+              })}
+              {characters.size === 0 && (
+                <tr>
+                  <td colSpan="2" className="text-center">No items</td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </Fragment>
     );
   }
 

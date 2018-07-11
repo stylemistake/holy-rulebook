@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actions, routerActions, selectors } from '../store';
@@ -56,54 +56,56 @@ export default class CharacterAptitudes extends Component {
       .filter(x => !aptitudes.includes(x))
       .map(x => ({ text: x, value: x }));
     return (
-      <div>
-        <Breadcrumb router={router} padded
+      <Fragment>
+        <Breadcrumb router={router}
           items={[
             ['index'],
             ['gameState', { gameStateId }],
             ['character', { characterId }],
             ['character.aptitudes', { characterId }],
           ]} />
-        <table className="GenericTable">
-          <thead>
-            <tr>
-              <th>Aptitudes</th>
-              <th />
-            </tr>
-          </thead>
-          <tbody>
-            {aptitudes.map((name) => (
-              <tr key={name}>
-                <td>{name}</td>
-                <td className="clickable"
-                  onClick={() => actions.removeAptitude(characterId, name)}>
-                  <i className="icon delete fitted" />
-                </td>
+        <div className="Layout__content-padding">
+          <table className="GenericTable">
+            <thead>
+              <tr>
+                <th>Aptitudes</th>
+                <th />
               </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className="ui divider" />
-        <Dropdown selection
-          placeholder="Aptitude"
-          options={options}
-          value={this.state.value}
-          onChange={(e, data) => {
-            this.setState({ value: data.value });
-          }} />
-        <Button content="Grant"
-          onClick={() => {
-            const value = this.state.value;
-            if (!value) {
-              return;
-            }
-            if (aptitudes.includes(value)) {
-              return;
-            }
-            actions.addAptitude(characterId, value);
-            this.setState({ value: '' });
-          }} />
-      </div>
+            </thead>
+            <tbody>
+              {aptitudes.map((name) => (
+                <tr key={name}>
+                  <td>{name}</td>
+                  <td className="clickable"
+                    onClick={() => actions.removeAptitude(characterId, name)}>
+                    <i className="icon delete fitted" />
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+          <div className="ui divider" />
+          <Dropdown selection
+            placeholder="Aptitude"
+            options={options}
+            value={this.state.value}
+            onChange={(e, data) => {
+              this.setState({ value: data.value });
+            }} />
+          <Button content="Grant"
+            onClick={() => {
+              const value = this.state.value;
+              if (!value) {
+                return;
+              }
+              if (aptitudes.includes(value)) {
+                return;
+              }
+              actions.addAptitude(characterId, value);
+              this.setState({ value: '' });
+            }} />
+        </div>
+      </Fragment>
     );
   }
 

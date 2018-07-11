@@ -34,6 +34,11 @@ export const ROUTES = [
     name: 'character.xp',
     path: '/xp',
   },
+  {
+    title: 'Skills',
+    name: 'character.skills',
+    path: '/skills',
+  },
 ];
 
 const ROUTER_OPTIONS = {

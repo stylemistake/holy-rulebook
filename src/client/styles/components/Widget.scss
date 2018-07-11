@@ -1,22 +1,15 @@
-.charsheet {
-  background-color: #000;
-  color: #fff;
-  font-size: 1.25rem;
-  line-height: 2.5rem;
-}
-
-.widget {
+.Widget {
   background-color: darken($color-none, 0.6);
   color: #fff;
 }
 
 @each $x in $color-map {
-  .widget-color-#{nth($x, 1)} {
+  .Widget--color-#{nth($x, 1)} {
     background-color: darken(nth($x, 2), 0.4);
   }
 }
 
-.widget-title {
+.Widget__title {
   background-color: black-alpha(0.3);
   font-size: 1.25rem;
   line-height: 2.5rem;
@@ -24,47 +17,44 @@
   padding: 0 1rem;
 }
 
-// .widget-content {
+// .Widget__content {
 //   padding: 0 1rem;
 // }
 
-.widget-value {
+.Widget__value {
   font-size: 2rem;
   line-height: 3rem;
   padding: 0 1rem;
 }
 
-.widget-text {
+.Widget__text {
   padding: 0 1rem 0.2rem;
 }
 
 // Table Widget
-.widget-table {
-  padding-bottom: 0.2rem;
-}
-
-.widget-table table {
+.Widget__table {
   width: 100%;
+  margin-bottom: 0.2rem;
 }
 
-.widget-table table tr:nth-child(odd) {
+.Widget__table tr:nth-child(odd) {
   background-color: white-alpha(0.05);
 }
 
-.widget-table td {
+.Widget__table td {
   padding: 0 0.25rem;
   vertical-align: middle;
 }
 
-.widget-table td:first-child {
+.Widget__table td:first-child {
   padding-left: 1rem;
 }
 
-.widget-table td:last-child {
+.Widget__table td:last-child {
   padding-right: 1rem;
 }
 
-.widget-number-stat {
+.Widget__number-stat {
   text-align: right;
   font-size: 1.25rem;
   font-weight: bold;

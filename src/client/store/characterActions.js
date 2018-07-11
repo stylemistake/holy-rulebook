@@ -1,23 +1,44 @@
-import * as Character from './characterClass.js';
+import { Map, List } from 'immutable';
+import { createUuid } from '../uuid.js';
 
 export function createCharacter(gameStateId) {
-  const character = Character.make();
+  const character = Map({
+    id: createUuid(),
+    name: 'New character',
+    state: Map({
+      wounds: 0,
+      fatigue: 0,
+      corruption: 0,
+      stress: 0,
+      fate: 0,
+      influence: 0,
+      experience: 0,
+    }),
+    charcs: Map({
+      ws: 20,
+      bs: 20,
+      s: 20,
+      t: 20,
+      ag: 20,
+      int: 20,
+      per: 20,
+      wp: 20,
+      fel: 20,
+      status: 20,
+      wounds: 10,
+      fp: 0,
+    }),
+    skills: List(),
+    talents: List(),
+    xpLog: List(),
+    aptitudes: List(),
+  });
   return {
     type: 'CHARACTER_CREATE',
     payload: { character, gameStateId },
     meta: {
       updatedAt: Date.now(),
     },
-  };
-}
-
-export function selectCharacter(characterId) {
-  return {
-    type: 'CHARACTER_SELECT',
-    payload: { characterId },
-    // meta: {
-    //   updatedAt: Date.now(),
-    // },
   };
 }
 
@@ -41,10 +62,10 @@ export function updateCharacterValue(characterId, path, value) {
   };
 }
 
-export function buyCharacteristic(characterId, charcId) {
+export function buyCharacteristic(characterId, charcId, cost) {
   return {
     type: 'CHARACTER_CHARACTERISTIC_BUY',
-    payload: { characterId, charcId },
+    payload: { characterId, charcId, cost },
     meta: {
       updatedAt: Date.now(),
     },
@@ -55,6 +76,26 @@ export function refundCharacteristic(characterId, charcId) {
   return {
     type: 'CHARACTER_CHARACTERISTIC_REFUND',
     payload: { characterId, charcId },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
+export function buySkill(characterId, skillName, skillSpec, cost) {
+  return {
+    type: 'CHARACTER_SKILL_BUY',
+    payload: { characterId, skillName, skillSpec, cost },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
+export function refundSkill(characterId, skillName, skillSpec) {
+  return {
+    type: 'CHARACTER_SKILL_REFUND',
+    payload: { characterId, skillName, skillSpec },
     meta: {
       updatedAt: Date.now(),
     },

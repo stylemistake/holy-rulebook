@@ -52,18 +52,6 @@ export { gameStateSelectors }
 export { globalSelectors }
 
 
-//  Classes
-// --------------------------------------------------------
-
-// Importing classes
-import * as Character from './characterClass.js';
-import * as GameState from './gameStateClass.js';
-
-// Exporting classes
-export { Character }
-export { GameState }
-
-
 //  Reducers
 // --------------------------------------------------------
 

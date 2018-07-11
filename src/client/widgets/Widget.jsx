@@ -7,7 +7,7 @@ export default class Widget extends Component {
   static propTypes = {
     title: PropTypes.string,
     color: PropTypes.string,
-    flex: PropTypes.bool,
+    fluid: PropTypes.bool,
     macro: PropTypes.bool,
     rootClass: PropTypes.string,
     titleClass: PropTypes.string,
@@ -16,15 +16,15 @@ export default class Widget extends Component {
 
   render() {
     const { props } = this;
-    const rootClass = classes('widget', [
-      props.color && ('widget-color-' + props.color),
-      props.flex && 'flex-item',
+    const rootClass = classes('Widget', [
+      props.color && ('Widget--color-' + props.color),
+      props.fluid && 'flex-item',
       props.onClick && 'clickable',
     ]);
-    const titleClass = classes('widget-title', [
-      props.macro && 'widget-title-big',
+    const titleClass = classes('Widget__title', [
+      props.macro && 'Widget__title--big',
     ]);
-    const contentClass = classes('widget-content', [
+    const contentClass = classes('Widget__content', [
       props.contentClass,
     ]);
     return <div className={rootClass} onClick={props.onClick}>

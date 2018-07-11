@@ -1,7 +1,7 @@
 import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { actions, routerActions, selectors } from '../store';
+import { actions, routerActions, selectors, Character } from '../store';
 import { mapValueToColorScale } from '../color.js';
 
 import Breadcrumb from './Breadcrumb.jsx';
@@ -9,16 +9,17 @@ import Breadcrumb from './Breadcrumb.jsx';
 @connect((state, props) => ({
   character: selectors.getCharacter(state, props.characterId),
   gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
-  charcs: selectors.getCharacterCharacteristics(state, props.characterId),
+  skills: selectors.getCharacterSkills(state, props.characterId)
+    .sortBy(skill => -skill.get('matchingApts')),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
   router: bindActionCreators(routerActions, dispatch),
 }))
-export default class CharacterCharcs extends Component {
+export default class CharacterSkills extends Component {
 
   render() {
     const {
-      characterId, character, gameStateId, charcs,
+      characterId, character, gameStateId, skills,
       actions, router,
     } = this.props;
     if (!character) {
@@ -31,13 +32,13 @@ export default class CharacterCharcs extends Component {
             ['index'],
             ['gameState', { gameStateId }],
             ['character', { characterId }],
-            ['character.charcs', { characterId }],
+            ['character.skills', { characterId }],
           ]} />
-        <div className="CharacteristicsView Layout__content-padding">
+        <div className="Layout__content-padding">
           <table className="GenericTable">
             <thead>
               <tr>
-                <th>Characteristic</th>
+                <th>Skill</th>
                 <th></th>
                 <th></th>
                 <th className="text-center">Cost</th>
@@ -47,36 +48,41 @@ export default class CharacterCharcs extends Component {
               </tr>
             </thead>
             <tbody>
-              {charcs.map(charc => (
-                <tr key={charc.get('id')}>
-                  <th>{charc.get('name')}</th>
+              {skills.map(skill => (
+                <tr key={skill.hashCode()}>
+                  <th>{skill.get('displayName')}</th>
                   <th className="GenericTable__statistic text-center">
-                    {charc.get('value')}
+                    {skill.get('tier')}
                   </th>
                   <td className="clickable"
                     onClick={() => {
-                      actions.refundCharacteristic(characterId, charc.get('id'));
+                      actions.refundSkill(characterId,
+                        skill.get('name'),
+                        skill.get('specialization'));
                     }}>
                     <i className="icon minus fitted" />
                   </td>
                   <td className="text-center"
                     style={{
-                      backgroundColor: mapValueToColorScale(charc.get('cost') || 9999, {
+                      backgroundColor: mapValueToColorScale(skill.get('cost') || 9999, {
                         green: 100,
                         yellow: 750,
                         red: 2500,
                       }),
                     }}>
-                    {charc.get('cost') || '--'}
+                    {skill.get('cost') || '--'}
                   </td>
                   <td className="clickable"
                     onClick={() => {
-                      actions.buyCharacteristic(characterId, charc.get('id'), charc.get('cost'));
+                      actions.buySkill(characterId,
+                        skill.get('name'),
+                        skill.get('specialization'),
+                        skill.get('cost'));
                     }}>
                     <i className="icon plus fitted" />
                   </td>
-                  <td>{charc.get('aptitudes').join(', ')}</td>
-                  <td className="text-center">{charc.get('matchingApts')}</td>
+                  <td>{skill.get('aptitudes').join(', ')}</td>
+                  <td className="text-center">{skill.get('matchingApts')}</td>
                 </tr>
               ))}
             </tbody>

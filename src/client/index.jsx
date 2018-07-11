@@ -24,6 +24,7 @@ function renderLayout() {
     if (process.env.NODE_ENV !== 'production') {
       const ErrorBox = require('redbox-react').default;
       const component = <ErrorBox error={err} />;
+      ReactDOM.unmountComponentAtNode(MOUNT_NODE);
       ReactDOM.render(component, MOUNT_NODE);
     }
   }
