@@ -20,34 +20,34 @@ const PERSIST_PROPS = [
 function persistenceMiddleware(store, storage) {
   let loaded = false;
   return next => async action => {
-    // Load state once
-    if (!loaded) {
-      loaded = true;
-      console.debug('persistence: loading state');
-      const obj = await storage.get('state');
-      console.debug('persistence: loaded object', obj);
-      if (!obj) {
-        console.debug('persistence: nothing to load');
-        return;
-      }
-      const state = deserializeState(obj, PERSIST_PROPS);
-      store.dispatch(loadState(state));
-      return next(action);
-    }
-    // Save state
-    if (PERSIST_ACTIONS.includes(action.type)) {
-      next(action);
-      const state = store.getState();
-      const obj = serializeState(state, PERSIST_PROPS);
-      if (!obj) {
-        console.debug('persistence: nothing to save');
-        return;
-      }
-      console.debug('persistence: saving state', obj);
-      await storage.set('state', obj);
-      console.debug('persistence: saved');
-      return;
-    }
+    // // Load state once
+    // if (!loaded) {
+    //   loaded = true;
+    //   console.debug('persistence: loading state');
+    //   const obj = await storage.get('state');
+    //   console.debug('persistence: loaded object', obj);
+    //   if (!obj) {
+    //     console.debug('persistence: nothing to load');
+    //     return;
+    //   }
+    //   const state = deserializeState(obj, PERSIST_PROPS);
+    //   store.dispatch(loadState(state));
+    //   return next(action);
+    // }
+    // // Save state
+    // if (PERSIST_ACTIONS.includes(action.type)) {
+    //   next(action);
+    //   const state = store.getState();
+    //   const obj = serializeState(state, PERSIST_PROPS);
+    //   if (!obj) {
+    //     console.debug('persistence: nothing to save');
+    //     return;
+    //   }
+    //   console.debug('persistence: saving state', obj);
+    //   await storage.set('state', obj);
+    //   console.debug('persistence: saved');
+    //   return;
+    // }
     // Purge state
     if (action.type === 'PERSISTENCE_PURGE') {
       await storage.purge();
