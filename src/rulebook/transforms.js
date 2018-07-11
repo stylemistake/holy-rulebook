@@ -76,14 +76,13 @@ function filterContentBy(pattern) {
   function contentFilter(str) {
     // Handle array
     if (Array.isArray(str)) {
-      return str.map(contentFilter);
+      return str.map(contentFilter).filter(e => e);
     }
     // Handle string
     const match = str.match(pattern);
     if (match) {
       return match[0];
     }
-    return str;
   }
   return contentFilter;
 }

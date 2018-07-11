@@ -7,6 +7,7 @@ class Converter {
     this.definitions = definitions;
     this.rulebookDirectory = rulebookDirectory;
     this.baseHandler = this.baseHandler.bind(this);
+    this.singleItemHandler = this.singleItemHandler.bind(this);
   }
 
   applyOffset(offset, baseElement) {
@@ -31,14 +32,14 @@ class Converter {
     if (definition.verticalOffset) {
       row = this.applyOffset(definition.verticalOffset, baseRow);
     }
-    if (['text', 'html', 'encodedSet'].includes(definition.type)) {
+    if (['text', 'html'].includes(definition.type)) {
       object[definition.name] = this.extractValue(definition, this.getValue(definition, row));
     } else if (['set'].includes(definition.type)) {
       //TODO handle horizontal set direction
       if (definition.count || definition.stopMarker) {
         let finished = false;
         let counter = 1;
-        const limiter = 100;
+        const limiter = 1000;
         object[definition.name] = [];
         while (!finished) {
           if (
@@ -121,6 +122,9 @@ class Converter {
     const sheet = cheerio.load(data);
     const skills = [];
     sheet(definition.containerMarker).find(definition.marker).each((index, element) => {
+      if (!this.checkIfValueMatches(definition, sheet(element).text())) {
+        return;
+      }
       const baseRow = sheet(element).parent();
       let skill = {};
       for (let i = 0; i < definition.attributes.length; i++) {
@@ -130,12 +134,18 @@ class Converter {
     });
     return skills;
   }
+  
+  singleItemHandler(definition){
+    return this.baseHandler(definition).pop();
+  }
 
   handlers() {
     return {
       skills: this.baseHandler,
       talents: this.baseHandler,
       weapons: this.baseHandler,
+      ammo: this.singleItemHandler,
+      weapon_mods: this.baseHandler,
     }
   }
 
