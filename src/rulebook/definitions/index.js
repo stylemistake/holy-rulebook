@@ -3,5 +3,6 @@ module.exports = [
   require("./talents.js"),
   require("./weapons.js"),
   require("./ammo.js"),
-  require("./weapon_mods.js")
+  require("./weapon_mods.js"),
+  require("./items.js")
 ];

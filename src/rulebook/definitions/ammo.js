@@ -12,6 +12,7 @@ module.exports = {
   marker: "td.s212.softmerge",
   sourceFile: "WPNS.html",
   containerMarker: "table tbody",
+  handler: "single",
   attributes: [
     {
       name: "ammo",

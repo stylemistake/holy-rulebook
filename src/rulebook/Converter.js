@@ -122,7 +122,7 @@ class Converter {
     const sheet = cheerio.load(data);
     const skills = [];
     sheet(definition.containerMarker).find(definition.marker).each((index, element) => {
-      if (!this.checkIfValueMatches(definition, sheet(element).text())) {
+      if (definition.contentMatcher && !this.checkIfValueMatches(definition, sheet(element).text())) {
         return;
       }
       const baseRow = sheet(element).parent();
@@ -141,18 +141,18 @@ class Converter {
 
   handlers() {
     return {
-      skills: this.baseHandler,
-      talents: this.baseHandler,
-      weapons: this.baseHandler,
-      ammo: this.singleItemHandler,
-      weapon_mods: this.baseHandler,
+      multiple: this.baseHandler,
+      single: this.singleItemHandler,
     }
   }
 
   convert() {
     let rulebook = {};
     this.definitions.map(definition => {
-      rulebook[definition.type] = this.handlers()[definition.type](definition);
+      if(!definition.handler){
+        definition.handler = "multiple";
+      }
+      rulebook[definition.type] = this.handlers()[definition.handler](definition);
     });
     return rulebook;
   }
