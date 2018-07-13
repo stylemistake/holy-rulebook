@@ -1,10 +1,10 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, actions, routerActions, selectors } from '../store';
+import { flatConnect, actions, routerActions, selectors } from '../store';
 import { mapValueToColorScale } from '../color.js';
 import CharacterXpControl from './CharacterXpControl.jsx';
 
-export default connect(
+export default flatConnect(
   (state, props) => ({
     character: selectors.getCharacter(state, props.characterId),
     gameStateId: selectors.getCharacterGameStateId(state, props.characterId),

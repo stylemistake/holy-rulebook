@@ -1,20 +1,18 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { bindActionCreators } from 'redux';
-import { actions, routerActions, selectors } from '../store';
+import { flatConnect, routerActions } from '../store';
 
-@connect(state => ({}), dispatch => ({
-  router: bindActionCreators(routerActions, dispatch),
-}))
-export default class NotFound extends Component {
-
-  render() {
-    const { router } = this.props;
+export default flatConnect(
+  state => ({}),
+  dispatch => ({
+    router: bindActionCreators(routerActions, dispatch),
+  }),
+  function NotFound(props) {
+    const { router } = props;
     return (
       <div className="Layout__content-padding">
         Not Found
       </div>
     );
   }
-
-}
+);

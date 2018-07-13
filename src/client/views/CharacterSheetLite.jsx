@@ -1,7 +1,7 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  connect,
+  flatConnect,
   routerActions,
   characterSelectors,
 } from '../store';
@@ -15,7 +15,7 @@ import {
   TalentsWidget,
 } from './CharacterSheetWidgets.jsx';
 
-export default connect(
+export default flatConnect(
   (state, props) => ({
     character: characterSelectors.getCharacter(state, props.characterId),
   }),

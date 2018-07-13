@@ -1,8 +1,8 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, actions, routerActions, selectors } from '../store';
+import { flatConnect, actions, routerActions, selectors } from '../store';
 
-export default connect(
+export default flatConnect(
   state => ({
     gameStates: selectors.getGameStates(state),
   }),

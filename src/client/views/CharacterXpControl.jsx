@@ -1,9 +1,9 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
-import { connect, actions, selectors } from '../store';
+import { flatConnect, actions, selectors } from '../store';
 import { Checkbox } from 'semantic-ui-react';
 
-export default connect(
+export default flatConnect(
   (state, props) => ({
     character: selectors.getCharacter(state, props.characterId),
     availableXp: selectors.getCharacterAvailableXp(state, props.characterId),

@@ -1,14 +1,14 @@
 import React from 'react';
 import { bindActionCreators } from 'redux';
 import {
-  connect,
+  flatConnect,
   characterActions,
   routerActions,
   characterSelectors,
 } from '../store';
 import { Widget, Flex } from '../widgets';
 
-export const StateWidget = connect(
+export const StateWidget = flatConnect(
   (state, props) => ({
     character: characterSelectors.getCharacter(state, props.characterId),
     availableXp: characterSelectors.getCharacterAvailableXp(state, props.characterId),
@@ -38,7 +38,7 @@ export const StateWidget = connect(
   }
 );
 
-export const FancyStateWidget = connect(
+export const FancyStateWidget = flatConnect(
   (state, props) => ({
     character: characterSelectors.getCharacter(state, props.characterId),
     availableXp: characterSelectors.getCharacterAvailableXp(state, props.characterId),
@@ -104,7 +104,7 @@ export const FancyStateWidget = connect(
   }
 );
 
-export const CharcsWidget = connect(
+export const CharcsWidget = flatConnect(
   (state, props) => ({
     charcs: characterSelectors.getCharacterCharacteristics(state, props.characterId),
   }),
@@ -124,7 +124,7 @@ export const CharcsWidget = connect(
   }
 );
 
-export const AptitudesWidget = connect(
+export const AptitudesWidget = flatConnect(
   (state, props) => ({
     aptitudes: characterSelectors.getCharacterAptitudes(state, props.characterId),
   }),
@@ -142,7 +142,7 @@ export const AptitudesWidget = connect(
   }
 );
 
-export const SkillsWidget = connect(
+export const SkillsWidget = flatConnect(
   (state, props) => ({
     skills: characterSelectors.getCharacterSkills(state, props.characterId)
       .filter(skill => skill.get('purchaseCount') > 0),
@@ -172,7 +172,7 @@ export const SkillsWidget = connect(
   }
 );
 
-export const TalentsWidget = connect(
+export const TalentsWidget = flatConnect(
   (state, props) => ({
     talents: characterSelectors.getCharacterTalents(state, props.characterId)
       .filter(talent => talent.get('purchaseCount') > 0),
