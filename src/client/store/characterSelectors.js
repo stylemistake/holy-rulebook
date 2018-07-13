@@ -53,6 +53,10 @@ export function getCharacterGameStateId(state, characterId) {
   return gameState && gameState.get('id');
 }
 
+export function getCharacterAptitudes(state, characterId) {
+  return state.getIn(['characters', characterId, 'aptitudes']) || List();
+}
+
 export function getCharacterCharacteristics(state, characterId) {
   const character = getCharacter(state, characterId);
   if (!character) {

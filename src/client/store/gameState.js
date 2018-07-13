@@ -24,12 +24,17 @@ export function gameStateReducer(state, action) {
 
   if (type === 'CHARACTER_REMOVE') {
     const { characterId } = payload;
-    return updateGameState(state, gameStateId, gameState => {
-      return gameState
-        .updateIn(['characters'], (characters) => {
-          return characters.delete(characterId);
-        })
-        .set('updatedAt', meta.updatedAt);
+    return state.update('gameStates', gameStates => {
+      return gameStates.map(gameState => {
+        if (!gameState.get('characters').has(characterId)) {
+          return gameState;
+        }
+        return gameState
+          .updateIn(['characters'], (characters) => {
+            return characters.delete(characterId);
+          })
+          .set('updatedAt', meta.updatedAt);
+      });
     });
   }
 

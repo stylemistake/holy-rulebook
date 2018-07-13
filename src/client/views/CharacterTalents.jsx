@@ -1,41 +1,32 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React, { Fragment } from 'react';
 import { bindActionCreators } from 'redux';
-import { actions, routerActions, selectors } from '../store';
+import { connect, actions, routerActions, selectors } from '../store';
 import { mapValueToColorScale } from '../color.js';
 
-import Breadcrumb from './Breadcrumb.jsx';
 import CharacterXpControl from './CharacterXpControl.jsx';
 
-@connect((state, props) => ({
-  character: selectors.getCharacter(state, props.characterId),
-  gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
-  talents: selectors.getCharacterTalents(state, props.characterId)
-    .sortBy(talent => talent.get('tier'))
-    .sortBy(talent => -talent.get('matchingApts')),
-}), dispatch => ({
-  actions: bindActionCreators(actions, dispatch),
-  router: bindActionCreators(routerActions, dispatch),
-}))
-export default class CharacterTalents extends Component {
-
-  render() {
+export default connect(
+  (state, props) => ({
+    character: selectors.getCharacter(state, props.characterId),
+    gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
+    talents: selectors.getCharacterTalents(state, props.characterId)
+      .sortBy(talent => talent.get('tier'))
+      .sortBy(talent => -talent.get('matchingApts')),
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+    router: bindActionCreators(routerActions, dispatch),
+  }),
+  function CharacterTalents(props) {
     const {
       characterId, character, gameStateId, talents,
       actions, router,
-    } = this.props;
+    } = props;
     if (!character) {
       return null;
     }
     return (
       <Fragment>
-        <Breadcrumb router={router}
-          items={[
-            ['index'],
-            ['gameState', { gameStateId }],
-            ['character', { characterId }],
-            ['character.talents', { characterId }],
-          ]} />
         <div className="Layout__content-padding">
           <CharacterXpControl characterId={characterId} />
           <table className="GenericTable">
@@ -94,5 +85,4 @@ export default class CharacterTalents extends Component {
       </Fragment>
     );
   }
-
-}
+);

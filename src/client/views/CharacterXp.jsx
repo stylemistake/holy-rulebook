@@ -1,10 +1,8 @@
-import React, { Component, Fragment } from 'react';
+import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 import { actions, routerActions, selectors } from '../store';
 import { Form } from 'semantic-ui-react';
-
-import Breadcrumb from './Breadcrumb.jsx';
 
 @connect((state, props) => ({
   character: selectors.getCharacter(state, props.characterId),
@@ -127,22 +125,13 @@ export default class CharacterXp extends Component {
     );
 
     return (
-      <Fragment>
-        <Breadcrumb router={router} padded
-          items={[
-            ['index'],
-            ['gameState', { gameStateId }],
-            ['character', { characterId }],
-            ['character.xp', { characterId }],
-          ]} />
-        <div className="XpView Layout__content-padding">
-          {XP_GRANT_FORM}
-          <div className="ui divider" />
-          {XP_GRANT_TABLE}
-          <div className="ui divider" />
-          {XP_SPENT_TABLE}
-        </div>
-      </Fragment>
+      <div className="XpView Layout__content-padding">
+        {XP_GRANT_FORM}
+        <div className="ui divider" />
+        {XP_GRANT_TABLE}
+        <div className="ui divider" />
+        {XP_SPENT_TABLE}
+      </div>
     );
   }
 

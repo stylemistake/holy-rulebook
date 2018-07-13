@@ -2,7 +2,6 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import {
   connect,
-  characterActions,
   routerActions,
   characterSelectors,
 } from '../store';
@@ -19,57 +18,39 @@ import {
 export default connect(
   (state, props) => ({
     character: characterSelectors.getCharacter(state, props.characterId),
-    gameStateId: characterSelectors.getCharacterGameStateId(state, props.characterId),
   }),
   dispatch => ({
-    actions: bindActionCreators(characterActions, dispatch),
     router: bindActionCreators(routerActions, dispatch),
   }),
   function CharacterSheet(props) {
-    const {
-      characterId, character, gameStateId,
-      actions, router,
-    } = props;
+    const { characterId, character, router } = props;
     if (!character) {
       return null;
     }
     return (
-      <div style={{ maxWidth: '64rem', minWidth: '48rem' }}>
-        <Widget title="Character name">
-          <Widget.Value
-            value={character.get('name')}
-            onChange={value => {
-              actions.updateCharacterValue(characterId, ['name'], value);
-            }} />
-        </Widget>
-        <FancyStateWidget characterId={characterId} />
-        <Flex>
+      <div style={{ maxWidth: '16rem' }}>
+        <Widget title={character.get('name')}
+          onClick={() => {
+            router.navigateTo('character', { characterId });
+          }}>
+          <StateWidget
+            characterId={characterId} />
           <CharcsWidget title="Characteristics"
             characterId={characterId}
             onClick={() => {
               router.navigateTo('character.charcs', { characterId });
             }} />
-          <AptitudesWidget title="Aptitudes"
-            characterId={characterId}
-            onClick={() => {
-              router.navigateTo('character.aptitudes', { characterId });
-            }} />
-          <Widget title="Notes" color="purple" fluid>
-            <Widget.Text content="Hello world!" />
-          </Widget>
-        </Flex>
-        <Flex>
-          <SkillsWidget title="Skills" color="red" fluid
+          <SkillsWidget title="Skills" color="red" compact
             characterId={characterId}
             onClick={() => {
               router.navigateTo('character.skills', { characterId });
             }} />
-          <TalentsWidget title="Talents" fluid
+          <TalentsWidget title="Talents"
             characterId={characterId}
             onClick={() => {
               router.navigateTo('character.talents', { characterId });
             }} />
-        </Flex>
+        </Widget>
       </div>
     );
   }

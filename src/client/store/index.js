@@ -20,7 +20,6 @@ export const actions = {
   ...gameStateActions,
   ...globalActions,
   ...persistenceActions,
-  ...routerActions,
 };
 
 // Exporting actions separately
@@ -115,8 +114,9 @@ export function createEnhancer() {
 // --------------------------------------------------------
 
 import { applyMiddleware } from 'redux';
+import { connect as _connect } from 'react-redux';
 
-function composeReducers(reducers) {
+export function composeReducers(reducers) {
   return (_state, action) => {
     let state = _state;
     for (let reducer of reducers) {
@@ -126,7 +126,7 @@ function composeReducers(reducers) {
   };
 }
 
-function combineReducers(reducers) {
+export function combineReducers(reducers) {
   const keys = Object.keys(reducers);
   return (state, action) => {
     return state.withMutations(mutState => {
@@ -137,4 +137,30 @@ function combineReducers(reducers) {
       }
     });
   };
+}
+
+const DEFAULT_STATE_TO_PROPS = state => ({ state });
+const DEFAULT_DISPATCH_TO_PROPS = dispatch => ({ dispatch });
+
+/**
+ * Wrap component to connect it to Redux store via props
+ *
+ * @param {function} mapStateToProps
+ * @param {function} mapDispatchToProps
+ * @param {any} Component
+ */
+export function connect(mapStateToProps = null, mapDispatchToProps = null, Component) {
+  if (arguments.length === 1) {
+    return connect(
+      DEFAULT_STATE_TO_PROPS,
+      DEFAULT_DISPATCH_TO_PROPS,
+      arguments[0]);
+  }
+  if (arguments.length === 2) {
+    return connect(
+      arguments[0],
+      DEFAULT_DISPATCH_TO_PROPS,
+      arguments[1]);
+  }
+  return _connect(mapStateToProps, mapDispatchToProps)(Component);
 }

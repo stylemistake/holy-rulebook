@@ -1,22 +1,21 @@
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
+import React from 'react';
 import { bindActionCreators } from 'redux';
-import { actions, routerActions, selectors } from '../store';
+import { connect, actions, selectors } from '../store';
 import { Checkbox } from 'semantic-ui-react';
 
-@connect((state, props) => ({
-  character: selectors.getCharacter(state, props.characterId),
-  availableXp: selectors.getCharacterAvailableXp(state, props.characterId),
-}), dispatch => ({
-  actions: bindActionCreators(actions, dispatch),
-}))
-export default class CharacterXp extends Component {
-
-  render() {
+export default connect(
+  (state, props) => ({
+    character: selectors.getCharacter(state, props.characterId),
+    availableXp: selectors.getCharacterAvailableXp(state, props.characterId),
+  }),
+  dispatch => ({
+    actions: bindActionCreators(actions, dispatch),
+  }),
+  function CharacterXp(props) {
     const {
       characterId, character, availableXp,
       actions,
-    } = this.props;
+    } = props;
     if (!character) {
       return null;
     }
@@ -27,7 +26,8 @@ export default class CharacterXp extends Component {
             <tr>
               <th>Freeze XP:</th>
               <th>
-                <Checkbox checked={character.get('xpFrozen')}
+                <Checkbox
+                  checked={character.get('xpFrozen')}
                   onChange={(e, data) => {
                     actions.toggleXpFreeze(characterId, data.checked);
                   }} />
@@ -42,5 +42,4 @@ export default class CharacterXp extends Component {
       </div>
     );
   }
-
-}
+);

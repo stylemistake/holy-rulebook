@@ -1,6 +1,27 @@
+$widget-padding-base: 0.65rem;
+$widget-padding-vertical: $widget-padding-base * 0.7;
+
 .Widget {
   background-color: darken($color-none, 0.6);
   color: #fff;
+}
+
+.Widget--horizontal {
+  display: flex;
+  align-items: center;
+  .Widget__title {
+    flex: 1;
+    font-size: 1rem;
+    line-height: 2.5rem;
+  }
+  // .Widget__content {
+  //   font-size: 1.25rem;
+  //   line-height: 2.5rem;
+  // }
+  .Widget__value {
+    font-size: 1.25rem;
+    line-height: 2.5rem;
+  }
 }
 
 @each $x in $color-map {
@@ -14,7 +35,7 @@
   font-size: 1.25rem;
   line-height: 2.5rem;
   font-weight: bold;
-  padding: 0 1rem;
+  padding: 0 $widget-padding-base;
 }
 
 // .Widget__content {
@@ -24,7 +45,7 @@
 .Widget__value {
   font-size: 2rem;
   line-height: 3rem;
-  padding: 0 1rem;
+  padding: 0 $widget-padding-base;
 }
 
 .Widget__text {
@@ -34,7 +55,8 @@
 // Table Widget
 .Widget__table {
   width: 100%;
-  margin-bottom: 0.2rem;
+  margin-top: $widget-padding-vertical;
+  margin-bottom: $widget-padding-vertical;
 }
 
 .Widget__table tr:nth-child(odd) {
@@ -42,16 +64,16 @@
 }
 
 .Widget__table td {
-  padding: 0 0.25rem;
+  padding: 0 $widget-padding-base / 2;
   vertical-align: middle;
 }
 
 .Widget__table td:first-child {
-  padding-left: 1rem;
+  padding-left: $widget-padding-base;
 }
 
 .Widget__table td:last-child {
-  padding-right: 1rem;
+  padding-right: $widget-padding-base;
 }
 
 .Widget__number-stat {
