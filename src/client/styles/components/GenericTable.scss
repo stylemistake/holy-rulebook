@@ -12,10 +12,50 @@
   padding: 0.5em;
 }
 
+
+//  Light cells
+// --------------------------------------------------------
+
 .GenericTable th,
-.GenericTable__dark {
+.GenericTable__cell {
+  font-weight: bold;
+  color: #000;
+  background-color: #fff;
+  text-align: left;
+}
+
+.GenericTable__row--dimmed td,
+.GenericTable__row--dimmed .GenericTable__cell {
+  color: #666;
+  background-color: #e4e4e4;
+}
+
+.GenericTable__row--highlighted td,
+.GenericTable__row--highlighted .GenericTable__cell {
+  color: #000;
+  background-color: #fff;
+}
+
+
+//  Dark cells
+// --------------------------------------------------------
+
+.GenericTable th,
+.GenericTable__cell--dark {
   font-weight: bold;
   color: #fff;
   background-color: #000;
   text-align: left;
+}
+
+.GenericTable__row--dimmed th,
+.GenericTable__row--dimmed .GenericTable__cell--dark {
+  color: #888;
+  background-color: #000;
+}
+
+.GenericTable__row--highlighted th,
+.GenericTable__row--highlighted .GenericTable__cell--dark {
+  color: #fff;
+  background-color: #222;
 }

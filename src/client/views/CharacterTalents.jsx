@@ -2,7 +2,7 @@ import React, { Fragment } from 'react';
 import { bindActionCreators } from 'redux';
 import { flatConnect, actions, routerActions, selectors } from '../store';
 import { mapValueToColorScale } from '../color.js';
-
+import { classes } from '../utils.js';
 import CharacterXpControl from './CharacterXpControl.jsx';
 
 export default flatConnect(
@@ -44,7 +44,11 @@ export default flatConnect(
             </thead>
             <tbody>
               {talents.map(talent => (
-                <tr key={talent.hashCode()}>
+                <tr key={talent.hashCode()}
+                  className={classes({
+                    'GenericTable__row--dimmed': talent.get('purchaseCount') === 0,
+                    'GenericTable__row--highlighted': talent.get('purchaseCount') > 0,
+                  })}>
                   <th>{talent.get('displayName')}</th>
                   <th className="GenericTable__statistic text-center">
                     {talent.get('tier')}

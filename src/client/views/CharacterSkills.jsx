@@ -2,6 +2,7 @@ import React from 'react';
 import { bindActionCreators } from 'redux';
 import { flatConnect, actions, routerActions, selectors } from '../store';
 import { mapValueToColorScale } from '../color.js';
+import { classes } from '../utils.js';
 import CharacterXpControl from './CharacterXpControl.jsx';
 
 export default flatConnect(
@@ -40,7 +41,11 @@ export default flatConnect(
           </thead>
           <tbody>
             {skills.map(skill => (
-              <tr key={skill.hashCode()}>
+              <tr key={skill.hashCode()}
+                className={classes({
+                  'GenericTable__row--dimmed': skill.get('purchaseCount') === 0,
+                  'GenericTable__row--highlighted': skill.get('purchaseCount') > 0,
+                })}>
                 <th>{skill.get('displayName')}</th>
                 <th className="GenericTable__statistic text-center">
                   {skill.get('purchaseCount')}
