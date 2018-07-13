@@ -1,4 +1,6 @@
-// Text transforms
+//  Text
+// --------------------------------------------------------
+
 .text-capitalized {
   text-transform: capitalize !important;
 }
@@ -23,7 +25,10 @@
   font-style: italic !important;
 }
 
-// Flex
+
+//  Flex
+// --------------------------------------------------------
+
 .flex {
   display: flex;
 }
@@ -56,12 +61,22 @@
   flex: 1;
 }
 
-// Clickable
-.clickable {
+
+//  Cursor
+// --------------------------------------------------------
+
+.cursor-pointer {
   cursor: pointer !important;
 }
 
-// Float
+.cursor-help {
+  cursor: help !important;
+}
+
+
+//  Float
+// --------------------------------------------------------
+
 .float-right {
   float: right !important;
 }

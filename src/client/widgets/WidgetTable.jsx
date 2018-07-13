@@ -13,19 +13,26 @@ export default function WidgetTable(props) {
 }
 
 function WidgetTableRow(props) {
-  const { style, onClick, ...rest} = props;
-  const className = classes(props.className, { clickable: onClick });
+  const { style, onClick, title, ...rest} = props;
+  const className = classes(props.className, {
+    'cursor-pointer': onClick,
+    'cursor-help': title,
+  });
   return (
-    <tr {...{ style, className }}>
+    <tr {...{ style, onClick, title, className }}>
       {props.content || props.children}
     </tr>
   );
 }
 
 function WidgetTableCell(props) {
-  const { style, className, ...rest} = props;
+  const { style, onClick, title, ...rest} = props;
+  const className = classes(props.className, {
+    'cursor-pointer': onClick,
+    'cursor-help': title,
+  });
   return (
-    <td {...{ style, className }}>
+    <td {...{ style, onClick, title, className }}>
       {props.content || props.children}
     </td>
   );

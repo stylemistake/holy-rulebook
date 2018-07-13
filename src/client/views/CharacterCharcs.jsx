@@ -46,7 +46,7 @@ export default flatConnect(
                 <th className="GenericTable__statistic text-center">
                   {charc.get('value')}
                 </th>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => {
                     actions.refundCharacteristic(characterId, charc.get('id'));
                   }}>
@@ -62,7 +62,7 @@ export default flatConnect(
                   }}>
                   {charc.get('cost') || '--'}
                 </td>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => {
                     actions.buyCharacteristic(characterId, charc.get('id'), charc.get('cost'));
                   }}>

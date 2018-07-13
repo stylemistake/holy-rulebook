@@ -83,7 +83,7 @@ export default class CharacterXp extends Component {
               <th>{entry.get('type')}</th>
               <td>{entry.get('amount')}</td>
               <td>{entry.getIn(['payload', 'desc'])}</td>
-              <td className="clickable"
+              <td className="cursor-pointer"
                 onClick={() => actions.removeXpLogEntry(characterId, entry)}>
                 <i className="icon delete fitted" />
               </td>
@@ -113,7 +113,7 @@ export default class CharacterXp extends Component {
                 <th>{payloadType}</th>
                 <th>{payloadId}</th>
                 <td>{entry.get('amount')}</td>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => actions.removeXpLogEntry(characterId, entry)}>
                   <i className="icon delete fitted" />
                 </td>

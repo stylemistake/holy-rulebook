@@ -70,7 +70,7 @@ export default class Layout extends Component {
     return (
       <div className="Layout react-container">
         <div className="Layout__header header">
-          <div className="header-item header-title clickable"
+          <div className="header-item header-title cursor-pointer"
             onClick={() => {
               router.navigateTo('index');
             }}>

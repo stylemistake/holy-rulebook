@@ -45,7 +45,7 @@ export default flatConnect(
                 <th className="GenericTable__statistic text-center">
                   {skill.get('purchaseCount')}
                 </th>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => {
                     actions.refundSkill(characterId,
                       skill.get('name'),
@@ -63,7 +63,7 @@ export default flatConnect(
                   }}>
                   {skill.get('cost') || '--'}
                 </td>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => {
                     actions.buySkill(characterId,
                       skill.get('name'),

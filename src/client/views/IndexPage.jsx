@@ -32,7 +32,7 @@ export default flatConnect(
               const gameStateId = gameState.get('id');
               return (
                 <tr key={gameState.get('id')}
-                  className="clickable"
+                  className="cursor-pointer"
                   onClick={() => {
                     router.navigateTo('gameState', { gameStateId });
                   }}>

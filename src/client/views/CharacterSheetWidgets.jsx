@@ -161,9 +161,9 @@ export const SkillsWidget = flatConnect(
                   content={'+' + skill.get('bonus')} />
               )}
               <Widget.Table.Cell className="text-right"
-                content={skill.get('characteristic').substr(0, 3) + ':'} />
+                content={skill.get('characteristic').substr(0, 3)} />
               <Widget.Table.Cell className="text-left"
-                content={'' + skill.get('bonus')} />
+                content={'' + skill.get('threshold')} />
             </Widget.Table.Row>
           ))}
         </Widget.Table>
@@ -184,8 +184,9 @@ export const TalentsWidget = flatConnect(
         <Widget.Table>
           {talents.map(talent => (
             <Widget.Table.Row key={talent.hashCode()}>
-              <Widget.Table.Cell content={talent.get('displayName')} />
-              <Widget.Table.Cell content={'Tier: ' + talent.get('tier')} />
+              <Widget.Table.Cell
+                title={talent.get('description')}
+                content={talent.get('displayName')} />
             </Widget.Table.Row>
           ))}
         </Widget.Table>

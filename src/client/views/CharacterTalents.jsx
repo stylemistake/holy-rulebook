@@ -33,8 +33,9 @@ export default flatConnect(
             <thead>
               <tr>
                 <th>Talent</th>
-                <th></th>
                 <th><abbr title="Tier">T</abbr></th>
+                <th><abbr title="Purchases">P</abbr></th>
+                <th></th>
                 <th className="text-center">Cost</th>
                 <th></th>
                 <th>Aptitudes</th>
@@ -48,7 +49,10 @@ export default flatConnect(
                   <th className="GenericTable__statistic text-center">
                     {talent.get('tier')}
                   </th>
-                  <td className="clickable"
+                  <th className="GenericTable__statistic text-center">
+                    {talent.get('purchaseCount')}
+                  </th>
+                  <td className="cursor-pointer"
                     onClick={() => {
                       actions.refundTalent(characterId,
                         talent.get('name'),
@@ -66,7 +70,7 @@ export default flatConnect(
                     }}>
                     {talent.get('cost') || '--'}
                   </td>
-                  <td className="clickable"
+                  <td className="cursor-pointer"
                     onClick={() => {
                       actions.buyTalent(characterId,
                         talent.get('name'),

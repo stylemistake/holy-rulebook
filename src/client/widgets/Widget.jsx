@@ -13,7 +13,7 @@ export default function Widget(props) {
     props.fluid && 'flex-item',
   ]);
   const titleClassName = classes('Widget__title', [
-    props.onClick && 'clickable',
+    props.onClick && 'cursor-pointer',
   ]);
   return (
     <div className={className}>

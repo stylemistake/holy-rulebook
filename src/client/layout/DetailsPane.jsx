@@ -18,7 +18,7 @@ function DetailsPane(props) {
   return (
     <div className={classes('DetailsPane', props.className)}>
       <div className="DetailsPane__header ui inverted menu">
-        <div className="item clickable"
+        <div className="item cursor-pointer"
           onClick={() => dispatch(actions.closeDetailsPane())}>
           <i className="icon left arrow" />
         </div>

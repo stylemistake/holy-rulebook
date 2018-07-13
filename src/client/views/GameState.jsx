@@ -41,7 +41,7 @@ export default flatConnect(
               const characterId = character.get('id');
               return (
                 <tr key={characterId}
-                  className="clickable">
+                  className="cursor-pointer">
                   <td
                     onClick={() => {
                       router.navigateTo('character', { characterId });

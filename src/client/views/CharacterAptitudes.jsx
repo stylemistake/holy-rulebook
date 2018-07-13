@@ -66,7 +66,7 @@ export default class CharacterAptitudes extends Component {
             {aptitudes.map((name) => (
               <tr key={name}>
                 <td>{name}</td>
-                <td className="clickable"
+                <td className="cursor-pointer"
                   onClick={() => actions.removeAptitude(characterId, name)}>
                   <i className="icon delete fitted" />
                 </td>
