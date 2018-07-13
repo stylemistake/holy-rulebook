@@ -2,9 +2,12 @@ import { List, Map } from 'immutable';
 import {
   getRulebookCharacteristics,
   getRulebookCharacteristicXpCosts,
-  getRulebookSpecSkills,
-  getRulebookSkillXpCosts,
+  getRulebookSkillsWithSpecs,
   getRulebookSkillTierBonus,
+  getRulebookSkillXpCosts,
+  getRulebookTalents,
+  getRulebookTalentsWithSpecs,
+  getRulebookTalentXpCosts,
 } from './rulebookSelectors.js';
 
 //  Helper functions
@@ -17,9 +20,10 @@ function countMatchingAptitudes(character, aptitudes) {
 }
 
 function getXpPurchasesOf(character, payload) {
+  const filteredPayload = Map(payload).filter(x => !!x);
   return character.get('xpLog')
     .filter(entry => entry.get('type') === 'spend')
-    .filter(entry => Map(payload).isSubset(entry.get('payload')))
+    .filter(entry => filteredPayload.isSubset(entry.get('payload')))
 }
 
 function countXPPurchasesOf(character, payload) {
@@ -56,17 +60,14 @@ export function getCharacterCharacteristics(state, characterId) {
   }
   return getRulebookCharacteristics(state)
     .map(charc => {
-      const charcId = charc.get('id');
-      const tier = countXPPurchasesOf(character, {
-        type: 'charc',
-        id: charcId,
-      });
-      const startingValue = character.getIn(['charcs', charcId]) || 0;
-      const value = startingValue + tier * 5;
+      const id = charc.get('id');
+      const purchaseCount = countXPPurchasesOf(character, { type: 'charc', id });
+      const startingValue = character.getIn(['charcs', id]) || 0;
+      const value = startingValue + purchaseCount * 5;
       const matchingApts = countMatchingAptitudes(character, charc.get('aptitudes'));
-      const cost = getRulebookCharacteristicXpCosts(state, matchingApts, tier);
+      const cost = getRulebookCharacteristicXpCosts(state, matchingApts, purchaseCount);
       return charc.merge({
-        tier,
+        purchaseCount,
         value,
         matchingApts,
         cost,
@@ -79,20 +80,16 @@ export function getCharacterSkills(state, characterId) {
   if (!character) {
     return List();
   }
-  return getRulebookSpecSkills(state)
+  return getRulebookSkillsWithSpecs(state)
     .map(skill => {
-      const skillName = skill.get('name');
-      const skillSpec = skill.get('specialization');
-      const tier = countXPPurchasesOf(character, {
-        type: 'skill',
-        name: skillName,
-        spec: skillSpec,
-      });
-      const bonus = getRulebookSkillTierBonus(state, tier);
+      const name = skill.get('name');
+      const spec = skill.get('specialization');
+      const purchaseCount = countXPPurchasesOf(character, { type: 'skill', name, spec });
+      const bonus = getRulebookSkillTierBonus(state, purchaseCount);
       const matchingApts = countMatchingAptitudes(character, skill.get('aptitudes'));
-      const cost = getRulebookSkillXpCosts(state, matchingApts, tier);
+      const cost = getRulebookSkillXpCosts(state, matchingApts, purchaseCount);
       return skill.merge({
-        tier,
+        purchaseCount,
         bonus,
         matchingApts,
         cost,
@@ -100,12 +97,52 @@ export function getCharacterSkills(state, characterId) {
     });
 }
 
-export function getCharacterAvailableXp(state, characterId) {
+export function getCharacterTalents(state, characterId) {
   const character = getCharacter(state, characterId);
   if (!character) {
-    return null;
+    return List();
   }
-  return character.get('xpLog')
+  return getRulebookTalents(state)
+    .map(talent => {
+      const name = talent.get('name');
+      const purchaseCount = countXPPurchasesOf(character, { type: 'talent', name });
+      const tier = talent.get('tier');
+      const matchingApts = countMatchingAptitudes(character, talent.get('aptitudes'));
+      const cost = getRulebookTalentXpCosts(state, matchingApts, tier - 1);
+      // Add purchase count to the talent name
+      let displayName = talent.get('displayName');
+      if (purchaseCount > 0) {
+        displayName += ` (${purchaseCount})`;
+      }
+      return talent.merge({
+        purchaseCount,
+        matchingApts,
+        cost,
+        displayName,
+      });
+    });
+}
+
+export function getCharacterXpLogEntries(state, characterId) {
+  const character = getCharacter(state, characterId);
+  if (!character) {
+    return List();
+  }
+  return character.get('xpLog');
+}
+
+export function getCharacterSpentXpLogEntries(state, characterId) {
+  return getCharacterXpLogEntries(state, characterId)
+    .filter(x => x.get('type') === 'spend');
+}
+
+export function getCharacterGrantedXpLogEntries(state, characterId) {
+  return getCharacterXpLogEntries(state, characterId)
+    .filter(x => x.get('type') === 'grant');
+}
+
+export function getCharacterAvailableXp(state, characterId) {
+  return getCharacterXpLogEntries(state, characterId)
     .map(x => {
       const amount = x.get('amount');
       if (x.get('type') === 'grant') {
@@ -117,22 +154,4 @@ export function getCharacterAvailableXp(state, characterId) {
       return 0;
     })
     .reduce((a, b) => a + b);
-}
-
-export function getCharacterSpentXpLogEntries(state, characterId) {
-  const character = getCharacter(state, characterId);
-  if (!character) {
-    return List();
-  }
-  return character.get('xpLog')
-    .filter(x => x.get('type') === 'spend');
-}
-
-export function getCharacterGrantedXpLogEntries(state, characterId) {
-  const character = getCharacter(state, characterId);
-  if (!character) {
-    return List();
-  }
-  return character.get('xpLog')
-    .filter(x => x.get('type') === 'grant');
 }

@@ -39,6 +39,11 @@ export const ROUTES = [
     name: 'character.skills',
     path: '/skills',
   },
+  {
+    title: 'Talents',
+    name: 'character.talents',
+    path: '/talents',
+  },
 ];
 
 const ROUTER_OPTIONS = {

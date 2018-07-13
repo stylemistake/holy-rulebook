@@ -8,9 +8,10 @@ function updateCharacter(state, action, updater) {
 }
 
 function addXpLogEntry(character, type, amount, payload) {
+  const filteredPayload = Map(payload).filter(x => !!x);
   const entry = Map({
     type, amount,
-    payload: Map(payload),
+    payload: filteredPayload,
   });
   return character.update('xpLog', x => x.push(entry));
 }
@@ -24,10 +25,11 @@ function spendXp(character, amount, payload) {
 }
 
 function refundXp(character, payload) {
+  const filteredPayload = Map(payload).filter(x => !!x);
   return character.update('xpLog', xpLog => {
     const lastEntryIndex = xpLog.findLastKey(entry => {
       return entry.get('type') === 'spend'
-        && Map(payload).isSubset(entry.get('payload'));
+        && filteredPayload.isSubset(entry.get('payload'));
     });
     return xpLog.delete(lastEntryIndex);
   });
@@ -72,6 +74,12 @@ export function characterReducer(state, action) {
     });
   }
 
+  if (type === 'CHARACTER_XP_FREEZE_TOGGLE') {
+    return updateCharacter(state, action, character => {
+      return character.set('xpFrozen', payload.value);
+    });
+  }
+
   if (type === 'CHARACTER_APTITUDE_ADD') {
     return updateCharacter(state, action, character => {
       const { aptitudeName } = payload;
@@ -97,7 +105,9 @@ export function characterReducer(state, action) {
       if (cost === undefined) {
         return character;
       }
-      return spendXp(character, cost, {
+      // Account for frozen XP
+      const adjustedCost = character.get('xpFrozen') ? 0 : cost;
+      return spendXp(character, adjustedCost, {
         type: 'charc',
         id: charcId,
       });
@@ -120,7 +130,9 @@ export function characterReducer(state, action) {
       if (cost === undefined) {
         return character;
       }
-      return spendXp(character, cost, {
+      // Account for frozen XP
+      const adjustedCost = character.get('xpFrozen') ? 0 : cost;
+      return spendXp(character, adjustedCost, {
         type: 'skill',
         name: skillName,
         spec: skillSpec,
@@ -135,6 +147,31 @@ export function characterReducer(state, action) {
         type: 'skill',
         name: skillName,
         spec: skillSpec,
+      });
+    });
+  }
+
+  if (type === 'CHARACTER_TALENT_BUY') {
+    return updateCharacter(state, action, character => {
+      const { talentName, talentSpec, cost } = payload;
+      if (cost === undefined) {
+        return character;
+      }
+      // Account for frozen XP
+      const adjustedCost = character.get('xpFrozen') ? 0 : cost;
+      return spendXp(character, adjustedCost, {
+        type: 'talent',
+        name: talentName,
+      });
+    });
+  }
+
+  if (type === 'CHARACTER_TALENT_REFUND') {
+    return updateCharacter(state, action, character => {
+      const { talentName, talentSpec } = payload;
+      return refundXp(character, {
+        type: 'talent',
+        name: talentName,
       });
     });
   }

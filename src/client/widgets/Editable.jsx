@@ -55,6 +55,7 @@ export default class Editable extends Component {
         style={{
           width: '100%',
           border: '0',
+          boxSizing: 'border-box',
           outline: '0',
           backgroundColor: 'rgba(255, 255, 255, 0.1)',
           fontFamily: 'inherit',
@@ -75,7 +76,15 @@ export default class Editable extends Component {
         }} />;
     }
     // Viewing
-    return <div className={props.className}
+    const isEmpty = props.value === undefined
+      || props.value === null
+      || props.value === '';
+    return <div
+      className={props.className}
+      style={{
+        width: '100%',
+        height: '100%',
+      }}
       onClick={(e) => {
         if (props.editable === false) {
           return;
@@ -85,7 +94,7 @@ export default class Editable extends Component {
           value: props.value,
         });
       }}>
-      {props.value}
+      {isEmpty ? '--' : props.value}
     </div>;
   }
 

@@ -13,7 +13,9 @@ import Breadcrumb from './Breadcrumb.jsx';
   gameStateId: selectors.getCharacterGameStateId(state, props.characterId),
   charcs: selectors.getCharacterCharacteristics(state, props.characterId),
   skills: selectors.getCharacterSkills(state, props.characterId)
-    .filter(skill => skill.get('tier') > 0),
+    .filter(skill => skill.get('purchaseCount') > 0),
+  talents: selectors.getCharacterTalents(state, props.characterId)
+    .filter(skill => skill.get('purchaseCount') > 0),
   availableXp: selectors.getCharacterAvailableXp(state, props.characterId),
 }), dispatch => ({
   actions: bindActionCreators(actions, dispatch),
@@ -31,7 +33,7 @@ export default class CharacterSheet extends Component {
 
   render() {
     const {
-      characterId, character, gameStateId, charcs, skills, availableXp,
+      characterId, character, gameStateId, charcs, skills, talents, availableXp,
       actions, router,
     } = this.props;
     if (!character) {
@@ -83,7 +85,6 @@ export default class CharacterSheet extends Component {
           {charcs.map(charc => (
             <TableWidget.Row key={charc.get('id')}>
               <TableWidget.Cell content={charc.get('name')} />
-              <TableWidget.Cell content={charc.get('id')} />
               <TableWidget.Cell content={charc.get('value')} />
             </TableWidget.Row>
           ))}
@@ -108,11 +109,22 @@ export default class CharacterSheet extends Component {
           {skills.map(skill => (
             <TableWidget.Row key={skill.hashCode()}>
               <TableWidget.Cell content={skill.get('displayName')} />
-              <TableWidget.Cell content={'Tier: ' + skill.get('tier')} />
+              <TableWidget.Cell content={'Tier: ' + skill.get('purchaseCount')} />
               <TableWidget.Cell>
                 {skill.get('characteristic')}:
                 +{skill.get('bonus')}
               </TableWidget.Cell>
+            </TableWidget.Row>
+          ))}
+        </TableWidget>
+        <TableWidget title="Talents" fluid
+          onClick={() => {
+            router.navigateTo('character.talents', { characterId });
+          }}>
+          {talents.map(talent => (
+            <TableWidget.Row key={talent.hashCode()}>
+              <TableWidget.Cell content={talent.get('displayName')} />
+              <TableWidget.Cell content={'Tier: ' + talent.get('tier')} />
             </TableWidget.Row>
           ))}
         </TableWidget>

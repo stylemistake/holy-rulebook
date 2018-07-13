@@ -5,6 +5,7 @@ import { actions, routerActions, selectors, Character } from '../store';
 import { mapValueToColorScale } from '../color.js';
 
 import Breadcrumb from './Breadcrumb.jsx';
+import CharacterXpControl from './CharacterXpControl.jsx';
 
 @connect((state, props) => ({
   character: selectors.getCharacter(state, props.characterId),
@@ -35,11 +36,12 @@ export default class CharacterSkills extends Component {
             ['character.skills', { characterId }],
           ]} />
         <div className="Layout__content-padding">
+          <CharacterXpControl characterId={characterId} />
           <table className="GenericTable">
             <thead>
               <tr>
                 <th>Skill</th>
-                <th></th>
+                <th><abbr title="Tier">T</abbr></th>
                 <th></th>
                 <th className="text-center">Cost</th>
                 <th></th>
@@ -52,7 +54,7 @@ export default class CharacterSkills extends Component {
                 <tr key={skill.hashCode()}>
                   <th>{skill.get('displayName')}</th>
                   <th className="GenericTable__statistic text-center">
-                    {skill.get('tier')}
+                    {skill.get('purchaseCount')}
                   </th>
                   <td className="clickable"
                     onClick={() => {

@@ -28,9 +28,8 @@ export function createCharacter(gameStateId) {
       wounds: 10,
       fp: 0,
     }),
-    skills: List(),
-    talents: List(),
     xpLog: List(),
+    xpFrozen: false,
     aptitudes: List(),
   });
   return {
@@ -102,6 +101,26 @@ export function refundSkill(characterId, skillName, skillSpec) {
   };
 }
 
+export function buyTalent(characterId, talentName, talentSpec, cost) {
+  return {
+    type: 'CHARACTER_TALENT_BUY',
+    payload: { characterId, talentName, talentSpec, cost },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
+export function refundTalent(characterId, talentName, talentSpec) {
+  return {
+    type: 'CHARACTER_TALENT_REFUND',
+    payload: { characterId, talentName, talentSpec },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
 export function addAptitude(characterId, aptitudeName) {
   return {
     type: 'CHARACTER_APTITUDE_ADD',
@@ -136,6 +155,16 @@ export function removeXpLogEntry(characterId, entry) {
   return {
     type: 'CHARACTER_XP_LOG_REMOVE',
     payload: { characterId, entry },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
+export function toggleXpFreeze(characterId, value) {
+  return {
+    type: 'CHARACTER_XP_FREEZE_TOGGLE',
+    payload: { characterId, value },
     meta: {
       updatedAt: Date.now(),
     },

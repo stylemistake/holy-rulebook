@@ -10,6 +10,7 @@ import CharacterXp from '../views/CharacterXp.jsx';
 import CharacterCharcs from '../views/CharacterCharcs.jsx';
 import CharacterAptitudes from '../views/CharacterAptitudes.jsx';
 import CharacterSkills from '../views/CharacterSkills.jsx';
+import CharacterTalents from '../views/CharacterTalents.jsx';
 
 import NotFound from '../views/NotFound.jsx';
 
@@ -54,19 +55,25 @@ export default class Layout extends Component {
       return <CharacterSkills
         characterId={params.characterId} />
     }
+    if (name === 'character.talents') {
+      return <CharacterTalents
+        characterId={params.characterId} />
+    }
     return <NotFound />
   }
 
   render() {
-    const { actions, router, route } = this.props;
-    const routeName = route && route.name;
+    const { actions, router } = this.props;
 
     const component = this.getRoutedComponent();
 
     return (
       <div className="Layout react-container">
         <div className="Layout__header header">
-          <div className="header-item header-title">
+          <div className="header-item header-title clickable"
+            onClick={() => {
+              router.navigateTo('index');
+            }}>
             Holy Rulebook
           </div>
           <div className="header-item header-search">

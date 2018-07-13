@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { pick } from 'lodash';
 import { classes } from '../utils.js';
 import Widget from './Widget.jsx';
 
@@ -15,8 +16,9 @@ export default function TableWidget(props) {
 }
 
 function TableWidgetRow(props) {
+  const elementProps = pick(props, ['style']);
   return (
-    <tr {...props}
+    <tr {...elementProps}
       className={classes(props.className, { clickable: props.onClick })}
       onClick={props.onClick}>
       {props.content || props.children}
@@ -25,8 +27,9 @@ function TableWidgetRow(props) {
 }
 
 function TableWidgetCell(props) {
+  const elementProps = pick(props, ['style']);
   return (
-    <td {...props}>
+    <td {...elementProps}>
       {props.content || props.children}
     </td>
   );

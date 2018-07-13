@@ -87,7 +87,7 @@ export default class CharacterXp extends Component {
               <td>{entry.getIn(['payload', 'desc'])}</td>
               <td className="clickable"
                 onClick={() => actions.removeXpLogEntry(characterId, entry)}>
-                <i className="icon delete" />
+                <i className="icon delete fitted" />
               </td>
             </tr>
           ))}
@@ -102,17 +102,23 @@ export default class CharacterXp extends Component {
             <th>XP spent</th>
             <th></th>
             <th>Amount</th>
+            <th></th>
           </tr>
         </thead>
         <tbody>
           {spentXpEntries.map(entry => {
             const payloadType = entry.getIn(['payload', 'type']);
-            const payloadId = entry.getIn(['payload', 'id']);
+            const payloadId = entry.getIn(['payload', 'id'])
+              || entry.getIn(['payload', 'name']);
             return (
               <tr key={entry.hashCode()}>
                 <th>{payloadType}</th>
-                <th className="text-center">{payloadId}</th>
+                <th>{payloadId}</th>
                 <td>{entry.get('amount')}</td>
+                <td className="clickable"
+                  onClick={() => actions.removeXpLogEntry(characterId, entry)}>
+                  <i className="icon delete fitted" />
+                </td>
               </tr>
             );
           })}
