@@ -15,3 +15,12 @@ export function titleCase(str) {
   }
   return output;
 }
+
+export function shorten(str) {
+  str = str.split(" ");
+  if (str.length > 1) {
+    return str.map((s) => s.substring(0, 1)).join("");
+  } else {
+    return str[0].substring(0, 3);
+  }
+}

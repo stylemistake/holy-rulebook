@@ -7,6 +7,7 @@ import {
   characterSelectors,
 } from '../store';
 import { Widget, Flex } from '../widgets';
+import {shorten} from '../text.js';
 
 export const StateWidget = flatConnect(
   (state, props) => ({
@@ -115,7 +116,8 @@ export const CharcsWidget = flatConnect(
         <Widget.Table>
           {charcs.map(charc => (
             <Widget.Table.SimpleItem key={charc.hashCode()}
-              name={charc.get('name')}
+              name={shorten(charc.get('name'))}
+              title={charc.get('name')}
               value={charc.get('value')} />
           ))}
         </Widget.Table>

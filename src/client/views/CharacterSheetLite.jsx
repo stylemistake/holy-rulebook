@@ -14,6 +14,8 @@ import {
   SkillsWidget,
   TalentsWidget,
 } from './CharacterSheetWidgets.jsx';
+import { Grid, Segment } from 'semantic-ui-react';
+
 
 export default flatConnect(
   (state, props) => ({
@@ -33,23 +35,39 @@ export default flatConnect(
           onClick={() => {
             router.navigateTo('character', { characterId });
           }}>
-          <StateWidget
-            characterId={characterId} />
-          <CharcsWidget title="Characteristics"
-            characterId={characterId}
-            onClick={() => {
-              router.navigateTo('character.charcs', { characterId });
-            }} />
-          <SkillsWidget title="Skills" color="red" compact
-            characterId={characterId}
-            onClick={() => {
-              router.navigateTo('character.skills', { characterId });
-            }} />
-          <TalentsWidget title="Talents"
-            characterId={characterId}
-            onClick={() => {
-              router.navigateTo('character.talents', { characterId });
-            }} />
+          <Grid columns='equal'>
+            <Grid.Row>
+              <Grid.Column>
+                <StateWidget
+                  characterId={characterId} />
+              </Grid.Column>
+              <Grid.Column>
+                <CharcsWidget title="Characteristics"
+                  characterId={characterId}
+                  onClick={() => {
+                    router.navigateTo('character.charcs', { characterId });
+                  }} />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row stretched>
+              <Grid.Column>
+                <SkillsWidget title="Skills" color="red" compact
+                  characterId={characterId}
+                  onClick={() => {
+                    router.navigateTo('character.skills', { characterId });
+                  }} />
+              </Grid.Column>
+            </Grid.Row>
+            <Grid.Row stretched>
+              <Grid.Column>
+                <TalentsWidget title="Talents"
+                  characterId={characterId}
+                  onClick={() => {
+                    router.navigateTo('character.talents', { characterId });
+                  }} />
+              </Grid.Column>
+            </Grid.Row>
+          </Grid>
         </Widget>
       </div>
     );
