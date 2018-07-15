@@ -15,9 +15,9 @@ export default flatConnect(
     return (
       <div className="Layout__content-padding">
         <div className="ui menu" colSpan="2">
-          <div class="item">Game states</div>
-          <div class="menu right">
-            <div class="item">
+          <div className="item">Game states</div>
+          <div className="menu right">
+            <div className="item">
               <div className="ui button compact fitted icon labeled black"
                 onClick={() => actions.createGameState()}>
                 <i className="icon plus" />
