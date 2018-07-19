@@ -35,39 +35,25 @@ export default flatConnect(
           onClick={() => {
             router.navigateTo('character', { characterId });
           }}>
-          <Grid columns='equal'>
-            <Grid.Row>
-              <Grid.Column>
-                <StateWidget
-                  characterId={characterId} />
-              </Grid.Column>
-              <Grid.Column>
-                <CharcsWidget title="Characteristics"
-                  characterId={characterId}
-                  onClick={() => {
-                    router.navigateTo('character.charcs', { characterId });
-                  }} />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row stretched>
-              <Grid.Column>
-                <SkillsWidget title="Skills" color="red" compact
-                  characterId={characterId}
-                  onClick={() => {
-                    router.navigateTo('character.skills', { characterId });
-                  }} />
-              </Grid.Column>
-            </Grid.Row>
-            <Grid.Row stretched>
-              <Grid.Column>
-                <TalentsWidget title="Talents"
-                  characterId={characterId}
-                  onClick={() => {
-                    router.navigateTo('character.talents', { characterId });
-                  }} />
-              </Grid.Column>
-            </Grid.Row>
-          </Grid>
+          <Flex spreadChildren>
+            <StateWidget
+              characterId={characterId} />
+            <CharcsWidget
+              characterId={characterId}
+              onClick={() => {
+                router.navigateTo('character.charcs', { characterId });
+              }} />
+          </Flex>
+          <SkillsWidget title="Skills" color="red" compact
+            characterId={characterId}
+            onClick={() => {
+              router.navigateTo('character.skills', { characterId });
+            }} />
+          <TalentsWidget title="Talents"
+            characterId={characterId}
+            onClick={() => {
+              router.navigateTo('character.talents', { characterId });
+            }} />
         </Widget>
       </div>
     );
