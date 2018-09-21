@@ -1,5 +1,6 @@
 // TODO: Implement search
 export function searchQuery(text) {
+  
   return {
     type: 'SEARCH_QUERY',
     payload: { text },

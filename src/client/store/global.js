@@ -18,6 +18,27 @@ export function globalReducer(state = INITIAL_STATE, action) {
     return state.delete('detailsPane');
   }
 
+  if (type === 'SEARCH_QUERY') {
+    const rulebook = state.get('rulebook');
+    const results = [];
+    rulebook.map((itemsList, category) => {
+      itemsList.map((item, itemKey) => {
+        if(item.find((itemAttribute) => {
+          return itemAttribute.includes && itemAttribute.includes(action.payload.text);
+        })){
+          results.push({
+            text: JSON.stringify({
+              category,
+              item
+            }).substring(0, 300) + '...',
+            value: category + itemKey
+        });
+        }
+      });
+    });
+    return state.set('searchResults', results);
+  }
+
   return state;
 }
 

@@ -67,7 +67,7 @@ export default flatConnect(
         </table>
         <Flex spreadChildren>
           {characters.map(character => (
-            <CharacterSheetLite characterId={character.get('id')} />
+            <CharacterSheetLite key={character.get('id')} characterId={character.get('id')} />
           ))}
         </Flex>
       </div>

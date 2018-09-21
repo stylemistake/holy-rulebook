@@ -11,6 +11,7 @@ import CharacterCharcs from '../views/CharacterCharcs.jsx';
 import CharacterAptitudes from '../views/CharacterAptitudes.jsx';
 import CharacterSkills from '../views/CharacterSkills.jsx';
 import CharacterTalents from '../views/CharacterTalents.jsx';
+import Seach from '../views/Search.jsx';
 
 import NotFound from '../views/NotFound.jsx';
 
@@ -77,9 +78,7 @@ export default class Layout extends Component {
             Holy Rulebook
           </div>
           <div className="header-item header-search">
-            <input
-              placeholder="Search..."
-              onChange={(e) => actions.searchQuery(e.target.value)} />
+            <Seach/>
           </div>
         </div>
 
