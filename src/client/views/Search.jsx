@@ -7,7 +7,7 @@ import {
 } from '../store';
 import { connect } from 'react-redux';
 import { Widget, Flex } from '../widgets';
-import { Dropdown } from 'semantic-ui-react'
+import SearchResult from './SearchResult.jsx';
 
 @connect((state, props) => ({
   results: state.get('searchResults'),
@@ -27,9 +27,26 @@ export default class Search extends Component {
       results,
       actions
     } = this.props;
-    return (
-      <Dropdown placeholder="Search..." onSearchChange={(e) => actions.searchQuery(e.target.value)} fluid search selection options={results || []} />
-    );
+    return (<div className="ui category search fluid">
+      <div className="ui icon input fluid">
+        <input className="prompt" type="text" placeholder="Search..." onChange={(e) => actions.searchQuery(e.target.value)} />
+        <i className="search icon"></i>
+      </div>
+      <div 
+        className={"results" + (results && results.length && " transition visible" || "")} 
+        style={{
+          overflowY: 'auto',
+          maxHeight: '80vh'
+        }}
+        onBlur={(e) => {actions.searchQuery('');console.log('sds');}}
+      >
+      {results && results.map((result, index)=> {
+        return (<div key={result.key} className="result">
+          <SearchResult {...result}/>
+        </div>);
+      })}
+      </div>
+    </div>);
   }
   
 }

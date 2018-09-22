@@ -21,17 +21,15 @@ export function globalReducer(state = INITIAL_STATE, action) {
   if (type === 'SEARCH_QUERY') {
     const rulebook = state.get('rulebook');
     const results = [];
-    rulebook.map((itemsList, category) => {
+    const searchText = action.payload.text.trim().toLowerCase();
+    searchText && rulebook.map((itemsList, category) => {
       itemsList.map((item, itemKey) => {
-        if(item.find((itemAttribute) => {
-          return itemAttribute.includes && itemAttribute.includes(action.payload.text);
-        })){
+        const searchable = JSON.stringify(item).toLowerCase();
+        if(searchable.includes(searchText)){
           results.push({
-            text: JSON.stringify({
-              category,
-              item
-            }).substring(0, 300) + '...',
-            value: category + itemKey
+            item,
+            key: category + itemKey,
+            category,
         });
         }
       });
