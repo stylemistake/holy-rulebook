@@ -4,6 +4,7 @@ import {
   flatConnect,
   routerActions,
   characterSelectors,
+  actions
 } from '../store';
 import { Widget, Flex } from '../widgets';
 import {
@@ -23,14 +24,19 @@ export default flatConnect(
   }),
   dispatch => ({
     router: bindActionCreators(routerActions, dispatch),
+    actions: bindActionCreators(actions, dispatch),
   }),
   function CharacterSheet(props) {
-    const { characterId, character, router } = props;
+    const { characterId, character, router, actions } = props;
     if (!character) {
       return null;
     }
     return (
       <div style={{ maxWidth: '16rem' }}>
+        <div className="ui button basic compact fitted icon red"
+          onClick={() => actions.removeCharacter(characterId)}>
+          <i className="icon remove" />
+        </div>
         <Widget title={character.get('name')}
           onClick={() => {
             router.navigateTo('character', { characterId });

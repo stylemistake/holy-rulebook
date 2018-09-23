@@ -15,7 +15,9 @@ import SearchResult from './SearchResult.jsx';
 dispatch => ({
   actions: bindActionCreators(globalActions, dispatch),
   router: bindActionCreators(routerActions, dispatch),
-}))
+}),
+null,
+{withRef: true})
 export default class Search extends Component {
   
   constructor(props) {
@@ -27,7 +29,7 @@ export default class Search extends Component {
       results,
       actions
     } = this.props;
-    return (<div className="ui category search fluid">
+    return (<div className="ui category search fluid" ref={node => this.searchNode = node}>
       <div className="ui icon input fluid">
         <input className="prompt" type="text" placeholder="Search..." onChange={(e) => actions.searchQuery(e.target.value)} />
         <i className="search icon"></i>

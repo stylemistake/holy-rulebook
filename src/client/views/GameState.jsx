@@ -22,49 +22,7 @@ export default flatConnect(
       return null;
     }
     return (
-      <div className="Layout__content-padding">
-        <div className="ui menu" colSpan="2">
-          <div className="item">Characters</div>
-          <div className="menu right">
-            <div className="item">
-              <div className="ui button compact fitted icon labeled black"
-                onClick={() => actions.createCharacter(gameStateId)}>
-                <i className="icon plus" />
-                Create new character
-              </div>
-            </div>
-          </div>
-        </div>
-        <table className="ui table unstackable striped selectable">
-          <tbody>
-            {characters.map(character => {
-              const characterId = character.get('id');
-              return (
-                <tr key={characterId}
-                  className="cursor-pointer">
-                  <td
-                    onClick={() => {
-                      router.navigateTo('character', { characterId });
-                    }}>
-                    <i className="icon id card" />
-                    {character.get('name')}
-                  </td>
-                  <td className="text-right">
-                    <div className="ui button basic compact fitted icon red"
-                      onClick={() => actions.removeCharacter(characterId)}>
-                      <i className="icon remove" />
-                    </div>
-                  </td>
-                </tr>
-              );
-            })}
-            {characters.size === 0 && (
-              <tr>
-                <td colSpan="2" className="text-center">No items</td>
-              </tr>
-            )}
-          </tbody>
-        </table>
+      <div className="">
         <Flex spreadChildren>
           {characters.map(character => (
             <CharacterSheetLite key={character.get('id')} characterId={character.get('id')} />

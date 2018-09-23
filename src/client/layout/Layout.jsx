@@ -15,6 +15,8 @@ import Seach from '../views/Search.jsx';
 
 import NotFound from '../views/NotFound.jsx';
 
+import { Dropdown, Menu } from 'semantic-ui-react'
+
 @connect(state => ({
   route: state.getIn(['router', 'route']),
 }), dispatch => ({
@@ -64,25 +66,34 @@ export default class Layout extends Component {
   }
 
   render() {
-    const { actions, router } = this.props;
+    const { actions, router, route } = this.props;
 
     const component = this.getRoutedComponent();
 
     return (
-      <div className="Layout react-container">
-        <div className="Layout__header header">
-          <div className="header-item header-title cursor-pointer"
-            onClick={() => {
-              router.navigateTo('index');
-            }}>
-            Holy Rulebook
+      <div className="Layout react-container" style={{ height: '100vh' }} onClick={(e) => {
+        this.searchNode && !this.searchNode.getWrappedInstance().searchNode.contains(e.target) && actions.searchQuery('')
+      }}>
+        <div className="header">
+          <div className="header-item ">
+            <Dropdown text='Holy Rulebook' className='link item'>
+              <Dropdown.Menu>
+                <Dropdown.Item onClick={() => {
+                  router.navigateTo('index');
+                }}>Home</Dropdown.Item>
+                {route && route.name === 'index' && <Dropdown.Item onClick={() => actions.createGameState()}>New Gamestate</Dropdown.Item>}
+                {route && route.params && route.params.gameStateId && <Dropdown.Item onClick={() => {
+                  actions.createCharacter(route.params.gameStateId)
+                }}>New Character</Dropdown.Item>}
+              </Dropdown.Menu>
+            </Dropdown>
           </div>
           <div className="header-item header-search">
-            <Seach/>
+            <Seach ref={node => this.searchNode = node} />
           </div>
         </div>
 
-        <div className="Layout__content">
+        <div className="layout" style={{ height: 'calc(100% - 38px)', overflowY: 'auto' }}>
           {component}
         </div>
       </div>
