@@ -1,11 +1,25 @@
 import fs from 'fs';
 import cheerio from 'cheerio';
 
+/**
+ * Get a sheet object. Returns a Cheerio object, which represents the sheet.
+ *
+ * @param  {Object} $ Cheerio object
+ * @param  {any} predicate
+ * @return {Cursor[]}
+ */
 export function getSheet(path, name) {
   const data = fs.readFileSync(`${path}/${name}.html`, 'utf8');
   return cheerio.load(data);
 }
 
+/**
+ * Get the first cursor matching the given predicate (string).
+ *
+ * @param  {Object} $ Cheerio object
+ * @param  {any} predicate
+ * @return {Cursor[]}
+ */
 export function findFirstCellByText($, predicate) {
   const $elem = $('table tbody').find(`td:contains("${predicate}")`);
   const elem = $elem.get(0);
@@ -15,6 +29,13 @@ export function findFirstCellByText($, predicate) {
   return new Cursor($, elem);
 }
 
+/**
+ * Get the last cursor matching the given predicate (string).
+ *
+ * @param  {Object} $ Cheerio object
+ * @param  {any} predicate
+ * @return {Cursor[]}
+ */
 export function findLastCellByText($, predicate) {
   const $elem = $('table tbody').find(`td:contains("${predicate}")`);
   const elem = $elem.last().get(0);
@@ -24,6 +45,13 @@ export function findLastCellByText($, predicate) {
   return new Cursor($, elem);
 }
 
+/**
+ * Get an array of cursors matching the given predicate (string).
+ *
+ * @param  {Object} $ Cheerio object
+ * @param  {any} predicate
+ * @return {Cursor[]}
+ */
 export function findManyCellsByText($, predicate) {
   const cursors = [];
   $('table tbody').find(`td:contains("${predicate}")`)
@@ -33,6 +61,14 @@ export function findManyCellsByText($, predicate) {
   return cursors;
 }
 
+/**
+ * Get an array of cursors which represent rows of a uniform table.
+ * Table starts at the provided cursor position, and ends on the first
+ * encounter of an empty row.
+ *
+ * @param  {Cursor} cursor
+ * @return {Cursor[]}
+ */
 export function cursorToUniformTable(cursor) {
   const cursors = [];
   while (true) {
@@ -48,19 +84,28 @@ export function cursorToUniformTable(cursor) {
   return cursors;
 }
 
+// Cursor walk transforms (see Cursor class)
 export const walkCursorLeft = num => cursor => cursor.walkLeft(num);
 export const walkCursorRight = num => cursor => cursor.walkRight(num);
 export const walkCursorUp = num => cursor => cursor.walkUp(num);
 export const walkCursorDown = num => cursor => cursor.walkDown(num);
 
+// Cursor move transforms (see Cursor class)
 export const moveCursorLeft = num => cursor => cursor.moveLeft(num);
 export const moveCursorRight = num => cursor => cursor.moveRight(num);
 export const moveCursorUp = num => cursor => cursor.moveUp(num);
 export const moveCursorDown = num => cursor => cursor.moveDown(num);
 
+// Cursor text transforms
 export const cursorToText = cursor => decodeHtmlEntities(cursor.cell().html());
 export const cursorToHtml = cursor => cursor.cell().html();
 
+/**
+ * Retrieves rows as a list of values, starting at provided cursor position.
+ *
+ * @param  {Number} num Number of rows
+ * @return {Function} Function which accepts the cursor object
+ */
 export function cursorToVerticalListOfValues(num) {
   return cursor => {
     const values = [];
@@ -72,6 +117,12 @@ export function cursorToVerticalListOfValues(num) {
   };
 }
 
+/**
+ * Decodes HTML entities, and removes unnecessary HTML tags.
+ *
+ * @param  {String} str Encoded HTML string
+ * @return {String} Decoded HTML string
+ */
 function decodeHtmlEntities(str) {
   const translate_re = /&(nbsp|amp|quot|lt|gt);/g;
   const translate = {
@@ -99,6 +150,9 @@ function decodeHtmlEntities(str) {
     });
 }
 
+/**
+ * Cursor class
+ */
 export class Cursor {
 
   constructor($, elem) {
@@ -206,7 +260,8 @@ export class Cursor {
   /**
    * Move cursor relative to current cursor position.
    *
-   * Cursor position is absolute.
+   * Unlike "walk", this method moves the cursor in absolute coordinates of
+   * the sheet, completely disregarding merged cells.
    */
   move(x = 0, y = 0) {
     return this.clone({
@@ -232,12 +287,10 @@ export class Cursor {
   }
 
   /**
-   * Walk over the cells in specified direction.
+   * Walk over merged cells in specified direction.
    *
-   * Merged cells counts as 1 cell, so if you walk over it, cursor will
+   * Merged cells count as 1 cell, so if you walk over it, cursor will
    * jump to the coordinates of the next cell.
-   *
-   * You can use it to navigate the table,
    */
   walk(x = 0, y = 0) {
     if (y > 0) {

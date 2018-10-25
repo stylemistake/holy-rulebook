@@ -15,6 +15,12 @@ export function getRulebook() {
   };
 }
 
+/**
+ * Parses skill cards within SKLS sheet.
+ *
+ * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
+ * @return {Object[]} Array of skill objects.
+ */
 function getRulebookSkills(sheet) {
   return sheets.findManyCellsByText(sheet, 'DESCRIPTION')
     // Move to the top-left corner
@@ -63,6 +69,14 @@ function getRulebookSkills(sheet) {
     });
 }
 
+/**
+ * Finds sub-skills in the skill card, and returns them as objects, which
+ * are meant to be merged with the main skill object.
+ *
+ * @param  {Cursor} skillRootCursor  Cursor, which points to the top-left
+ * corner of the skill card.
+ * @return {Object[]} Array of skill objects.
+ */
 function getRulebookSubskills(skillRootCursor) {
   const subskills = [];
   const specializations = [];
@@ -161,8 +175,14 @@ function getRulebookTalents(sheet) {
     });
 }
 
+/**
+ * Parses items within ITM sheet.
+ *
+ * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
+ * @return {Object[]} Array of item objects.
+ */
 function getRulebookItemsGeneral(sheet) {
-  const ITEM_COLUMN_MAPPING = new Map([
+  const columnMapping = new Map([
     // Generic properties
     ['Name', {
       propName: 'name',
@@ -222,62 +242,77 @@ function getRulebookItemsGeneral(sheet) {
     // ['AP', 'armorPoints'],
   ]);
   return [
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'CAPACITY ITEMS')
+    ...parseStdTable(sheet, columnMapping, 'CAPACITY ITEMS')
       .map(item => {
         return { ...item, tags: ['Capacity'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'CLOTHING')
+    ...parseStdTable(sheet, columnMapping, 'CLOTHING')
       .map(item => {
         return { ...item, tags: ['Clothing'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'WEARABLES')
+    ...parseStdTable(sheet, columnMapping, 'WEARABLES')
       .map(item => {
         return { ...item, tags: ['Wearables'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'SPECIALIZATION KITS AND PACKAGES')
+    ...parseStdTable(sheet, columnMapping, 'SPECIALIZATION KITS AND PACKAGES')
       .map(item => {
         return { ...item, tags: ['Kits'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'STAND-ALONE TOOLS')
+    ...parseStdTable(sheet, columnMapping, 'STAND-ALONE TOOLS')
       .map(item => {
         return { ...item, tags: ['Tools'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'PSYKER AND WITCH HANDLER ITEMS')
+    ...parseStdTable(sheet, columnMapping, 'PSYKER AND WITCH HANDLER ITEMS')
       .map(item => {
         return { ...item, tags: ['Psyker'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'EXPLOSIVES AND TRAPS')
+    ...parseStdTable(sheet, columnMapping, 'EXPLOSIVES AND TRAPS')
       .map(item => {
         return { ...item, tags: ['Explosives'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'CAMPING AND FORTIFICATION SUPPLY')
+    ...parseStdTable(sheet, columnMapping, 'CAMPING AND FORTIFICATION SUPPLY')
       .map(item => {
         return { ...item, tags: ['Camping'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'BOOKS AND DOCUMENTS')
+    ...parseStdTable(sheet, columnMapping, 'BOOKS AND DOCUMENTS')
       .map(item => {
         return { ...item, tags: ['Books'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'DRUGS, CONSUMABLES and MEDICINE (non-food)')
+    ...parseStdTable(sheet, columnMapping, 'DRUGS, CONSUMABLES and MEDICINE (non-food)')
       .map(item => {
         return { ...item, tags: ['Drugs'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'FOOD, RATIONS and ALCOHOL')
+    ...parseStdTable(sheet, columnMapping, 'FOOD, RATIONS and ALCOHOL')
       .map(item => {
         return { ...item, tags: ['Food'] };
       }),
-    ...parseStdTable(sheet, ITEM_COLUMN_MAPPING, 'BIONICS')
+    ...parseStdTable(sheet, columnMapping, 'BIONICS')
       .map(item => {
         return { ...item, tags: ['Bionics'] };
       }),
   ];
 }
 
+/**
+ * Standard HE2E table parser
+ *
+ * Table must consist of a "header" row, which begins with a "Name" column,
+ * and a continuous space of data rows following the header.
+ *
+ * Stops parsing at the first empty row encountered.
+ *
+ * "textAnchor" is a piece of text which uniquely identifies the table, and
+ * must be located on the first column of the table.
+ *
+ * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
+ * @param  {Map} columnMapping
+ * @param  {String} textAnchor Piece of text, which uniquely identifies the table.
+ * @return {Object[]}
+ */
 function parseStdTable(sheet, columnMapping, textAnchor) {
   let cursor = sheets.findLastCellByText(sheet, textAnchor);
-  // Iterate until we reach the header or end of the table
+  // Try to find the table header
   while (true) {
-    cursor = sheets.walkCursorDown(1)(cursor);
     const str = tfm.cleanUpString(sheets.cursorToText(cursor));
     // We reached the header
     if (str === 'Name') {
@@ -287,6 +322,8 @@ function parseStdTable(sheet, columnMapping, textAnchor) {
     if (!str) {
       return [];
     }
+    // Go to the next row
+    cursor = sheets.walkCursorDown(1)(cursor);
   }
   // Build a property list
   const props = [];
@@ -300,7 +337,7 @@ function parseStdTable(sheet, columnMapping, textAnchor) {
     props.push(prop);
     headerCursor = sheets.walkCursorRight(1)(headerCursor);
   }
-  // Parse properties
+  // Map table onto objects
   cursor = sheets.walkCursorDown(1)(cursor);
   return sheets.cursorToUniformTable(cursor)
     .map(cursor => {
