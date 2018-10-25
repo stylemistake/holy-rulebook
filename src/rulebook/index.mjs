@@ -304,6 +304,15 @@ function getRulebookItemsGeneral(sheet) {
  * "textAnchor" is a piece of text which uniquely identifies the table, and
  * must be located on the first column of the table.
  *
+ * "columnMapping" format:
+ *
+ *   new Map([
+ *     [<column name>, {
+ *       propName: <object property name>,
+ *       mappingFn: cursor => <object property value>,
+ *     }],
+ *   ]);
+ *
  * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
  * @param  {Map} columnMapping
  * @param  {String} textAnchor Piece of text, which uniquely identifies the table.
