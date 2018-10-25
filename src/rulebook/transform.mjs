@@ -1,14 +1,10 @@
-function compose(...transforms) {
-  return str => {
-    let output = str;
-    for (let transform of transforms) {
-      output = transform(output);
-    }
-    return output;
+export function contains(item) {
+  return function (arrayLike) {
+    return arrayLike.indexOf(item) !== -1;
   }
 }
 
-function capitalize(str) {
+export function capitalize(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(capitalize);
@@ -17,7 +13,15 @@ function capitalize(str) {
   return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 }
 
-function toTitleCase(str) {
+export function toLowerCase(str) {
+  return String(str).toLowerCase();
+}
+
+export function toUpperCase(str) {
+  return String(str).toUpperCase();
+}
+
+export function toTitleCase(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(toTitleCase);
@@ -42,7 +46,7 @@ function toTitleCase(str) {
   return currentStr;
 }
 
-function toIdentifier(str) {
+export function toIdentifier(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(toIdentifier);
@@ -51,7 +55,7 @@ function toIdentifier(str) {
   return cleanUpString(str.toLowerCase());
 }
 
-function toInteger(str) {
+export function toInteger(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(toInteger);
@@ -60,7 +64,7 @@ function toInteger(str) {
   return parseInt(cleanUpString(str), 10);
 }
 
-function toFloat(str) {
+export function toFloat(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(toFloat);
@@ -69,7 +73,7 @@ function toFloat(str) {
   return parseFloat(cleanUpString(str));
 }
 
-function cleanUpString(str) {
+export function cleanUpString(str) {
   // Handle array
   if (Array.isArray(str)) {
     return str.map(cleanUpString);
@@ -83,7 +87,7 @@ function cleanUpString(str) {
     .trim();
 }
 
-function filterContentBy(pattern) {
+export function filterContentBy(pattern) {
   function contentFilter(str) {
     // Handle array
     if (Array.isArray(str)) {
@@ -98,18 +102,10 @@ function filterContentBy(pattern) {
   return contentFilter;
 }
 
-function splitStringBy(delimiter) {
-  return str => str.split(delimiter);
+export function filterEmpty(array) {
+  return array.filter(x => !!x);
 }
 
-module.exports = {
-  compose,
-  capitalize,
-  toTitleCase,
-  toIdentifier,
-  toInteger,
-  toFloat,
-  filterContentBy,
-  splitStringBy,
-  cleanUpString,
-};
+export function splitStringBy(delimiter) {
+  return str => str.split(delimiter);
+}

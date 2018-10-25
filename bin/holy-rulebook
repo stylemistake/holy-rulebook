@@ -35,7 +35,7 @@ task_clean() {
 ## Convert HE2E to JSON
 task_convert() {
   yarn install >&2
-  exec node src/rulebook/convert.js "${@}"
+  exec node --experimental-modules src/rulebook/convert.js "${@}"
 }
 
 ## Parse args

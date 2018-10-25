@@ -1,4 +1,4 @@
-import convert from '../rulebook/convert.js';
+import { getRulebook } from '../rulebook';
 import { acceptConnection } from './relay.mjs';
 import { createLogger } from './logger.mjs';
 
@@ -8,7 +8,7 @@ const PUBLIC_DIR = process.cwd() + '/public';
 export default function setupRoutes(router) {
 
   logger.log('Retrieving rulebook');
-  const rulebook = convert.getRulebookJson();
+  const rulebook = getRulebook();
 
   router.get('/rulebook', (req, res) => {
     return res.send(rulebook);
