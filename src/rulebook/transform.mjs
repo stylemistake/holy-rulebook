@@ -27,6 +27,7 @@ export function toTitleCase(str) {
     return str.map(toTitleCase);
   }
   // Handle string
+  str = String(str);
   const WORDS_UPPER = ['Id', 'Tv'];
   const WORDS_LOWER = [
     'A', 'An', 'And', 'As', 'At', 'But', 'By', 'For', 'For', 'From', 'In', 'Into',
@@ -52,7 +53,7 @@ export function toIdentifier(str) {
     return str.map(toIdentifier);
   }
   // Handle string
-  return cleanUpString(str.toLowerCase());
+  return cleanUpString(toLowerCase(str));
 }
 
 export function toInteger(str) {
@@ -78,8 +79,8 @@ export function cleanUpString(str) {
   if (Array.isArray(str)) {
     return str.map(cleanUpString);
   }
-  //Handle string
-  return str
+  // Handle string
+  return String(str)
     // Remove special symbols
     .replace('†', '')
     // Remove single quotes around words
@@ -94,7 +95,7 @@ export function filterContentBy(pattern) {
       return str.map(contentFilter).filter(e => e);
     }
     // Handle string
-    const match = str.match(pattern);
+    const match = String(str).match(pattern);
     if (match) {
       return match[0];
     }
@@ -103,9 +104,17 @@ export function filterContentBy(pattern) {
 }
 
 export function filterEmpty(array) {
-  return array.filter(x => !!x);
+  return array.filter(x => {
+    if (!x) {
+      return false;
+    }
+    if (x === '-' || x === '—' || x === '*') {
+      return false;
+    }
+    return true;
+  });
 }
 
 export function splitStringBy(delimiter) {
-  return str => str.split(delimiter);
+  return str => String(str).split(delimiter);
 }

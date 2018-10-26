@@ -14,104 +14,142 @@ export function getSheet(path, name) {
 }
 
 /**
- * Get the first cursor matching the given predicate (string).
+ * Get the first cursor matching the given predicate.
  *
  * @param  {Object} $ Cheerio object
  * @param  {any} predicate
  * @return {Cursor[]}
  */
 export function findFirstCellByText($, predicate) {
-  const $elem = $('table tbody').find(`td:contains("${predicate}")`);
-  const elem = $elem.get(0);
-  if (!elem) {
+  const $elem = $('table tbody td');
+  if ($elem.length === 0) {
     return;
   }
-  return new Cursor($, elem);
+  for (let i = 0; i < $elem.length; i++) {
+    const elem = $elem[i];
+    if (!elem) {
+      return;
+    }
+    const text = decodeHtmlEntities($(elem).html());
+    const matching = typeof predicate === 'string' && text === predicate
+      || typeof predicate === 'function' && predicate(text);
+    if (matching) {
+      return new Cursor($, elem);
+    }
+  }
 }
 
 /**
- * Get the last cursor matching the given predicate (string).
+ * Get the last cursor matching the given predicate.
  *
  * @param  {Object} $ Cheerio object
  * @param  {any} predicate
  * @return {Cursor[]}
  */
 export function findLastCellByText($, predicate) {
-  const $elem = $('table tbody').find(`td:contains("${predicate}")`);
-  const elem = $elem.last().get(0);
-  if (!elem) {
+  const $elem = $('table tbody td');
+  if ($elem.length === 0) {
     return;
   }
-  return new Cursor($, elem);
+  for (let i = $elem.length - 1; i >= 0; i--) {
+    const elem = $elem[i];
+    if (!elem) {
+      return;
+    }
+    const text = decodeHtmlEntities($(elem).html());
+    const matching = typeof predicate === 'string' && text === predicate
+      || typeof predicate === 'function' && predicate(text);
+    if (matching) {
+      return new Cursor($, elem);
+    }
+  }
 }
 
 /**
- * Get an array of cursors matching the given predicate (string).
+ * Get an array of cursors matching the given predicate.
  *
  * @param  {Object} $ Cheerio object
  * @param  {any} predicate
  * @return {Cursor[]}
  */
 export function findManyCellsByText($, predicate) {
+  const $elem = $('table tbody td');
   const cursors = [];
-  $('table tbody').find(`td:contains("${predicate}")`)
-    .each((i, elem) => {
-      cursors.push(new Cursor($, elem));
-    });
-  return cursors;
-}
-
-/**
- * Get an array of cursors which represent rows of a uniform table.
- * Table starts at the provided cursor position, and ends on the first
- * encounter of an empty row.
- *
- * @param  {Cursor} cursor
- * @return {Cursor[]}
- */
-export function cursorToUniformTable(cursor) {
-  const cursors = [];
-  while (true) {
-    const str = cursorToText(cursor);
-    // Check if we reached an end of the table
-    if (!str) {
-      break;
+  for (let i = 0; i < $elem.length; i++) {
+    const elem = $elem[i];
+    if (!elem) {
+      continue;
     }
-    cursors.push(cursor);
-    // Move cursor
-    cursor = cursor.walkDown(1);
+    const text = decodeHtmlEntities($(elem).html());
+    const matching = typeof predicate === 'string' && text === predicate
+      || typeof predicate === 'function' && predicate(text);
+    if (matching) {
+      cursors.push(new Cursor($, elem));
+    }
   }
   return cursors;
 }
 
 // Cursor walk transforms (see Cursor class)
-export const walkCursorLeft = num => cursor => cursor.walkLeft(num);
-export const walkCursorRight = num => cursor => cursor.walkRight(num);
-export const walkCursorUp = num => cursor => cursor.walkUp(num);
-export const walkCursorDown = num => cursor => cursor.walkDown(num);
+export const walkCursorLeft = num => cursor => cursor && cursor.walkLeft(num);
+export const walkCursorRight = num => cursor => cursor && cursor.walkRight(num);
+export const walkCursorUp = num => cursor => cursor && cursor.walkUp(num);
+export const walkCursorDown = num => cursor => cursor && cursor.walkDown(num);
 
 // Cursor move transforms (see Cursor class)
-export const moveCursorLeft = num => cursor => cursor.moveLeft(num);
-export const moveCursorRight = num => cursor => cursor.moveRight(num);
-export const moveCursorUp = num => cursor => cursor.moveUp(num);
-export const moveCursorDown = num => cursor => cursor.moveDown(num);
+export const moveCursorLeft = num => cursor => cursor && cursor.moveLeft(num);
+export const moveCursorRight = num => cursor => cursor && cursor.moveRight(num);
+export const moveCursorUp = num => cursor => cursor && cursor.moveUp(num);
+export const moveCursorDown = num => cursor => cursor && cursor.moveDown(num);
 
 // Cursor text transforms
-export const cursorToText = cursor => decodeHtmlEntities(cursor.cell().html());
-export const cursorToHtml = cursor => cursor.cell().html();
+export function cursorToText(cursor) {
+  if (Array.isArray(cursor)) {
+    return cursor.map(cursorToText);
+  }
+  return cursor && cursor.text();
+}
+
+export function cursorToHtml(cursor) {
+  if (Array.isArray(cursor)) {
+    return cursor.map(cursorToHtml);
+  }
+  return cursor && cursor.html();
+}
 
 /**
- * Retrieves rows as a list of values, starting at provided cursor position.
+ * Retrieves rows as a list of values, starting at the provided
+ * cursor position.
  *
  * @param  {Number} num Number of rows
  * @return {Function} Function which accepts the cursor object
+ * and returns an array of cursors which represent the list.
  */
-export function cursorToVerticalListOfValues(num) {
+export function cursorToVerticalList(num) {
   return cursor => {
     const values = [];
     for (let i = 0; i < num; i++) {
-      values.push(cursor.text());
-      cursor = cursor.moveDown(1);
+      values.push(cursor);
+      cursor = cursor.walkDown(1);
+    }
+    return values;
+  };
+}
+
+/**
+ * Retrieves columns as a list of values, starting at the provided
+ * cursor position.
+ *
+ * @param  {Number} num Number of columns
+ * @return {Function} Function which accepts the cursor object
+ * and returns an array of cursors which represent the list.
+ */
+export function cursorToHorizontalList(num) {
+  return cursor => {
+    const values = [];
+    for (let i = 0; i < num; i++) {
+      values.push(cursor);
+      cursor = cursor.walkRight(1);
     }
     return values;
   };
@@ -124,18 +162,22 @@ export function cursorToVerticalListOfValues(num) {
  * @return {String} Decoded HTML string
  */
 function decodeHtmlEntities(str) {
-  const translate_re = /&(nbsp|amp|quot|lt|gt);/g;
+  if (!str) {
+    return str;
+  }
+  const translate_re = /&(nbsp|amp|quot|lt|gt|apos);/g;
   const translate = {
-    nbsp: " ",
-    amp:  "&",
-    quot: "\"",
-    lt:   "<",
-    gt:   ">",
+    nbsp: ' ',
+    amp:  '&',
+    quot: '"',
+    lt:   '<',
+    gt:   '>',
+    apos: '\'',
   };
   return str
     // Newline tags
     .replace(/<br>/gi, '\n')
-    .replace(/<\/?span[^>]*>/gi, '')
+    .replace(/<\/?[a-z0-9-_]+[^>]*>/gi, '')
     // Basic entities
     .replace(translate_re, (match, entity) => translate[entity])
     // Decimal entities
@@ -257,6 +299,14 @@ export class Cursor {
     return this.clone({ x, y });
   }
 
+  setX(x = 0) {
+    return this.clone({ x, y: this.y });
+  }
+
+  setY(y = 0) {
+    return this.clone({ x: this.x, y });
+  }
+
   /**
    * Move cursor relative to current cursor position.
    *
@@ -295,19 +345,19 @@ export class Cursor {
   walk(x = 0, y = 0) {
     if (y > 0) {
       const box = this.getMatrixCell();
-      return this.move(0, box.h).walk(x, y - 1);
+      return box && this.move(0, box.h).walk(x, y - 1);
     }
     if (y < 0) {
       const box = this.move(0, -1).getMatrixCell();
-      return this.set(box.x, box.y).walk(x, y + 1);
+      return box && this.set(box.x, box.y).walk(x, y + 1);
     }
     if (x > 0) {
       const box = this.getMatrixCell();
-      return this.move(box.w, 0).walk(x - 1, y);
+      return box && this.move(box.w, 0).walk(x - 1, y);
     }
     if (x < 0) {
       const box = this.move(-1, 0).getMatrixCell();
-      return this.set(box.x, box.y).walk(x + 1, y);
+      return box && this.set(box.x, box.y).walk(x + 1, y);
     }
     return this;
   }
@@ -343,7 +393,11 @@ export class Cursor {
    * Get text at current cursor position
    */
   text() {
-    return this.cell().text();
+    return decodeHtmlEntities(this.cell().html());
+  }
+
+  html() {
+    return this.cell().html();
   }
 
   /**

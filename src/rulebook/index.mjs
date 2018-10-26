@@ -4,24 +4,56 @@ import * as tfm from './transform.mjs';
 
 const HE2E_PATH = 'src/rulebook/HE2E';
 
+
+//  Rulebook definition
+// --------------------------------------------------------
+
 export function getRulebook() {
-  getRulebookTalents(sheets.getSheet(HE2E_PATH, 'TALE'))
   return {
-    skills: getRulebookSkills(sheets.getSheet(HE2E_PATH, 'SKLS')),
-    talents: getRulebookTalents(sheets.getSheet(HE2E_PATH, 'TALE')),
+    skills: getRulebookSkills('SKLS'),
+    talents: [
+      ...getRulebookTalents('TALE'),
+      // TODO: Talents from other sheets (e.g ABL and PSY)
+    ],
     items: [
-      ...getRulebookItemsGeneral(sheets.getSheet(HE2E_PATH, 'ITM')),
+      // Items (general)
+      ...getRulebookItemsGeneral('ITM', 'CAPACITY ITEMS', ['Capacity']),
+      ...getRulebookItemsGeneral('ITM', 'CLOTHING', ['Clothing']),
+      ...getRulebookItemsGeneral('ITM', 'WEARABLES', ['Wearables']),
+      ...getRulebookItemsGeneral('ITM', 'SPECIALIZATION KITS AND PACKAGES', ['Kits']),
+      ...getRulebookItemsGeneral('ITM', 'STAND-ALONE TOOLS', ['Tools']),
+      ...getRulebookItemsGeneral('ITM', 'PSYKER AND WITCH HANDLER ITEMS', ['Psyker']),
+      ...getRulebookItemsGeneral('ITM', 'EXPLOSIVES AND TRAPS', ['Explosives']),
+      ...getRulebookItemsGeneral('ITM', 'CAMPING AND FORTIFICATION SUPPLY', ['Camping']),
+      ...getRulebookItemsGeneral('ITM', 'BOOKS AND DOCUMENTS', ['Books']),
+      ...getRulebookItemsGeneral('ITM', 'DRUGS, CONSUMABLES and MEDICINE (non-food)', ['Drugs']),
+      ...getRulebookItemsGeneral('ITM', 'FOOD, RATIONS and ALCOHOL', ['Food']),
+      ...getRulebookItemsGeneral('ITM', 'BIONICS', ['Bionics']),
+      // Weapons (ranged)
+      ...getRulebookItemsWeapons('WPNS', 'Las Weapons', 'Las'),
+      ...getRulebookItemsWeapons('WPNS', 'Solid Projectile Weapons', 'Solid Projectile'),
+      ...getRulebookItemsWeapons('WPNS', 'Bolt Weapons', 'Bolt'),
+      ...getRulebookItemsWeapons('WPNS', 'Energy Weapons', 'Energy'),
+      ...getRulebookItemsWeapons('WPNS', 'Melta Weapons', 'Melta'),
+      ...getRulebookItemsWeapons('WPNS', 'Plasma Weapons', 'Plasma'),
+      ...getRulebookItemsWeapons('WPNS', 'Primitive Weapons', 'Primitive'),
+      ...getRulebookItemsWeapons('WPNS', 'Launchers', 'Launcher'),
+      ...getRulebookItemsWeapons('WPNS', 'Grenades and Missiles', 'Projectile'),
+      // Weapons (melee)
+      ...getRulebookItemsWeapons('WPNS', 'Primitive Weapons (Single-Handed)', 'Primitive', ['Single-Handed']),
+      ...getRulebookItemsWeapons('WPNS', 'Primitive Weapons (Two-Handed)', 'Primitive', ['Two-Handed']),
+      ...getRulebookItemsWeapons('WPNS', 'Shields', 'Shield'),
+      ...getRulebookItemsWeapons('WPNS', 'Chain Weapons', 'Chain'),
+      ...getRulebookItemsWeapons('WPNS', 'Power Weapons', 'Power'),
+      ...getRulebookItemsWeapons('WPNS', 'Force Weapons', 'Force'),
+      ...getRulebookItemsWeapons('WPNS', 'Shock Weapons', 'Shock'),
+      ...getRulebookItemsWeapons('WPNS', 'Exotic Weapons', 'Exotic'),
     ],
   };
 }
 
-/**
- * Parses skill cards within SKLS sheet.
- *
- * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
- * @return {Object[]} Array of skill objects.
- */
-function getRulebookSkills(sheet) {
+function getRulebookSkills(sheetName) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
   return sheets.findManyCellsByText(sheet, 'DESCRIPTION')
     // Move to the top-left corner
     .map(sheets.walkCursorLeft(1))
@@ -42,7 +74,8 @@ function getRulebookSkills(sheet) {
         ])(cursor),
         aptitudes: pipeline([
           sheets.walkCursorDown(3),
-          sheets.cursorToVerticalListOfValues(2),
+          sheets.cursorToVerticalList(2),
+          sheets.cursorToText,
           tfm.cleanUpString,
           tfm.toTitleCase,
         ])(cursor),
@@ -130,60 +163,54 @@ function getRulebookSubskills(skillRootCursor) {
   };
 }
 
-function getRulebookTalents(sheet) {
-  const cursor = sheets.findFirstCellByText(sheet, 'Aptitude 1')
-    .walkLeft(3)
-    .walkDown(1);
-  return sheets.cursorToUniformTable(cursor)
-    .map(cursor => {
-      return {
-        name: pipeline([
-          sheets.cursorToText,
-          tfm.cleanUpString,
-          tfm.toTitleCase,
-        ])(cursor),
-        prerequisites: pipeline([
-          sheets.walkCursorRight(1),
-          sheets.cursorToText,
-          tfm.cleanUpString,
-        ])(cursor),
-        tier: pipeline([
-          sheets.walkCursorRight(2),
-          sheets.cursorToText,
-          tfm.toInteger,
-        ])(cursor),
-        aptitudes: [
-          pipeline([
-            sheets.walkCursorRight(3),
-            sheets.cursorToText,
-            tfm.cleanUpString,
-            tfm.toTitleCase,
-          ])(cursor),
-          pipeline([
-            sheets.walkCursorRight(4),
-            sheets.cursorToText,
-            tfm.cleanUpString,
-            tfm.toTitleCase,
-          ])(cursor),
-        ],
-        description: pipeline([
-          sheets.walkCursorRight(5),
-          sheets.cursorToText,
-          tfm.cleanUpString,
-        ])(cursor),
-      };
-    });
+function getRulebookTalents(sheetName) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
+  const columnMapping = new Map([
+    ['Talent', {
+      propName: 'name',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Prerequisites', {
+      propName: 'prerequisites',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Tier', {
+      propName: 'tier',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.toInteger,
+      ]),
+    }],
+    ['Aptitude 1', {
+      propName: 'aptitudes',
+      mappingFn: pipeline([
+        sheets.cursorToHorizontalList(2),
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Description', {
+      propName: 'description',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+  ]);
+  return parseStdTable(sheet, columnMapping, 'TALENTS');
 }
 
-/**
- * Parses items within ITM sheet.
- *
- * @param  {Object} sheet Cheerio document (returned by sheets.getSheet).
- * @return {Object[]} Array of item objects.
- */
-function getRulebookItemsGeneral(sheet) {
+function getRulebookItemsGeneral(sheetName, tableName, tags = []) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
   const columnMapping = new Map([
-    // Generic properties
     ['Name', {
       propName: 'name',
       mappingFn: pipeline([
@@ -204,9 +231,10 @@ function getRulebookItemsGeneral(sheet) {
       propName: 'weight',
       mappingFn: pipeline([
         sheets.cursorToText,
-        tfm.cleanUpString,
-        str => str.replace(/,/g, '.')
+        str => str
+          .replace(/,/g, '.')
           .replace(/[^0-9.]/g, ''),
+        tfm.cleanUpString,
         tfm.toFloat,
       ]),
     }],
@@ -228,78 +256,157 @@ function getRulebookItemsGeneral(sheet) {
         tfm.toTitleCase,
       ]),
     }],
-    // // Weapon properties
-    // ['Class', 'weaponClass'],
-    // ['Range', 'weaponRange'],
-    // ['RoF', 'weaponRof'],
-    // ['Dam', 'weaponDamage'],
-    // ['Pen', 'weaponPen'],
-    // ['Clip', 'weaponClip'],
-    // ['Rld', 'weaponReload'],
-    // // Armor properties
-    // ['Armour Type', 'armorClass'],
-    // ['Location(s) Covered', 'armorLocations'],
-    // ['AP', 'armorPoints'],
   ]);
-  return [
-    ...parseStdTable(sheet, columnMapping, 'CAPACITY ITEMS')
-      .map(item => {
-        return { ...item, tags: ['Capacity'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'CLOTHING')
-      .map(item => {
-        return { ...item, tags: ['Clothing'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'WEARABLES')
-      .map(item => {
-        return { ...item, tags: ['Wearables'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'SPECIALIZATION KITS AND PACKAGES')
-      .map(item => {
-        return { ...item, tags: ['Kits'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'STAND-ALONE TOOLS')
-      .map(item => {
-        return { ...item, tags: ['Tools'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'PSYKER AND WITCH HANDLER ITEMS')
-      .map(item => {
-        return { ...item, tags: ['Psyker'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'EXPLOSIVES AND TRAPS')
-      .map(item => {
-        return { ...item, tags: ['Explosives'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'CAMPING AND FORTIFICATION SUPPLY')
-      .map(item => {
-        return { ...item, tags: ['Camping'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'BOOKS AND DOCUMENTS')
-      .map(item => {
-        return { ...item, tags: ['Books'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'DRUGS, CONSUMABLES and MEDICINE (non-food)')
-      .map(item => {
-        return { ...item, tags: ['Drugs'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'FOOD, RATIONS and ALCOHOL')
-      .map(item => {
-        return { ...item, tags: ['Food'] };
-      }),
-    ...parseStdTable(sheet, columnMapping, 'BIONICS')
-      .map(item => {
-        return { ...item, tags: ['Bionics'] };
-      }),
-  ];
+  return parseStdTable(sheet, columnMapping, tableName)
+    // Add a tag to an item
+    .map(item => {
+      return { ...item, tags };
+    });
 }
+
+function getRulebookItemsWeapons(sheetName, tableName, weaponType, tags = []) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
+  const columnMapping = new Map([
+    ['Name', {
+      propName: 'name',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Class', {
+      stopOnEmpty: true,
+      propName: 'weaponClass',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Range', {
+      propName: 'weaponRange',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['RoF', {
+      propName: 'weaponRof',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Dam', {
+      propName: 'weaponDamage',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Pen', {
+      propName: 'weaponPen',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        str => str.replace('PEN', ''),
+        tfm.cleanUpString,
+        tfm.toInteger,
+      ]),
+    }],
+    ['Clip', {
+      propName: 'weaponClip',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        str => str.replace('*', ''),
+        tfm.cleanUpString,
+        tfm.toInteger,
+      ]),
+    }],
+    ['Rld', {
+      propName: 'weaponDamage',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Special', {
+      propName: 'qualities',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.splitStringBy(','),
+        tfm.cleanUpString,
+        tfm.filterEmpty,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Wt', {
+      propName: 'weight',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        str => str
+          .replace(/,/g, '.')
+          .replace(/[^0-9.]/g, ''),
+        tfm.cleanUpString,
+        tfm.toFloat,
+      ]),
+    }],
+    ['Frequent in', {
+      propName: 'frequentIn',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.splitStringBy(','),
+        tfm.cleanUpString,
+        tfm.filterEmpty,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Rare in', {
+      propName: 'rareIn',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.splitStringBy(','),
+        tfm.cleanUpString,
+        tfm.filterEmpty,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Availability', {
+      propName: 'availability',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+  ]);
+  return parseStdTable(sheet, columnMapping, tableName)
+    // Add a tag to an item
+    .map(item => {
+      return {
+        ...item,
+        weaponType,
+        tags: [
+          'Weapon',
+          weaponType,
+          item.weaponClass,
+          ...tags,
+        ],
+      };
+    });
+}
+
+
+//  HE2E standard tools for sheet parsing
+// --------------------------------------------------------
 
 /**
  * Standard HE2E table parser
  *
- * Table must consist of a "header" row, which begins with a "Name" column,
- * and a continuous space of data rows following the header.
+ * Table must consist of a "header" row, where the first row matches the first
+ * column defined in "columnMapping", and a continuous space of data rows
+ * following the header.
  *
- * Stops parsing at the first empty row encountered.
+ * Parser stops at the first empty row encountered.
  *
  * "textAnchor" is a piece of text which uniquely identifies the table, and
  * must be located on the first column of the table.
@@ -310,6 +417,8 @@ function getRulebookItemsGeneral(sheet) {
  *     [<column name>, {
  *       propName: <object property name>,
  *       mappingFn: cursor => <object property value>,
+ *       stopFn: cursor => <boolean>, // Stops if function returns true
+ *       stopOnEmpty: <boolean>, // Stops if cell is empty
  *     }],
  *   ]);
  *
@@ -319,12 +428,16 @@ function getRulebookItemsGeneral(sheet) {
  * @return {Object[]}
  */
 function parseStdTable(sheet, columnMapping, textAnchor) {
+  // Find the table (we're using the last cell, because these names are
+  // usually repeated in table of contents).
   let cursor = sheets.findLastCellByText(sheet, textAnchor);
+  // Get the first column name
+  const firstColumnName = columnMapping.keys().next().value;
   // Try to find the table header
   while (true) {
     const str = tfm.cleanUpString(sheets.cursorToText(cursor));
     // We reached the header
-    if (str === 'Name') {
+    if (str === firstColumnName) {
       break;
     }
     // We reached the end
@@ -335,31 +448,54 @@ function parseStdTable(sheet, columnMapping, textAnchor) {
     cursor = sheets.walkCursorDown(1)(cursor);
   }
   // Build a property list
-  const props = [];
+  const propsColumns = [];
   let headerCursor = cursor;
   while (true) {
-    const columnName = tfm.cleanUpString(sheets.cursorToText(headerCursor));
-    if (!columnName) {
+    if (!headerCursor) {
       break;
     }
+    const columnName = tfm.cleanUpString(sheets.cursorToText(headerCursor));
     const prop = columnMapping.get(columnName);
-    props.push(prop);
+    if (prop) {
+      propsColumns.push([prop, headerCursor.x]);
+    }
     headerCursor = sheets.walkCursorRight(1)(headerCursor);
   }
   // Map table onto objects
-  cursor = sheets.walkCursorDown(1)(cursor);
-  return sheets.cursorToUniformTable(cursor)
-    .map(cursor => {
-      const item = {};
-      // Iterate over props
-      for (let prop of props) {
-        // Map column onto object
-        if (prop) {
-          item[prop.propName] = prop.mappingFn(cursor);
+  const items = [];
+  TABLE_MAPPER:
+  while (cursor = sheets.walkCursorDown(1)(cursor)) {
+    let localCursor = cursor;
+    // Check for a default stop condition (empty string on first column)
+    const str = sheets.cursorToText(localCursor);
+    if (!str) {
+      break;
+    }
+    // Create an empty item
+    const item = {};
+    // Iterate over propsColumns
+    for (let [prop, column] of propsColumns) {
+      // Move cursor to the prop column
+      localCursor = localCursor.setX(column);
+      const str = sheets.cursorToText(localCursor);
+      // Check for a custom stop condition
+      if (prop && prop.stopOnEmpty) {
+        if (!str) {
+          break TABLE_MAPPER;
         }
-        // Move cursor to the next column
-        cursor = sheets.walkCursorRight(1)(cursor);
       }
-      return item;
-    });
+      if (prop && prop.stopFn) {
+        const condition = prop.stopFn(localCursor);
+        if (condition) {
+          break TABLE_MAPPER;
+        }
+      }
+      // Map column onto object
+      if (prop && prop.mappingFn) {
+        item[prop.propName] = prop.mappingFn(localCursor);
+      }
+    }
+    items.push(item);
+  }
+  return items;
 }
