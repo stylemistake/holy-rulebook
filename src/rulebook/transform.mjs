@@ -14,11 +14,17 @@ export function capitalize(str) {
 }
 
 export function toLowerCase(str) {
-  return String(str).toLowerCase();
+  if (typeof str !== 'string') {
+    return str;
+  }
+  return str.toLowerCase();
 }
 
 export function toUpperCase(str) {
-  return String(str).toUpperCase();
+  if (typeof str !== 'string') {
+    return str;
+  }
+  return str.toUpperCase();
 }
 
 export function toTitleCase(str) {
@@ -26,8 +32,11 @@ export function toTitleCase(str) {
   if (Array.isArray(str)) {
     return str.map(toTitleCase);
   }
+  // Pass non-string
+  if (typeof str !== 'string') {
+    return str;
+  }
   // Handle string
-  str = String(str);
   const WORDS_UPPER = ['Id', 'Tv'];
   const WORDS_LOWER = [
     'A', 'An', 'And', 'As', 'At', 'But', 'By', 'For', 'For', 'From', 'In', 'Into',
@@ -53,7 +62,7 @@ export function toIdentifier(str) {
     return str.map(toIdentifier);
   }
   // Handle string
-  return cleanUpString(toLowerCase(str));
+  return toLowerCase(cleanUpString(str));
 }
 
 export function toInteger(str) {
@@ -79,8 +88,12 @@ export function cleanUpString(str) {
   if (Array.isArray(str)) {
     return str.map(cleanUpString);
   }
+  // Pass non-string
+  if (typeof str !== 'string') {
+    return str;
+  }
   // Handle string
-  return String(str)
+  return str
     // Remove special symbols
     .replace('†', '')
     // Remove single quotes around words

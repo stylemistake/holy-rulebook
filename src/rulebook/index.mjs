@@ -13,7 +13,8 @@ export function getRulebook() {
     skills: getRulebookSkills('SKLS'),
     talents: [
       ...getRulebookTalents('TALE'),
-      // TODO: Talents from other sheets (e.g ABL and PSY)
+      ...getRulebookFaithPowers('ABL'),
+      ...getRulebookTechPowers('ABL'),
     ],
     items: [
       // Items (general)
@@ -211,7 +212,121 @@ function getRulebookTalents(sheetName) {
       ]),
     }],
   ]);
-  return parseStdTable(sheet, columnMapping, 'TALENTS');
+  return parseStdTable(sheet, columnMapping, 'TALENTS')
+    .map(item => {
+      return {
+        ...item,
+        tags: [],
+      };
+    });
+}
+
+function getRulebookFaithPowers(sheetName) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
+  const columnMapping = new Map([
+    ['Name', {
+      propName: 'name',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Prerequisites', {
+      propName: 'prerequisites',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Tier', {
+      propName: 'tier',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.toInteger,
+      ]),
+    }],
+    ['XP cost', {
+      propName: 'xpCost',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.toInteger,
+      ]),
+    }],
+    ['Effect', {
+      propName: 'description',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+  ]);
+  return parseStdTable(sheet, columnMapping, 'TABLE: FAITH POWERS')
+    .map(item => {
+      return {
+        ...item,
+        aptitudes: [],
+        tags: ['Faith Power'],
+      };
+    });
+}
+
+function getRulebookTechPowers(sheetName) {
+  const sheet = sheets.getSheet(HE2E_PATH, sheetName);
+  const columnMapping = new Map([
+    ['Name', {
+      propName: 'name',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Prerequisites', {
+      propName: 'prerequisites',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Tier', {
+      propName: 'tier',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.toInteger,
+      ]),
+    }],
+    ['Aptitude 1', {
+      propName: 'aptitudes',
+      mappingFn: pipeline([
+        sheets.cursorToHorizontalList(2),
+        sheets.cursorToText,
+        tfm.cleanUpString,
+        tfm.toTitleCase,
+      ]),
+    }],
+    ['Specializations', {
+      propName: 'specializations',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+    ['Effect', {
+      propName: 'description',
+      mappingFn: pipeline([
+        sheets.cursorToText,
+        tfm.cleanUpString,
+      ]),
+    }],
+  ]);
+  return parseStdTable(sheet, columnMapping, 'TABLE: TECH POWERS')
+    .map(item => {
+      return {
+        ...item,
+        tags: ['Tech Power'],
+      };
+    });
 }
 
 function getRulebookItemsGeneral(sheetName, tableName, tags = []) {
@@ -264,9 +379,11 @@ function getRulebookItemsGeneral(sheetName, tableName, tags = []) {
     }],
   ]);
   return parseStdTable(sheet, columnMapping, tableName)
-    // Add a tag to an item
     .map(item => {
-      return { ...item, tags };
+      return {
+        ...item,
+        tags,
+      };
     });
 }
 
@@ -386,7 +503,6 @@ function getRulebookItemsWeapons(sheetName, tableName, weaponType, tags = []) {
     }],
   ]);
   return parseStdTable(sheet, columnMapping, tableName)
-    // Add a tag to an item
     .map(item => {
       return {
         ...item,
@@ -447,7 +563,7 @@ function parseStdTable(sheet, columnMapping, textAnchor) {
       break;
     }
     // We reached the end
-    if (!str) {
+    if (str === undefined) {
       return [];
     }
     // Go to the next row
