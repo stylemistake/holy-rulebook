@@ -8,7 +8,7 @@ import * as rulebookConstants from './rulebookConstants.js';
  * Does a "left join" of a collection with another collection, which is located inside
  * first collection object's property.
  */
-function unwind(coll, pathToOtherColl, unwinderFn) {
+export function unwind(coll, pathToOtherColl, unwinderFn) {
   return coll
     .map(item => {
       const otherColl = item.getIn(pathToOtherColl);
@@ -45,19 +45,12 @@ export function getRulebookSkills(state) {
     return List();
   }
   return skills
-    .map(skill => skill.set('displayName', skill.get('name')))
     .sortBy(skill => skill.get('name'));
 }
 
 export function getRulebookSkillsWithSpecs(state) {
   const skills = getRulebookSkills(state);
-  return unwind(skills, ['specializations'], (skill, spec) => {
-    const name = skill.get('name');
-    const specName = spec.get('name');
-    return skill
-      .set('displayName', `${name} [${specName}]`)
-      .set('specialization', spec);
-  });
+  return skills;
 }
 
 export function getRulebookSkillXpCosts(state, matchingApts, tier) {

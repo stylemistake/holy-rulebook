@@ -25,16 +25,20 @@ export function globalReducer(state = INITIAL_STATE, action) {
     searchText && rulebook.map((itemsList, category) => {
       itemsList.map((item, itemKey) => {
         const searchable = JSON.stringify(item).toLowerCase();
-        if(searchable.includes(searchText)){
+        if (searchable.includes(searchText)) {
           results.push({
             item,
             key: category + itemKey,
             category,
-        });
+          });
         }
       });
     });
     return state.set('searchResults', results);
+  }
+
+  if (type === 'SELECT_CHARACTER') {
+    return state.set('activeCharacterId', payload.characterId)
   }
 
   return state;

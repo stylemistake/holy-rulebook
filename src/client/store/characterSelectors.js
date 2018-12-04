@@ -86,24 +86,26 @@ export function getCharacterSkills(state, characterId) {
   }
   const charcs = getCharacterCharacteristics(state, characterId);
   return getRulebookSkillsWithSpecs(state)
-    .map(skill => {
-      const name = skill.get('name');
-      const spec = skill.get('specialization');
-      const purchaseCount = countXPPurchasesOf(character, { type: 'skill', name, spec });
-      const bonus = getRulebookSkillTierBonus(state, purchaseCount);
-      const matchingApts = countMatchingAptitudes(character, skill.get('aptitudes'));
-      const cost = getRulebookSkillXpCosts(state, matchingApts, purchaseCount);
-      const charc = charcs.find(charc => charc.get('name') === skill.get('characteristic'));
-      const threshold = charc && (charc.get('value') + bonus);
-      return skill.merge({
-        purchaseCount,
-        bonus,
-        matchingApts,
-        cost,
-        charc,
-        threshold,
-      });
-    });
+    .map(skill => getCharacterSkill(state, skill, character, charcs));
+}
+
+export function getCharacterSkill(state, skill, character, characterCharacteristics) {
+  const name = skill.get('name');
+  const spec = skill.get('specialization');
+  const purchaseCount = countXPPurchasesOf(character, { type: 'skill', name, spec });
+  const bonus = getRulebookSkillTierBonus(state, purchaseCount);
+  const matchingApts = countMatchingAptitudes(character, skill.get('aptitudes'));
+  const cost = getRulebookSkillXpCosts(state, matchingApts, purchaseCount);
+  const charc = characterCharacteristics.find(charc => charc.get('name') === skill.get('characteristic'));
+  const threshold = charc && (charc.get('value') + bonus);
+  return skill.merge({
+    purchaseCount,
+    bonus,
+    matchingApts,
+    cost,
+    charc,
+    threshold,
+  });
 }
 
 export function getCharacterTalents(state, characterId) {
@@ -112,24 +114,26 @@ export function getCharacterTalents(state, characterId) {
     return List();
   }
   return getRulebookTalents(state)
-    .map(talent => {
-      const name = talent.get('name');
-      const purchaseCount = countXPPurchasesOf(character, { type: 'talent', name });
-      const tier = talent.get('tier');
-      const matchingApts = countMatchingAptitudes(character, talent.get('aptitudes'));
-      const cost = getRulebookTalentXpCosts(state, matchingApts, tier - 1);
-      // Add purchase count to the talent name
-      let displayName = talent.get('displayName');
-      if (purchaseCount > 1) {
-        displayName += ` (${purchaseCount})`;
-      }
-      return talent.merge({
-        purchaseCount,
-        matchingApts,
-        cost,
-        displayName,
-      });
-    });
+    .map(talent => getCharacterTalent(state, talent, character));
+}
+
+export function getCharacterTalent(state, talent, character) {
+  const name = talent.get('name');
+  const purchaseCount = countXPPurchasesOf(character, { type: 'talent', name });
+  const tier = talent.get('tier');
+  const matchingApts = countMatchingAptitudes(character, talent.get('aptitudes'));
+  const cost = getRulebookTalentXpCosts(state, matchingApts, tier - 1);
+  // Add purchase count to the talent name
+  let displayName = talent.get('displayName');
+  if (purchaseCount > 1) {
+    displayName += ` (${purchaseCount})`;
+  }
+  return talent.merge({
+    purchaseCount,
+    matchingApts,
+    cost,
+    displayName,
+  });
 }
 
 export function getCharacterXpLogEntries(state, characterId) {
@@ -163,4 +167,12 @@ export function getCharacterAvailableXp(state, characterId) {
       return 0;
     })
     .reduce((a, b) => a + b);
+}
+
+export function getCharacterItems(state, characterId) {
+  const character = getCharacter(state, characterId);
+  if (!character) {
+    return List();
+  }
+  return character.get('items');
 }

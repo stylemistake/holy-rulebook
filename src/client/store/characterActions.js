@@ -31,6 +31,7 @@ export function createCharacter(gameStateId) {
     xpLog: List(),
     xpFrozen: false,
     aptitudes: List(),
+    items: List(),
   });
   return {
     type: 'CHARACTER_CREATE',
@@ -165,6 +166,16 @@ export function toggleXpFreeze(characterId, value) {
   return {
     type: 'CHARACTER_XP_FREEZE_TOGGLE',
     payload: { characterId, value },
+    meta: {
+      updatedAt: Date.now(),
+    },
+  };
+}
+
+export function addItem(characterId, item) {
+  return {
+    type: 'CHARACTER_ITEM_ADD',
+    payload: { characterId, item },
     meta: {
       updatedAt: Date.now(),
     },

@@ -46,7 +46,7 @@ export default flatConnect(
                   'GenericTable__row--dimmed': skill.get('purchaseCount') === 0,
                   'GenericTable__row--highlighted': skill.get('purchaseCount') > 0,
                 })}>
-                <th>{skill.get('displayName')}</th>
+                <th>{skill.get('displayName') || skill.get('name')}</th>
                 <th className="GenericTable__statistic text-center">
                   {skill.get('purchaseCount')}
                 </th>

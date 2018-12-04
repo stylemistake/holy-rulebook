@@ -94,8 +94,8 @@ function getRulebookSkills(sheetName) {
         examples: pipeline([
           sheets.walkCursorRight(2),
           sheets.walkCursorDown(1),
-          sheets.cursorToText,
-          tfm.cleanUpString,
+          sheets.cursorToHtml,
+          tfm.splitStringBy('<br>'),
         ])(cursor),
         ...getRulebookSubskills(cursor),
       };
@@ -145,10 +145,16 @@ function getRulebookSubskills(skillRootCursor) {
       description: pipeline([
         sheets.cursorToText,
         tfm.cleanUpString,
-      ])(cursor),
+      ])(cursor)
     };
     // Push subskill
     if (isSpecialization) {
+      subskill.examples = pipeline([
+        sheets.walkCursorRight(1),
+        sheets.cursorToHtml,
+        tfm.splitStringBy('<br>'),
+        tfm.filterEmpty
+      ])(cursor);
       specializations.push(subskill);
     }
     else {

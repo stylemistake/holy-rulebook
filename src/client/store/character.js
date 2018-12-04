@@ -176,5 +176,12 @@ export function characterReducer(state, action) {
     });
   }
 
+  if (type === 'CHARACTER_ITEM_ADD') {
+    return updateCharacter(state, action, character => {
+      const { item } = payload;
+      return character.update('items', x => x.push(item));
+    });
+  }
+
   return state;
 }

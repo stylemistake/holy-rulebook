@@ -7,7 +7,7 @@ import {
   characterSelectors,
 } from '../store';
 import { Widget, Flex } from '../widgets';
-import {shorten} from '../text.js';
+import { shorten } from '../text.js';
 
 export const StateWidget = flatConnect(
   (state, props) => ({
@@ -157,7 +157,7 @@ export const SkillsWidget = flatConnect(
           {skills.map(skill => (
             <Widget.Table.Row key={skill.hashCode()}>
               <Widget.Table.Cell
-                content={skill.get('displayName')} />
+                content={skill.get('displayName') || skill.get('name')} />
               {compact || (
                 <Widget.Table.Cell
                   content={'+' + skill.get('bonus')} />
@@ -189,6 +189,29 @@ export const TalentsWidget = flatConnect(
               <Widget.Table.Cell
                 title={talent.get('description')}
                 content={talent.get('displayName')} />
+            </Widget.Table.Row>
+          ))}
+        </Widget.Table>
+      </Widget>
+    );
+  }
+);
+
+
+export const ItemsWidget = flatConnect(
+  (state, props) => ({
+    items: characterSelectors.getCharacterItems(state, props.characterId)
+  }),
+  function ItemsWidget(props) {
+    const { items, ...rest } = props;
+    return (
+      <Widget {...rest}>
+        <Widget.Table>
+          {items.map(item => (
+            <Widget.Table.Row >
+              <Widget.Table.Cell
+                title={item.get('name')}
+                content={item.get('name')} />
             </Widget.Table.Row>
           ))}
         </Widget.Table>
